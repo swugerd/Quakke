@@ -1,0 +1,12 @@
+{
+    "name": "wave",
+    "version": "0.0.0",
+    "description": "Video hosting",
+    "main": "index.js",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+      "apps/*"
+    ]
+  }
+  
