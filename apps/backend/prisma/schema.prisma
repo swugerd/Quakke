@@ -1,0 +1,276 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  email    String  @unique
+  name     String
+  password String
+  avatar   String?
+  isBanned Boolean @default(false)
+
+  selectedCategories CategoriesOnUsers[]
+  likes              Like[]
+  dislikes           Dislike[]
+  comments           Comment[]
+  views              View[]
+  notifications      Notification[]
+  videos             Video[]
+  playlists          Playlist[]
+  settings           Settings[]
+  history            VideoHistory[]
+  subscribers        User[]              @relation("Subscribers")
+
+  role   Role @relation(fields: [roleId], references: [id])
+  roleId Int  @unique @map("role_id")
+
+  user   User? @relation("Subscribers", fields: [userId], references: [id])
+  userId Int?  @unique @map("user_id")
+
+  @@map("users")
+}
+
+model Role {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  name Roles @default(USER)
+
+  users User[]
+
+  @@map("roles")
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  name String @unique
+
+  subCategories SubCategory[]
+  users         CategoriesOnUsers[]
+
+  @@map("categories")
+}
+
+model SubCategory {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  name String @unique
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int      @unique @map("category_id")
+
+  @@map("sub_categories")
+}
+
+model CategoriesOnUsers {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int      @map("category_id")
+
+  @@id([userId, categoryId])
+  @@map("categories_on_users")
+}
+
+model Video {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  name        String
+  description String?
+  url         String
+  isBanned    Boolean @default(false)
+
+  likes    Like[]
+  dislikes Dislike[]
+  comments Comment[]
+  views    View[]
+  tags     Tag[]
+  history  VideoHistory[]
+
+  author User @relation(fields: [userId], references: [id])
+  userId Int  @map("userId")
+
+  playlist   Playlist? @relation(fields: [playlistId], references: [id])
+  playlistId Int?      @map("playlist_id")
+
+  @@map("videos")
+}
+
+model VideoHistory {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  video   Video? @relation(fields: [videoId], references: [id])
+  videoId Int?   @map("video_id")
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  @@map("video_history")
+}
+
+model Like {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  video   Video @relation(fields: [videoId], references: [id])
+  videoId Int   @map("video_id")
+
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId Int?     @map("comment_id")
+
+  @@map("likes")
+}
+
+model Dislike {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  video   Video @relation(fields: [videoId], references: [id])
+  videoId Int   @map("video_id")
+
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId Int?     @map("comment_id")
+
+  @@map("dislikes")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  text String
+
+  likes    Like[]
+  dislikes Dislike[]
+  replies  Comment[] @relation("ChildToParent")
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  parent   Comment? @relation("ChildToParent", fields: [parentId], references: [id])
+  parentId Int?     @map("parent_id")
+
+  video   Video? @relation(fields: [videoId], references: [id])
+  videoId Int?   @map("video_id")
+
+  @@map("comments")
+}
+
+model View {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  video   Video? @relation(fields: [videoId], references: [id])
+  videoId Int?   @map("video_id")
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  @@map("views")
+}
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  type Notifications
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  @@map("notifications")
+}
+
+model Settings {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  privacy Privacy @default(OPEN)
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @unique @map("user_id")
+
+  @@map("settings")
+}
+
+model Playlist {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  name    String
+  privacy Privacy
+
+  videos Video[]
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  @@map("playlists")
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  name String
+
+  video   Video? @relation(fields: [videoId], references: [id])
+  videoId Int?   @map("video_id")
+
+  @@map("tags")
+}
+
+enum Privacy {
+  OPEN
+  CLOSED
+}
+
+enum Roles {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum Notifications {
+  NEW_SUBSCRIBER
+  NEW_LIKE
+  NEW_DISLIKE
+  NEW_COMMENT
+  VIDEO_BLOCK
+  VIDEO_UNBLOCK
+  SYSTEM_UPDATE
+}
