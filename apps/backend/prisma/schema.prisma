@@ -9,14 +9,14 @@ datasource db {
 
 model User {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
-  email    String  @unique
-  name     String
-  password String
-  avatar   String?
-  isBanned Boolean @default(false)
+  email     String  @unique
+  name      String
+  password  String
+  isBanned  Boolean @default(false)
+  isPartner Boolean @default(false)
 
   selectedCategories CategoriesOnUsers[]
   likes              Like[]
@@ -28,21 +28,26 @@ model User {
   playlists          Playlist[]
   settings           Settings[]
   history            VideoHistory[]
+  partnerRequests    PartnerRequest[]
+  complaints         Complaint[]
   subscribers        User[]              @relation("Subscribers")
 
   role   Role @relation(fields: [roleId], references: [id])
-  roleId Int  @unique @map("role_id")
+  roleId Int  @map("role_id")
 
   user   User? @relation("Subscribers", fields: [userId], references: [id])
   userId Int?  @unique @map("user_id")
+
+  userAvatar   UserAvatar? @relation(fields: [userAvatarId], references: [id])
+  userAvatarId Int?        @unique @map("avatar_id")
 
   @@map("users")
 }
 
 model Role {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   name Roles @default(USER)
 
@@ -53,8 +58,8 @@ model Role {
 
 model Category {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   name String @unique
 
@@ -66,8 +71,8 @@ model Category {
 
 model SubCategory {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   name String @unique
 
@@ -90,20 +95,20 @@ model CategoriesOnUsers {
 
 model Video {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   name        String
   description String?
-  url         String
   isBanned    Boolean @default(false)
 
-  likes    Like[]
-  dislikes Dislike[]
-  comments Comment[]
-  views    View[]
-  tags     Tag[]
-  history  VideoHistory[]
+  likes      Like[]
+  dislikes   Dislike[]
+  comments   Comment[]
+  views      View[]
+  tags       Tag[]
+  history    VideoHistory[]
+  complaints Complaint[]
 
   author User @relation(fields: [userId], references: [id])
   userId Int  @map("userId")
@@ -111,13 +116,19 @@ model Video {
   playlist   Playlist? @relation(fields: [playlistId], references: [id])
   playlistId Int?      @map("playlist_id")
 
+  videoFile   VideoFile? @relation(fields: [videoFileId], references: [id])
+  videoFileId Int?       @unique @map("video_id")
+
+  videoPreview   VideoPreview? @relation(fields: [videoPreviewId], references: [id])
+  videoPreviewId Int?          @unique @map("preview_id")
+
   @@map("videos")
 }
 
 model VideoHistory {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   video   Video? @relation(fields: [videoId], references: [id])
   videoId Int?   @map("video_id")
@@ -130,8 +141,8 @@ model VideoHistory {
 
 model Like {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   user   User @relation(fields: [userId], references: [id])
   userId Int  @map("user_id")
@@ -147,8 +158,8 @@ model Like {
 
 model Dislike {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   user   User @relation(fields: [userId], references: [id])
   userId Int  @map("user_id")
@@ -164,8 +175,8 @@ model Dislike {
 
 model Comment {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   text String
 
@@ -187,8 +198,8 @@ model Comment {
 
 model View {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   video   Video? @relation(fields: [videoId], references: [id])
   videoId Int?   @map("video_id")
@@ -201,8 +212,8 @@ model View {
 
 model Notification {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   type Notifications
 
@@ -214,8 +225,8 @@ model Notification {
 
 model Settings {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   privacy Privacy @default(OPEN)
 
@@ -227,8 +238,8 @@ model Settings {
 
 model Playlist {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   name    String
   privacy Privacy
@@ -243,8 +254,8 @@ model Playlist {
 
 model Tag {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   name String
 
@@ -254,9 +265,148 @@ model Tag {
   @@map("tags")
 }
 
+model Banner {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  publishDate   DateTime    @map("publish_date") @db.Timestamptz(1)
+  unbuplishDate DateTime    @map("unpublish_date") @db.Timestamptz(1)
+  title         String
+  type          BannerTypes
+  description   String?
+
+  bannerImage   BannerImage @relation(fields: [bannerImageId], references: [id])
+  bannerImageId Int         @map("image_id")
+
+  bannerVideo   BannerVideo? @relation(fields: [bannerVideoId], references: [id])
+  bannerVideoId Int?         @unique @map("video_id")
+
+  @@map("banners")
+}
+
+model UserAvatar {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  user User[]
+
+  @@map("user_avatars")
+}
+
+model BannerImage {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  banner Banner[]
+
+  @@map("banner_images")
+}
+
+model BannerVideo {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  banner Banner[]
+
+  @@map("banner_videos")
+}
+
+model VideoFile {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  video Video[]
+
+  @@map("video_files")
+}
+
+model VideoPreview {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  video Video[]
+
+  @@map("video_previews")
+}
+
+model PartnerRequest {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  message String
+  status  PartnerRequestStatuses
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  @@map("partner_requests")
+}
+
+model Complaint {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  reason  ComplaintReasons
+  message String
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  video   Video? @relation(fields: [videoId], references: [id])
+  videoId Int?
+
+  @@map("complaints")
+}
+
+enum ComplaintReasons {
+  NEGATIVE
+  INCONSISTENCY
+  RACISM
+}
+
 enum Privacy {
   OPEN
   CLOSED
+}
+
+enum PartnerRequestStatuses {
+  OPEN
+  APPROVED
+  REJECTED
+}
+
+enum BannerTypes {
+  VIDEO
+  STREAM
+  IMAGE
 }
 
 enum Roles {
