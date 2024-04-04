@@ -3,12 +3,24 @@
 # ------------------------------------------------------
 
 type User {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  email: String!
+  name: String!
+  password: String!
+  isBanned: Boolean!
+  isPartner: Boolean!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
-  user(id: Int!): User!
+  getUsers: [User!]!
+  getUser(id: Int!): User!
 }
 
 type Mutation {
@@ -18,12 +30,14 @@ type Mutation {
 }
 
 input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  email: String!
+  name: String!
+  password: String!
 }
 
 input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  email: String
+  name: String
+  password: String
   id: Int!
 }

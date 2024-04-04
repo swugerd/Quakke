@@ -8,19 +8,19 @@ import { UserService } from './user.service';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
+  @Query(() => [User])
+  getUsers() {
+    return this.userService.getAll();
+  }
+
+  @Query(() => User)
+  getUser(@Args('id', { type: () => Int }) id: number) {
+    return this.userService.getOne(id);
+  }
+
   @Mutation(() => User)
   createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     return this.userService.create(createUserInput);
-  }
-
-  @Query(() => [User], { name: 'user' })
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @Query(() => User, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.findOne(id);
   }
 
   @Mutation(() => User)

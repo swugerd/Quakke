@@ -33,7 +33,7 @@ model User {
   subscribers        User[]              @relation("Subscribers")
 
   role   Role @relation(fields: [roleId], references: [id])
-  roleId Int  @map("role_id")
+  roleId Int  @default(2) @map("role_id")
 
   user   User? @relation("Subscribers", fields: [userId], references: [id])
   userId Int?  @unique @map("user_id")
