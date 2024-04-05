@@ -15,6 +15,9 @@ export class User {
   email: string;
 
   @Field()
+  login: string;
+
+  @Field()
   name: string;
 
   @Field()

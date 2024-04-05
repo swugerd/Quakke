@@ -5,6 +5,9 @@ declare global {
       SERVER_PORT: string;
       SERVER_HOST: string;
       SERVER_GLOBAL_PREFIX: string;
+      ACCESS_TOKEN_SECRET: string;
+      REFRESH_TOKEN_SECRET: string;
+      GQ_PLAYGROUND: boolean;
     }
   }
 }
