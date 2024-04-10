@@ -12,12 +12,14 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
-  email     String  @unique
-  login     String  @unique
+  email     String    @unique
+  login     String    @unique
   name      String
   password  String
-  isBanned  Boolean @default(false)
-  isPartner Boolean @default(false)
+  provider  Provider?
+  isBanned  Boolean   @default(false) @map("is_banned")
+  isPartner Boolean   @default(false) @map("is_partner")
+  isBlocked Boolean   @default(false) @map("is_blocked")
 
   selectedCategories CategoriesOnUsers[]
   likes              Like[]
@@ -393,7 +395,9 @@ model RefreshToken {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
-  token String
+  expiresAt DateTime @map("expires_at")
+  userAgent String   @map("user_agent")
+  token     String   @unique
 
   user   User? @relation(fields: [userId], references: [id])
   userId Int?  @unique
@@ -438,4 +442,9 @@ enum Notifications {
   VIDEO_BLOCK
   VIDEO_UNBLOCK
   SYSTEM_UPDATE
+}
+
+enum Provider {
+  GOOGLE
+  YANDEX
 }

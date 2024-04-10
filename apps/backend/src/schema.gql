@@ -2,15 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type LogoutResponse {
-  loggedOut: Boolean!
-}
-
-type NewTokenResponse {
-  accessToken: String!
-  refreshToken: String!
-}
-
 type User {
   id: Int!
   createdAt: DateTime!
@@ -28,40 +19,22 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type SignResponse {
-  accessToken: String!
-  refreshToken: String!
-  user: User!
-}
-
 type Query {
   getUsers: [User!]!
   getUser(id: Int!): User!
+  googleAuth: String!
+  googleAuthCallback: String!
+  successGoogle(token: String!): String!
+  yandexAuth: String!
+  yandexAuthCallback: String!
+  successYandex(token: String!): String!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
-  signup(signUpInput: SignUpInput!): SignResponse!
-  signin(signInInput: SignInInput!): SignResponse!
-  logout(id: Int!): LogoutResponse!
-  getNewTokens: NewTokenResponse!
-}
-
-input CreateUserInput {
-  email: String!
-  login: String!
-  name: String!
-  password: String!
-}
-
-input UpdateUserInput {
-  email: String
-  login: String
-  name: String
-  password: String
-  id: Int!
+  register(input: SignUpInput!): String!
+  login(input: SignInInput!): String!
+  logout: Boolean!
+  refreshTokens: String!
 }
 
 input SignUpInput {
@@ -69,6 +42,7 @@ input SignUpInput {
   login: String!
   email: String!
   password: String!
+  passwordRepeat: String!
 }
 
 input SignInInput {

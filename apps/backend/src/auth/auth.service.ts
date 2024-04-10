@@ -1,153 +1,149 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import {
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as argon from 'argon2';
+import { Provider, User } from '@prisma/client';
+import { compareSync } from 'bcrypt';
+import { Cache } from 'cache-manager';
+import { add } from 'date-fns';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserService } from 'src/user/user.service';
+import { v4 } from 'uuid';
 import { SignInInput } from './dto/signin-input';
 import { SignUpInput } from './dto/signup-input';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
-    private prisma: PrismaService,
-    private jswtService: JwtService,
-    private configService: ConfigService,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly prismaService: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
-  async signup(signUpInput: SignUpInput) {
-    const hashedPassword = await argon.hash(signUpInput.password);
 
-    const user = await this.prisma.user.create({
-      data: { ...signUpInput, password: hashedPassword },
+  async refreshTokens(refreshToken: string, agent: string) {
+    const token = await this.prismaService.refreshToken.delete({
+      where: { token: refreshToken },
     });
-
-    const { accessToken, refreshToken } = await this.createTokens(
-      user.id,
-      user.email,
-    );
-
-    await this.updateRefreshToken(user.id, refreshToken);
-
-    return { accessToken, refreshToken, user };
-  }
-
-  async signin(signInInput: SignInInput) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [
-          {
-            login: signInInput.credentials,
-          },
-          {
-            email: signInInput.credentials,
-          },
-        ],
-      },
-    });
-
-    if (!user) {
-      throw new ForbiddenException('User not found');
+    if (!token || new Date(token.expiresAt) < new Date()) {
+      throw new UnauthorizedException();
     }
+    const user = await this.userService.getById(token.userId);
+    return this.generateTokens(user, agent);
+  }
 
-    const doPasswordMatch = await argon.verify(
-      user.password,
-      signInInput.password,
-    );
+  async register(dto: SignUpInput) {
+    const user = await this.prismaService.user
+      .findFirst({
+        where: {
+          OR: [{ email: dto.email }, { login: dto.login }],
+        },
+      })
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
 
-    if (!doPasswordMatch) {
-      throw new ForbiddenException('Wrong password');
+    if (user) {
+      throw new ConflictException(
+        'Пользователь с таким email уже зарегистрирован',
+      );
     }
-
-    const { accessToken, refreshToken } = await this.createTokens(
-      user.id,
-      user.email,
-    );
-
-    await this.updateRefreshToken(user.id, refreshToken);
-
-    return { accessToken, refreshToken, user };
+    return this.userService.save(dto).catch((err) => {
+      this.logger.error(err);
+      return null;
+    });
   }
 
-  async logout(userId: number) {
-    await this.prisma.refreshToken.delete({
-      where: {
-        userId,
-      },
-    });
-
-    return { loggedOut: true };
+  async login(dto: SignInInput, agent: string) {
+    const user: User = await this.prismaService.user
+      .findFirst({
+        where: {
+          OR: [{ email: dto.credentials }, { login: dto.credentials }],
+        },
+      })
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
+    await this.cacheManager.del(String(user.id));
+    if (!user || !compareSync(dto.password, user.password)) {
+      throw new UnauthorizedException('Неверный логин или пароль');
+    }
+    return this.generateTokens(user, agent);
   }
 
-  async createTokens(userId: number, email: string) {
-    const accessToken = this.jswtService.sign(
-      {
-        userId,
-        email,
-      },
-      {
-        expiresIn: '1h',
-        secret: this.configService.get('ACCESS_TOKEN_SECRET'),
-      },
-    );
-
-    const refreshToken = this.jswtService.sign(
-      {
-        userId,
-        email,
-        accessToken,
-      },
-      {
-        expiresIn: '7d',
-        secret: this.configService.get('REFRESH_TOKEN_SECRET'),
-      },
-    );
-
-    await this.prisma.refreshToken.create({
-      data: { userId, token: refreshToken },
-    });
-
+  private async generateTokens(user: User, agent: string) {
+    const accessToken =
+      'Bearer ' +
+      this.jwtService.sign({
+        id: user.id,
+        email: user.email,
+        role: user.roleId,
+      });
+    const refreshToken = await this.getRefreshToken(String(user.id), agent);
     return { accessToken, refreshToken };
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string) {
-    const hashedRefreshedToken = await argon.hash(refreshToken);
-
-    await this.prisma.refreshToken.update({
+  private async getRefreshToken(userId: string, agent: string) {
+    const _token = await this.prismaService.refreshToken.findFirst({
       where: {
-        userId,
+        userId: Number(userId),
+        userAgent: agent,
       },
-      data: {
-        token: hashedRefreshedToken,
+    });
+    const token = _token?.token ?? '';
+
+    return this.prismaService.refreshToken.upsert({
+      where: { token },
+      update: {
+        token: v4(),
+        expiresAt: add(new Date(), { months: 1 }),
+      },
+      create: {
+        token: v4(),
+        expiresAt: add(new Date(), { months: 1 }),
+        userId: Number(userId),
+        userAgent: agent,
       },
     });
   }
 
-  async getNewTokens(userId: number, rt: string) {
-    const { token, userId: userTokenId } =
-      await this.prisma.refreshToken.findFirst({
-        where: { id: userId },
+  deleteRefreshToken(token: string) {
+    return this.prismaService.refreshToken.delete({ where: { token } });
+  }
+
+  async providerAuth(email: string, agent: string, provider: Provider) {
+    const userExists = await this.userService.getByEmail(email);
+    if (userExists) {
+      const user = await this.userService
+        .save({ email, provider })
+        .catch((err) => {
+          this.logger.error(err);
+          return null;
+        });
+      return this.generateTokens(user, agent);
+    }
+    const user = await this.userService
+      .save({ email, provider })
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
       });
-
-    const user = await this.prisma.user.findFirst({
-      where: { id: userTokenId },
-    });
-
-    if (!token) {
-      throw new ForbiddenException('Access Denied');
+    if (!user) {
+      throw new HttpException(
+        `Не получилось создать пользователя с email ${email} в Google auth`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
-
-    const isRefreshTokenMatch = await argon.verify(token, rt);
-
-    if (!isRefreshTokenMatch) {
-      throw new ForbiddenException('Access Denied');
-    }
-
-    const { accessToken, refreshToken } = await this.createTokens(
-      user.id,
-      user.email,
-    );
-
-    await this.updateRefreshToken(user.id, refreshToken);
-
-    return { accessToken, refreshToken, user };
+    return this.generateTokens(user, agent);
   }
 }

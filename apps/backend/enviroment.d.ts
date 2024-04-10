@@ -1,13 +1,19 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
+      NODE_ENV: 'production' | 'development';
       DATABASE_URL: string;
       SERVER_PORT: string;
       SERVER_HOST: string;
       SERVER_GLOBAL_PREFIX: string;
-      ACCESS_TOKEN_SECRET: string;
-      REFRESH_TOKEN_SECRET: string;
-      GQ_PLAYGROUND: boolean;
+      JWT_ACCESS_SECRET: string;
+      JWT_REFRESH_SECRET: string;
+      JWT_ACCESS_EXP: string;
+      JWT_REFRESH_EXP: string;
+      GOOGLE_CLIENT_ID: string;
+      GOOGLE_CLIENT_SECRET: string;
+      YANDEX_APP_ID: string;
+      YANDEX_APP_SECRET: string;
     }
   }
 }

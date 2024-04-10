@@ -5,8 +5,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { AccessTokenGuard } from './auth/guards/accessToken.guard';
-import { PrismaService } from './prisma/prisma.service';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -14,16 +14,14 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({ isGlobal: true }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: process.env.GQ_PLAYGROUND,
+      playground: process.env.NODE_ENV === 'development' ? true : false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req, res }) => ({ req, res }),
     }),
     UserModule,
     AuthModule,
+    PrismaModule,
   ],
-  controllers: [],
-  providers: [
-    PrismaService,
-    { provide: APP_GUARD, useClass: AccessTokenGuard },
-  ],
+  providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}

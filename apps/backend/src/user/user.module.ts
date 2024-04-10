@@ -1,9 +1,11 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 
 @Module({
-  providers: [UserResolver, UserService, PrismaService],
+  providers: [UserResolver, UserService],
+  imports: [CacheModule.register()],
+  exports: [UserService],
 })
 export class UserModule {}

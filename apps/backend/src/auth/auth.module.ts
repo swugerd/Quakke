@@ -1,19 +1,23 @@
+import { HttpModule } from '@nestjs/axios';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { UserModule } from 'src/user/user.module';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { AccessTokenStrategy } from './strategies/accessToken.strategy';
-import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
+import { options } from './config';
+import { GUARDS } from './guards';
+import { STRATEGIES } from './strategies';
 
 @Module({
-  providers: [
-    AuthResolver,
-    AuthService,
-    JwtService,
-    PrismaService,
-    AccessTokenStrategy,
-    RefreshTokenStrategy,
+  providers: [AuthResolver, AuthService, ...STRATEGIES, ...GUARDS],
+  imports: [
+    PassportModule,
+    JwtModule.registerAsync(options()),
+    UserModule,
+    HttpModule,
+    CacheModule.register(),
   ],
 })
 export class AuthModule {}
