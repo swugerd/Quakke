@@ -19,22 +19,32 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ProfileResponse {
+  id: String!
+  email: String!
+  role: String!
+}
+
+type AuthResponse {
+  accessToken: String!
+}
+
+type LogoutResponse {
+  success: Boolean!
+}
+
 type Query {
   getUsers: [User!]!
   getUser(id: Int!): User!
-  googleAuth: String!
-  googleAuthCallback: String!
-  successGoogle(token: String!): String!
-  yandexAuth: String!
-  yandexAuthCallback: String!
-  successYandex(token: String!): String!
+  getMe: ProfileResponse!
 }
 
 type Mutation {
-  register(input: SignUpInput!): String!
-  login(input: SignInInput!): String!
-  logout: Boolean!
-  refreshTokens: String!
+  removeUser(id: Int!): User!
+  register(input: SignUpInput!): AuthResponse!
+  login(input: SignInInput!): AuthResponse!
+  logout: LogoutResponse!
+  refreshTokens: AuthResponse!
 }
 
 input SignUpInput {
@@ -42,7 +52,6 @@ input SignUpInput {
   login: String!
   email: String!
   password: String!
-  passwordRepeat: String!
 }
 
 input SignInInput {

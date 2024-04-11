@@ -1,23 +1,14 @@
-import { HttpService } from '@nestjs/axios';
-import {
-  BadRequestException,
-  HttpStatus,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Provider } from '@prisma/client';
-import { Request, Response } from 'express';
-import { map, mergeMap } from 'rxjs';
+import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { Cookie, Public, UserAgent } from './decorators';
 import { SignInInput } from './dto/signin-input';
 import { SignUpInput } from './dto/signup-input';
-import { GoogleGuard } from './guards/google.guard';
-import { YandexGuard } from './guards/yandex.guard';
-import { handleTimeoutAndErrors } from './helpers';
 import { Tokens } from './interfaces';
+import { AuthResponse } from './responses/auth-response';
+import { LogoutResponse } from './responses/logout-response';
 
 const REFRESH_TOKEN = 'refreshToken';
 
@@ -26,23 +17,30 @@ export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
-    private readonly httpService: HttpService,
   ) {}
 
   @Public()
-  @Mutation(() => String)
-  async register(@Args('input') input: SignUpInput) {
-    const user = await this.authService.register(input);
-    if (!user) {
+  @Mutation(() => AuthResponse)
+  async register(
+    @Args('input') input: SignUpInput,
+    @Context('res') res: Response,
+    @UserAgent('userAgent') agent: string,
+  ) {
+    const tokens = await this.authService.register(input, agent);
+
+    if (!tokens) {
       throw new Error(
         `Failed to register user with data ${JSON.stringify(input)}`,
       );
     }
-    return user;
+
+    this.setRefreshTokenToCookies(tokens, res);
+
+    return { accessToken: tokens.accessToken };
   }
 
   @Public()
-  @Mutation(() => String)
+  @Mutation(() => AuthResponse)
   async login(
     @Args('input') input: SignInInput,
     @Context('res') res: Response,
@@ -52,33 +50,35 @@ export class AuthResolver {
 
     if (!tokens) {
       throw new BadRequestException(
-        `Не получается войти с данными ${JSON.stringify(input)}`,
+        `Can't login with data: ${JSON.stringify(input)}`,
       );
     }
 
     this.setRefreshTokenToCookies(tokens, res);
+
+    return { accessToken: tokens.accessToken };
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => LogoutResponse)
   async logout(
     @Cookie('refreshToken') refreshToken: string,
     @Context('res') res: Response,
-  ): Promise<boolean> {
+  ) {
     if (!refreshToken) {
-      res.sendStatus(HttpStatus.OK);
-      return;
+      throw new BadRequestException('User is not auth');
     }
+
     await this.authService.deleteRefreshToken(refreshToken);
-    res.cookie(REFRESH_TOKEN, '', {
-      httpOnly: true,
-      secure: true,
-      expires: new Date(),
-    });
-    res.sendStatus(HttpStatus.OK);
+
+    this.clearCookie(res);
+
+    return {
+      success: true,
+    };
   }
 
   @Public()
-  @Mutation(() => String)
+  @Mutation(() => AuthResponse)
   async refreshTokens(
     @Cookie('refreshToken') refreshToken: string,
     @Context('res') res: Response,
@@ -88,6 +88,8 @@ export class AuthResolver {
       throw new UnauthorizedException();
     }
 
+    this.clearCookie(res);
+
     const tokens = await this.authService.refreshTokens(refreshToken, agent);
 
     if (!tokens) {
@@ -95,12 +97,15 @@ export class AuthResolver {
     }
 
     this.setRefreshTokenToCookies(tokens, res);
+
+    return { accessToken: tokens.accessToken };
   }
 
   private setRefreshTokenToCookies(tokens: Tokens, res: Response): void {
     if (!tokens) {
       throw new UnauthorizedException();
     }
+
     res.cookie(REFRESH_TOKEN, tokens.refreshToken.token, {
       httpOnly: true,
       sameSite: 'lax',
@@ -109,74 +114,13 @@ export class AuthResolver {
         this.configService.get('NODE_ENV', 'development') === 'production',
       path: '/',
     });
-    res.status(HttpStatus.CREATED).json({ accessToken: tokens.accessToken });
   }
 
-  @UseGuards(GoogleGuard)
-  @Query(() => String)
-  async googleAuth() {
-    return '';
-  }
-
-  @UseGuards(GoogleGuard)
-  @Query(() => String)
-  async googleAuthCallback(@Context('req') req: Request) {
-    const token = req.user['accessToken'];
-    return `http://localhost:3000/api/auth/success-google?token=${token}`;
-  }
-
-  @Query(() => String)
-  async successGoogle(
-    @Args('token') token: string,
-    @UserAgent('userAgent') agent: string,
-    @Context('res') res: Response,
-  ) {
-    return this.httpService
-      .get(
-        `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`,
-      )
-      .pipe(
-        mergeMap(({ data: { email } }) =>
-          this.authService.providerAuth(email, agent, Provider.GOOGLE),
-        ),
-        map((data) => this.setRefreshTokenToCookies(data, res)),
-        handleTimeoutAndErrors(),
-      );
-  }
-
-  @UseGuards(YandexGuard)
-  @Query(() => String)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  yandexAuth() {
-    return '';
-  }
-
-  @UseGuards(YandexGuard)
-  @Query(() => String)
-  yandexAuthCallback(
-    @Context('req') req: Request,
-    @Context('res') res: Response,
-  ) {
-    const token = req.user['accessToken'];
-    return res.redirect(
-      `http://localhost:3000/api/auth/success-yandex?token=${token}`,
-    );
-  }
-
-  @Query(() => String)
-  successYandex(
-    @Args('token') token: string,
-    @UserAgent() agent: string,
-    @Context('res') res: Response,
-  ) {
-    return this.httpService
-      .get(`https://login.yandex.ru/info?format=json&oauth_token=${token}`)
-      .pipe(
-        mergeMap(({ data: { default_email } }) =>
-          this.authService.providerAuth(default_email, agent, Provider.YANDEX),
-        ),
-        map((data) => this.setRefreshTokenToCookies(data, res)),
-        handleTimeoutAndErrors(),
-      );
+  private clearCookie(res: Response) {
+    res.cookie(REFRESH_TOKEN, '', {
+      httpOnly: true,
+      secure: true,
+      expires: new Date(),
+    });
   }
 }

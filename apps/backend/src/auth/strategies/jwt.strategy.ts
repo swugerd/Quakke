@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         this.logger.error(err);
         return null;
       });
-    if (!user || user.isBlocked) {
+    if (!user) {
       throw new UnauthorizedException();
     }
     return payload;

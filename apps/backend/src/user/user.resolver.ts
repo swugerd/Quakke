@@ -1,13 +1,14 @@
-import { Args, Int, Query, Resolver } from '@nestjs/graphql';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from 'src/auth/decorators';
+import { JwtPayload } from 'src/auth/interfaces';
 import { User } from './entities/user.entity';
+import { ProfileResponse } from './responses/profile-response';
 import { UserService } from './user.service';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Public()
   @Query(() => [User])
   getUsers() {
     return this.userService.getAll();
@@ -18,18 +19,13 @@ export class UserResolver {
     return this.userService.getById(id);
   }
 
-  // @Mutation(() => User)
-  // createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-  //   return this.userService.create(createUserInput);
-  // }
+  @Query(() => ProfileResponse)
+  getMe(@CurrentUser() user: JwtPayload) {
+    return user;
+  }
 
-  // @Mutation(() => User)
-  // updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-  //   return this.userService.update(updateUserInput.id, updateUserInput);
-  // }
-
-  // @Mutation(() => User)
-  // removeUser(@Args('id', { type: () => Int }) id: number) {
-  //   return this.userService.remove(id, );
-  // }
+  @Mutation(() => User)
+  removeUser(@Args('id', { type: () => Int }) id: number) {
+    return this.userService.remove(id);
+  }
 }

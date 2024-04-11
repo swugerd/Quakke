@@ -1,5 +1,3 @@
-import { HttpModule } from '@nestjs/axios';
-import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -12,12 +10,6 @@ import { STRATEGIES } from './strategies';
 
 @Module({
   providers: [AuthResolver, AuthService, ...STRATEGIES, ...GUARDS],
-  imports: [
-    PassportModule,
-    JwtModule.registerAsync(options()),
-    UserModule,
-    HttpModule,
-    CacheModule.register(),
-  ],
+  imports: [PassportModule, JwtModule.registerAsync(options()), UserModule],
 })
 export class AuthModule {}

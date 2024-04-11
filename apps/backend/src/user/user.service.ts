@@ -1,24 +1,15 @@
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { genSaltSync, hashSync } from 'bcrypt';
-import { Cache } from 'cache-manager';
-import { JwtPayload } from 'src/auth/interfaces';
-import { convertToSecondsUtil } from 'src/auth/utils';
+import { genSaltSync, hash } from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async save(user: Partial<User>) {
     const hashedPassword = user?.password
-      ? this.hashPassword(user.password)
+      ? await this.hashPassword(user.password)
       : null;
     const savedUser = await this.prismaService.user.upsert({
       where: {
@@ -26,19 +17,14 @@ export class UserService {
       },
       update: {
         password: hashedPassword ?? undefined,
-        provider: user?.provider ?? undefined,
-        isBlocked: user?.isBlocked ?? undefined,
       },
       create: {
         email: user.email,
         password: hashedPassword,
-        provider: user.provider,
         login: user.login,
         name: user.name,
       },
     });
-    await this.cacheManager.set(String(savedUser.id), savedUser);
-    await this.cacheManager.set(savedUser.email, savedUser);
     return savedUser;
   }
 
@@ -49,8 +35,11 @@ export class UserService {
   }
 
   async getById(id: number) {
-    const user = await this.cacheManager.get<User>(String(id));
-
+    const user = this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
     if (!user) {
       const user = await this.prismaService.user.findFirst({
         where: {
@@ -60,11 +49,6 @@ export class UserService {
       if (!user) {
         return null;
       }
-      await this.cacheManager.set(
-        String(id),
-        user,
-        convertToSecondsUtil(this.configService.get('JWT_ACCESS_EXP')),
-      );
       return user;
     }
     return user;
@@ -82,21 +66,25 @@ export class UserService {
     return user;
   }
 
-  async remove(id: number, user: JwtPayload) {
-    if (user.id !== id) {
-      throw new ForbiddenException();
+  async remove(id: number) {
+    const tokensExists = await this.prismaService.refreshToken.findFirst({
+      where: {
+        userId: id,
+      },
+    });
+
+    if (tokensExists) {
+      await this.prismaService.refreshToken.deleteMany({
+        where: { userId: id },
+      });
     }
-    await Promise.all([
-      this.cacheManager.del(String(id)),
-      this.cacheManager.del(user.email),
-    ]);
+
     return this.prismaService.user.delete({
       where: { id },
-      select: { id: true },
     });
   }
 
-  private hashPassword(password: string) {
-    return hashSync(password, genSaltSync(10));
+  private async hashPassword(password: string) {
+    return hash(password, genSaltSync(10));
   }
 }

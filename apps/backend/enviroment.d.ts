@@ -10,10 +10,6 @@ declare global {
       JWT_REFRESH_SECRET: string;
       JWT_ACCESS_EXP: string;
       JWT_REFRESH_EXP: string;
-      GOOGLE_CLIENT_ID: string;
-      GOOGLE_CLIENT_SECRET: string;
-      YANDEX_APP_ID: string;
-      YANDEX_APP_SECRET: string;
     }
   }
 }

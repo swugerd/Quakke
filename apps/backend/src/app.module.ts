@@ -17,6 +17,7 @@ import { UserModule } from './user/user.module';
       playground: process.env.NODE_ENV === 'development' ? true : false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req, res }) => ({ req, res }),
+      useGlobalPrefix: true,
     }),
     UserModule,
     AuthModule,

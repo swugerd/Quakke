@@ -22,9 +22,4 @@ export class SignUpInput {
   @IsString()
   @Field()
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Field()
-  passwordRepeat: string;
 }
