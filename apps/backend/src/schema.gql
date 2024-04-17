@@ -33,18 +33,53 @@ type LogoutResponse {
   success: Boolean!
 }
 
+type Role {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: Roles!
+}
+
+enum Roles {
+  USER
+  MODERATOR
+  ADMIN
+}
+
 type Query {
   getUsers: [User!]!
   getUser(id: Int!): User!
   getMe: ProfileResponse!
+  getRoles: [Role!]!
+  getRole(id: Int!): Role!
 }
 
 type Mutation {
   removeUser(id: Int!): User!
+  createUser(input: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
   register(input: SignUpInput!): AuthResponse!
   login(input: SignInInput!): AuthResponse!
   logout: LogoutResponse!
   refreshTokens: AuthResponse!
+  createRole(createRoleInput: CreateRoleInput!): Role!
+  updateRole(updateRoleInput: UpdateRoleInput!): Role!
+  removeRole(id: Int!): Role!
+}
+
+input CreateUserInput {
+  email: String!
+  login: String!
+  name: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  email: String
+  login: String
+  name: String
+  password: String
+  id: Int!
 }
 
 input SignUpInput {
@@ -57,4 +92,13 @@ input SignUpInput {
 input SignInInput {
   credentials: String!
   password: String!
+}
+
+input CreateRoleInput {
+  name: Roles!
+}
+
+input UpdateRoleInput {
+  name: Roles
+  id: Int!
 }

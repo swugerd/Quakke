@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { Roles, User } from '@prisma/client';
 import { compareSync } from 'bcrypt';
 import { add } from 'date-fns';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -57,7 +57,7 @@ export class AuthService {
       );
     }
 
-    const user = await this.userService.save(dto).catch((err) => {
+    const user = await this.userService.create(dto).catch((err) => {
       this.logger.error(err);
       return null;
     });
@@ -96,7 +96,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({
       id: user.id,
       email: user.email,
-      role: roleExists ? roleExists.name : 'USER',
+      role: roleExists ? roleExists.name : Roles.USER,
     });
 
     const refreshToken = await this.getRefreshToken(user, agent);
