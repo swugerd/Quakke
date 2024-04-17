@@ -53,6 +53,13 @@ type Category {
   name: String!
 }
 
+type SubCategory {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+}
+
 type Query {
   getUsers: [User!]!
   getUser(id: Int!): User!
@@ -61,6 +68,8 @@ type Query {
   getRole(id: Int!): Role!
   getCategories: [Category!]!
   getCategory(id: Int!): Category!
+  getSubCategories: [SubCategory!]!
+  getSubCategory(id: Int!): SubCategory!
 }
 
 type Mutation {
@@ -77,6 +86,9 @@ type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
   removeCategory(id: Int!): Category!
+  createSubCategory(createSubCategoryInput: CreateSubCategoryInput!): SubCategory!
+  updateSubCategory(updateSubCategoryInput: UpdateSubCategoryInput!): SubCategory!
+  removeSubCategory(id: Int!): SubCategory!
 }
 
 input CreateUserInput {
@@ -121,5 +133,16 @@ input CreateCategoryInput {
 
 input UpdateCategoryInput {
   name: String
+  id: Int!
+}
+
+input CreateSubCategoryInput {
+  name: String!
+  categoryId: Int!
+}
+
+input UpdateSubCategoryInput {
+  name: String
+  categoryId: Int
   id: Int!
 }

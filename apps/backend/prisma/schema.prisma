@@ -79,7 +79,7 @@ model SubCategory {
   name String @unique
 
   category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int      @unique @map("category_id")
+  categoryId Int      @map("category_id")
 
   @@map("sub_categories")
 }
