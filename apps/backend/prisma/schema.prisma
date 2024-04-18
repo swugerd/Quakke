@@ -118,8 +118,8 @@ model Video {
   playlist   Playlist? @relation(fields: [playlistId], references: [id])
   playlistId Int?      @map("playlist_id")
 
-  videoFile   VideoFile? @relation(fields: [videoFileId], references: [id])
-  videoFileId Int?       @unique @map("video_id")
+  videoFile   VideoFile @relation(fields: [videoFileId], references: [id])
+  videoFileId Int       @unique @map("video_id")
 
   videoPreview   VideoPreview? @relation(fields: [videoPreviewId], references: [id])
   videoPreviewId Int?          @unique @map("preview_id")

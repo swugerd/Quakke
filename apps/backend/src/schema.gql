@@ -38,19 +38,6 @@ type LogoutResponse {
   success: Boolean!
 }
 
-type Role {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime
-  name: Roles!
-}
-
-enum Roles {
-  USER
-  MODERATOR
-  ADMIN
-}
-
 type SubCategory {
   id: Int!
   createdAt: DateTime!
@@ -66,12 +53,36 @@ type Category {
   subCategories: [SubCategory!]!
 }
 
+type Role {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: Roles!
+}
+
+enum Roles {
+  USER
+  MODERATOR
+  ADMIN
+}
+
 type Tag {
   id: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
   name: String!
   videoId: Int!
+}
+
+type Video {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  description: String
+  isBanned: Boolean!
+  userId: Int!
+  author: User!
 }
 
 type Query {
@@ -87,6 +98,8 @@ type Query {
   getSubCategory(id: Int!): SubCategory!
   getTags: [Tag!]!
   getTag(id: Int!): Tag!
+  getVideos: [Video!]!
+  getVideo(id: Int!): Video!
 }
 
 input QuerySearchInput {
@@ -121,6 +134,9 @@ type Mutation {
   createTag(createTagInput: CreateTagInput!): Tag!
   updateTag(updateTagInput: UpdateTagInput!): Tag!
   removeTag(id: Int!): Tag!
+  createVideo(createVideoInput: CreateVideoInput!): Video!
+  updateVideo(updateVideoInput: UpdateVideoInput!): Video!
+  removeVideo(id: Int!): Video!
 }
 
 input CreateUserInput {
@@ -187,5 +203,21 @@ input CreateTagInput {
 input UpdateTagInput {
   name: String
   videoId: Int
+  id: Int!
+}
+
+input CreateVideoInput {
+  name: String!
+  description: String
+  video: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input UpdateVideoInput {
+  name: String
+  description: String
+  video: Upload
   id: Int!
 }

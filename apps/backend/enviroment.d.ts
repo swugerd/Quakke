@@ -10,6 +10,7 @@ declare global {
       JWT_REFRESH_SECRET: string;
       JWT_ACCESS_EXP: string;
       JWT_REFRESH_EXP: string;
+      STATIC_PATH: string;
     }
   }
 }
