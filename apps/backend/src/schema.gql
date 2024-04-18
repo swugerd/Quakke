@@ -66,6 +66,14 @@ type Category {
   subCategories: [SubCategory!]!
 }
 
+type Tag {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  videoId: Int!
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -77,6 +85,8 @@ type Query {
   getCategory(id: Int!): Category!
   getSubCategories: [SubCategory!]!
   getSubCategory(id: Int!): SubCategory!
+  getTags: [Tag!]!
+  getTag(id: Int!): Tag!
 }
 
 input QuerySearchInput {
@@ -108,6 +118,9 @@ type Mutation {
   createSubCategory(createSubCategoryInput: CreateSubCategoryInput!): SubCategory!
   updateSubCategory(updateSubCategoryInput: UpdateSubCategoryInput!): SubCategory!
   removeSubCategory(id: Int!): SubCategory!
+  createTag(createTagInput: CreateTagInput!): Tag!
+  updateTag(updateTagInput: UpdateTagInput!): Tag!
+  removeTag(id: Int!): Tag!
 }
 
 input CreateUserInput {
@@ -163,5 +176,16 @@ input CreateSubCategoryInput {
 input UpdateSubCategoryInput {
   name: String
   categoryId: Int
+  id: Int!
+}
+
+input CreateTagInput {
+  name: String!
+  videoId: Int!
+}
+
+input UpdateTagInput {
+  name: String
+  videoId: Int
   id: Int!
 }

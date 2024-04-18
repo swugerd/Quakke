@@ -11,6 +11,8 @@ import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { CategoriesModule } from './categories/categories.module';
 import { SubCategoriesModule } from './sub-categories/sub-categories.module';
+import { TagModule } from './tag/tag.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { SubCategoriesModule } from './sub-categories/sub-categories.module';
     RoleModule,
     CategoriesModule,
     SubCategoriesModule,
+    TagModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
