@@ -1,8 +1,10 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { JwtPayload } from 'src/auth/interfaces';
 import { CurrentUser } from '../../src/auth/decorators';
-import { JwtPayload } from '../../src/auth/interfaces';
 import { CreateUserInput } from './dto/create-user.input';
+import { QuerySearchInput } from './dto/query-search.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { UserPagination } from './entities/user-pagination.entity';
 import { User } from './entities/user.entity';
 import { ProfileResponse } from './responses/profile-response';
 import { UserService } from './user.service';
@@ -14,6 +16,11 @@ export class UserResolver {
   @Query(() => [User])
   getUsers() {
     return this.userService.getAll();
+  }
+
+  @Query(() => UserPagination)
+  getUsersWithQuery(@Args('query') query: QuerySearchInput) {
+    return this.userService.getAllWithQuery(query);
   }
 
   @Query(() => User)

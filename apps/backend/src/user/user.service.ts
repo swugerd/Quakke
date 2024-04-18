@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { genSaltSync, hash } from 'bcrypt';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { CreateUserInput } from './dto/create-user.input';
+import { QuerySearchInput } from './dto/query-search.input';
 import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
@@ -38,6 +40,50 @@ export class UserService {
     return users;
   }
 
+  async getAllWithQuery(query: QuerySearchInput) {
+    const findManyOptions: Prisma.UserFindManyArgs = {
+      where: {},
+      skip: query.offset,
+      take: query.limit,
+    };
+
+    if (query.isBanned) {
+      findManyOptions.where.isBanned = true;
+    }
+
+    if (query.isPartner) {
+      findManyOptions.where.isPartner = true;
+    }
+
+    if (query.orderBy && query.orderDirection) {
+      findManyOptions.orderBy = [
+        Object.fromEntries([[query.orderBy, query.orderDirection]]),
+      ];
+    }
+
+    const searchParams = PrismaService.getPrismaSearchingProperties({
+      name: query.name,
+      login: query.login,
+      email: query.email,
+    });
+
+    if (searchParams.length) {
+      findManyOptions.where.OR = [...searchParams];
+    }
+
+    const [data, count] = await this.prismaService.$transaction([
+      this.prismaService.user.findMany({
+        ...findManyOptions,
+      }),
+      this.prismaService.user.count({ where: findManyOptions.where }),
+    ]);
+
+    return {
+      data,
+      count,
+    };
+  }
+
   async getById(id: number) {
     const user = this.prismaService.user.findUnique({
       where: {
@@ -45,21 +91,13 @@ export class UserService {
       },
     });
     if (!user) {
-      const user = await this.prismaService.user.findFirst({
-        where: {
-          id,
-        },
-      });
-      if (!user) {
-        return null;
-      }
-      return user;
+      return null;
     }
     return user;
   }
 
   async getByEmail(email: string) {
-    const user = await this.prismaService.user.findFirst({
+    const user = await this.prismaService.user.findUnique({
       where: {
         email,
       },

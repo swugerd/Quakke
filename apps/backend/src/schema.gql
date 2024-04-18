@@ -19,6 +19,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type UserPagination {
+  data: [User!]!
+  count: Int!
+}
+
 type ProfileResponse {
   id: String!
   email: String!
@@ -46,13 +51,6 @@ enum Roles {
   ADMIN
 }
 
-type Category {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime
-  name: String!
-}
-
 type SubCategory {
   id: Int!
   createdAt: DateTime!
@@ -60,8 +58,17 @@ type SubCategory {
   name: String!
 }
 
+type Category {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  subCategories: [SubCategory!]!
+}
+
 type Query {
   getUsers: [User!]!
+  getUsersWithQuery(query: QuerySearchInput!): UserPagination!
   getUser(id: Int!): User!
   getMe: ProfileResponse!
   getRoles: [Role!]!
@@ -70,6 +77,18 @@ type Query {
   getCategory(id: Int!): Category!
   getSubCategories: [SubCategory!]!
   getSubCategory(id: Int!): SubCategory!
+}
+
+input QuerySearchInput {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: String = "asc"
+  email: String
+  login: String
+  name: String
+  isBanned: Boolean
+  isPartner: Boolean
 }
 
 type Mutation {

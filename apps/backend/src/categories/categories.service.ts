@@ -16,7 +16,11 @@ export class CategoriesService {
   }
 
   async findAll() {
-    const categories = await this.prismaService.category.findMany();
+    const categories = await this.prismaService.category.findMany({
+      include: {
+        subCategories: true,
+      },
+    });
 
     return categories;
   }
@@ -25,6 +29,9 @@ export class CategoriesService {
     const category = await this.prismaService.category.findUnique({
       where: {
         id,
+      },
+      include: {
+        subCategories: true,
       },
     });
 
@@ -37,6 +44,9 @@ export class CategoriesService {
         id,
       },
       data: updateCategoryInput,
+      include: {
+        subCategories: true,
+      },
     });
 
     return category;
@@ -46,6 +56,9 @@ export class CategoriesService {
     const category = await this.prismaService.category.delete({
       where: {
         id,
+      },
+      include: {
+        subCategories: true,
       },
     });
 
