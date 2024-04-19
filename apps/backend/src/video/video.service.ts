@@ -3,7 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { uploadFileStream } from 'src/utils/upload';
+import { removeFile } from 'src/utils/remove';
+import { uploadFile } from 'src/utils/upload';
 import * as uuid from 'uuid';
 import { CreateVideoInput } from './dto/create-video.input';
 import { UpdateVideoInput } from './dto/update-video.input';
@@ -25,7 +26,7 @@ export class VideoService {
     const fileName = `${uuid.v4()}${videoFile.filename}`;
     const uploadDir = join(this.configService.get('STATIC_PATH'), 'videos');
 
-    const fileSize = await uploadFileStream(
+    const fileSize = await uploadFile(
       videoFile.createReadStream,
       uploadDir,
       fileName,
@@ -84,12 +85,33 @@ export class VideoService {
   }
 
   async remove(id: number) {
-    const video = await this.prismaService.video.delete({
+    const video = await this.prismaService.video.findUnique({
       where: {
         id,
       },
+      include: {
+        videoFile: true,
+      },
     });
 
-    return video;
+    await removeFile(
+      join(this.configService.get('STATIC_PATH'), 'videos'),
+      video.videoFile.url,
+    );
+
+    const [deletedVideo] = await this.prismaService.$transaction([
+      this.prismaService.video.delete({
+        where: {
+          id,
+        },
+      }),
+      this.prismaService.videoFile.delete({
+        where: {
+          id: video.videoFileId,
+        },
+      }),
+    ]);
+
+    return deletedVideo;
   }
 }

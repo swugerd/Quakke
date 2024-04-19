@@ -5,13 +5,12 @@ import { join } from 'path';
 import { finished } from 'stream/promises';
 import { promisify } from 'util';
 
-export const uploadFileStream = async (
+export const uploadFile = async (
   readStream: FileUpload['createReadStream'],
   uploadDir: string,
   filename: string,
 ) => {
-  const fileName = filename;
-  const filePath = join(uploadDir, fileName);
+  const filePath = join(uploadDir, filename);
 
   mkdirSync(uploadDir, { recursive: true });
 
