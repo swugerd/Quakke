@@ -103,6 +103,7 @@ model Video {
   name        String
   description String?
   isBanned    Boolean @default(false)
+  privacy     Privacy @default(OPEN)
 
   likes      Like[]
   dislikes   Dislike[]

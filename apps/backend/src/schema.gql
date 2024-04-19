@@ -74,6 +74,15 @@ type Tag {
   videoId: Int!
 }
 
+type FileEntity {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  url: String!
+  size: Int!
+  extension: String!
+}
+
 type Video {
   id: Int!
   createdAt: DateTime!
@@ -135,6 +144,8 @@ type Mutation {
   updateTag(updateTagInput: UpdateTagInput!): Tag!
   removeTag(id: Int!): Tag!
   createVideo(createVideoInput: CreateVideoInput!): Video!
+  uploadVideo(file: FileInput!): FileEntity!
+  dropVideo(id: Int!): FileEntity!
   updateVideo(updateVideoInput: UpdateVideoInput!): Video!
   removeVideo(id: Int!): Video!
 }
@@ -209,7 +220,11 @@ input UpdateTagInput {
 input CreateVideoInput {
   name: String!
   description: String
-  video: Upload!
+  videoId: Int!
+}
+
+input FileInput {
+  file: Upload!
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -218,6 +233,7 @@ scalar Upload
 input UpdateVideoInput {
   name: String
   description: String
-  video: Upload
+  videoId: Int
   id: Int!
+  preview: Upload
 }

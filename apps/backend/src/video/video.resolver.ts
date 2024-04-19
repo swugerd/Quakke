@@ -1,6 +1,8 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
+import { FileInput } from 'src/utils/dto/file.input';
+import { FileEntity } from 'src/utils/entities/file.entity';
 import { CreateVideoInput } from './dto/create-video.input';
 import { UpdateVideoInput } from './dto/update-video.input';
 import { Video } from './entities/video.entity';
@@ -16,6 +18,16 @@ export class VideoResolver {
     @CurrentUser() user: JwtPayload,
   ) {
     return this.videoService.create(createVideoInput, user);
+  }
+
+  @Mutation(() => FileEntity)
+  uploadVideo(@Args('file') file: FileInput) {
+    return this.videoService.uploadVideo(file);
+  }
+
+  @Mutation(() => FileEntity)
+  dropVideo(@Args('id', { type: () => Int }) id: number) {
+    return this.videoService.dropVideo(id);
   }
 
   @Query(() => [Video])

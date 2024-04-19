@@ -26,7 +26,7 @@ export class AuthService {
   ) {}
 
   async refreshTokens(refreshToken: string, agent: string) {
-    const token = await this.prismaService.refreshToken.delete({
+    const token = await this.prismaService.refreshToken.findUnique({
       where: { token: refreshToken },
     });
 

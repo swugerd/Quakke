@@ -1,7 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { FileUpload, GraphQLUpload } from 'graphql-upload';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateVideoInput {
@@ -11,6 +8,6 @@ export class CreateVideoInput {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => GraphQLUpload)
-  video: Promise<FileUpload>;
+  @Field(() => Int)
+  videoId: number;
 }

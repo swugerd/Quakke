@@ -1,8 +1,12 @@
+import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
 import { CreateVideoInput } from './create-video.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateVideoInput extends PartialType(CreateVideoInput) {
   @Field(() => Int)
   id: number;
+
+  @Field(() => GraphQLUpload, { nullable: true })
+  preview: Promise<FileUpload>;
 }
