@@ -12,7 +12,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({ credentials: true, origin: true });
   app.use(graphqlUploadExpress({ maxFileSize: 1000000000, maxFiles: 5 }));
-
   await app.listen(process.env.SERVER_PORT);
 }
 

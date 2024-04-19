@@ -12,5 +12,5 @@ export class CreateVideoInput {
   description?: string;
 
   @Field(() => GraphQLUpload)
-  video: FileUpload;
+  video: Promise<FileUpload>;
 }

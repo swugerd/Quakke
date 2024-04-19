@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { JwtPayload } from 'src/auth/interfaces';
@@ -17,15 +17,24 @@ export class VideoService {
 
   async create(createVideoInput: CreateVideoInput, user: JwtPayload) {
     const videoFile = await createVideoInput.video;
+
+    if (videoFile.mimetype !== 'video/mp4') {
+      throw new BadRequestException('File needs to be a video');
+    }
+
     const fileName = `${uuid.v4()}${videoFile.filename}`;
     const uploadDir = join(this.configService.get('STATIC_PATH'), 'videos');
 
-    await uploadFileStream(videoFile.createReadStream, uploadDir, fileName);
+    const fileSize = await uploadFileStream(
+      videoFile.createReadStream,
+      uploadDir,
+      fileName,
+    );
 
     const uploadedVideo = await this.prismaService.videoFile.create({
       data: {
         extension: videoFile.mimetype,
-        size: 123,
+        size: fileSize,
         url: fileName,
       },
     });

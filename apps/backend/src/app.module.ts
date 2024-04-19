@@ -26,12 +26,8 @@ import { VideoModule } from './video/video.module';
       useGlobalPrefix: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'),
+      rootPath: join(process.cwd(), process.env.STATIC_PATH),
       serveRoot: `/${process.env.STATIC_PATH}`,
-      serveStaticOptions: {
-        extensions: ['jpg', 'jpeg', 'png', 'mp4'],
-        index: false,
-      },
     }),
     UserModule,
     AuthModule,

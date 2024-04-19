@@ -1,13 +1,15 @@
 import { NotFoundException } from '@nestjs/common';
-import { createWriteStream, mkdirSync } from 'fs';
+import { createWriteStream, mkdirSync, stat } from 'fs';
+import { FileUpload } from 'graphql-upload';
 import { join } from 'path';
 import { finished } from 'stream/promises';
+import { promisify } from 'util';
 
 export const uploadFileStream = async (
-  readStream,
-  uploadDir,
-  filename,
-): Promise<string> => {
+  readStream: FileUpload['createReadStream'],
+  uploadDir: string,
+  filename: string,
+) => {
   const fileName = filename;
   const filePath = join(uploadDir, fileName);
 
@@ -23,5 +25,7 @@ export const uploadFileStream = async (
     throw new NotFoundException(err.message);
   });
 
-  return filePath;
+  const { size } = await promisify(stat)(filePath);
+
+  return size;
 };
