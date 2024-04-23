@@ -1,4 +1,9 @@
 export const folders = {
-  VIDEO: 'videos',
-  PHOTO: 'photos',
+  VIDEOS: 'videos',
+  IMAGES: 'images',
+};
+
+export const allowedFileTypes = {
+  VIDEOS: ['video/mp4'],
+  IMAGES: ['image/png', 'image/jpeg'],
 };

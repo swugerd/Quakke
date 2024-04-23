@@ -1,4 +1,5 @@
 import { FieldMiddleware, MiddlewareContext, NextFn } from '@nestjs/graphql';
+import { allowedFileTypes, folders } from 'src/constants';
 
 export const pathFinderMiddleware: FieldMiddleware = async (
   ctx: MiddlewareContext,
@@ -8,6 +9,12 @@ export const pathFinderMiddleware: FieldMiddleware = async (
 
   const hostname = process.env.SERVER_HOST;
   const port = process.env.SERVER_PORT;
+  const staticPath = process.env.STATIC_PATH;
+  const contentFolderName = allowedFileTypes.IMAGES.includes(
+    ctx.source.extension,
+  )
+    ? folders.IMAGES
+    : folders.VIDEOS;
 
-  return `${hostname}:${port}/${filePath}`;
+  return `${hostname}:${port}/${staticPath}/${contentFolderName}/${filePath}`;
 };

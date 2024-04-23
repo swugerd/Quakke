@@ -93,6 +93,7 @@ type Video {
   userId: Int!
   author: User!
   videoFile: FileEntity!
+  videoPreview: FileEntity
   category: Category
   subCategory: SubCategory
 }
@@ -149,6 +150,8 @@ type Mutation {
   createVideo(createVideoInput: CreateVideoInput!): Video!
   uploadVideo(file: FileInput!): FileEntity!
   dropVideo(id: Int!): FileEntity!
+  uploadPreview(file: FileInput!): FileEntity!
+  dropPreview(id: Int!): FileEntity!
   updateVideo(updateVideoInput: UpdateVideoInput!): Video!
   removeVideo(id: Int!): Video!
 }
@@ -223,7 +226,8 @@ input UpdateTagInput {
 input CreateVideoInput {
   name: String!
   description: String
-  videoId: Int!
+  videoFileId: Int!
+  videoPreviewId: Int
   categoryId: Int
   subCategoryId: Int
 }
@@ -238,7 +242,8 @@ scalar Upload
 input UpdateVideoInput {
   name: String
   description: String
-  videoId: Int
+  videoFileId: Int
+  videoPreviewId: Int
   categoryId: Int
   subCategoryId: Int
   id: Int!

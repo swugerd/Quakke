@@ -2,9 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { JwtPayload } from 'src/auth/interfaces';
-import { folders } from 'src/constants';
+import { allowedFileTypes, folders } from 'src/constants';
 import config from 'src/constants/config';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FileTypes } from 'src/types';
 import { FileInput } from 'src/utils/dto/file.input';
 import { exclude } from 'src/utils/exclude';
 import { removeFile } from 'src/utils/remove';
@@ -12,6 +13,16 @@ import { uploadFile } from 'src/utils/upload';
 import * as uuid from 'uuid';
 import { CreateVideoInput } from './dto/create-video.input';
 import { UpdateVideoInput } from './dto/update-video.input';
+
+const includeObject = {
+  videoFile: true,
+  videoPreview: true,
+  author: {
+    select: exclude('User', ['password']),
+  },
+  category: true,
+  subCategory: true,
+};
 
 @Injectable()
 export class VideoService {
@@ -23,27 +34,23 @@ export class VideoService {
   async create(createVideoInput: CreateVideoInput, user: JwtPayload) {
     const video = await this.prismaService.video.create({
       data: {
-        name: createVideoInput.name,
-        description: createVideoInput.description,
-        author: { connect: { id: user.id } },
-        videoFile: { connect: { id: createVideoInput.videoId } },
-        category: { connect: { id: createVideoInput.categoryId } },
+        ...createVideoInput,
+        userId: user.id,
       },
-      include: {
-        videoFile: true,
-        author: true,
-        category: true,
-        subCategory: true,
-      },
+      include: includeObject,
     });
 
     return video;
   }
 
-  async uploadVideo(file: FileInput) {
+  async uploadFile(file: FileInput, type: FileTypes) {
     const uploadedFile = await file.file;
-    if (uploadedFile.mimetype !== 'video/mp4') {
-      throw new BadRequestException('File needs to be a video');
+    if (!allowedFileTypes[type].includes(uploadedFile.mimetype)) {
+      const errorMessage =
+        type === 'VIDEOS'
+          ? 'File needs to be a video'
+          : 'File needs to be an image';
+      throw new BadRequestException(errorMessage);
     }
 
     const fileExtenstion = uploadedFile.filename
@@ -52,7 +59,7 @@ export class VideoService {
     const fileName = `${uuid.v4()}${fileExtenstion}`;
     const uploadDir = join(
       this.configService.get(config.STATIC_PATH),
-      folders.VIDEO,
+      folders[type],
     );
 
     const fileSize = await uploadFile(
@@ -61,48 +68,64 @@ export class VideoService {
       fileName,
     );
 
-    const uploadedVideo = await this.prismaService.videoFile.create({
-      data: {
-        extension: uploadedFile.mimetype,
-        size: fileSize,
-        url: fileName,
-      },
-    });
+    const savedFile =
+      type === 'VIDEOS'
+        ? await this.prismaService.videoFile.create({
+            data: {
+              extension: uploadedFile.mimetype,
+              size: fileSize,
+              url: fileName,
+            },
+          })
+        : await this.prismaService.videoPreview.create({
+            data: {
+              extension: uploadedFile.mimetype,
+              size: fileSize,
+              url: fileName,
+            },
+          });
 
-    return uploadedVideo;
+    return savedFile;
   }
 
-  async dropVideo(id: number) {
-    const videoFile = await this.prismaService.videoFile.findUnique({
-      where: {
-        id,
-      },
-    });
+  async deleteFile(id: number, type: FileTypes) {
+    const file =
+      type === 'VIDEOS'
+        ? await this.prismaService.videoFile.findUnique({
+            where: {
+              id,
+            },
+          })
+        : await this.prismaService.videoPreview.findUnique({
+            where: {
+              id,
+            },
+          });
 
     await removeFile(
-      join(this.configService.get(config.STATIC_PATH), folders.VIDEO),
-      videoFile.url,
+      join(this.configService.get(config.STATIC_PATH), folders[type]),
+      file.url,
     );
 
-    const deletedVideoFile = this.prismaService.videoFile.delete({
-      where: {
-        id: videoFile.id,
-      },
-    });
+    const deletedFile =
+      type === 'VIDEOS'
+        ? await this.prismaService.videoFile.delete({
+            where: {
+              id: file.id,
+            },
+          })
+        : await this.prismaService.videoPreview.delete({
+            where: {
+              id: file.id,
+            },
+          });
 
-    return deletedVideoFile;
+    return deletedFile;
   }
 
   async findAll() {
     const videos = await this.prismaService.video.findMany({
-      include: {
-        videoFile: true,
-        author: {
-          select: exclude('User', ['password']),
-        },
-        category: true,
-        subCategory: true,
-      },
+      include: includeObject,
     });
 
     return videos;
@@ -113,14 +136,7 @@ export class VideoService {
       where: {
         id,
       },
-      include: {
-        videoFile: true,
-        author: {
-          select: exclude('User', ['password']),
-        },
-        category: true,
-        subCategory: true,
-      },
+      include: includeObject,
     });
 
     return video;
@@ -132,14 +148,7 @@ export class VideoService {
         id,
       },
       data: updateVideoInput,
-      include: {
-        videoFile: true,
-        author: {
-          select: exclude('User', ['password']),
-        },
-        category: true,
-        subCategory: true,
-      },
+      include: includeObject,
     });
 
     return video;
@@ -150,22 +159,22 @@ export class VideoService {
       where: {
         id,
       },
-      include: {
-        videoFile: true,
-        author: {
-          select: exclude('User', ['password']),
-        },
-        category: true,
-        subCategory: true,
-      },
+      include: includeObject,
     });
 
     await removeFile(
-      join(this.configService.get(config.STATIC_PATH), folders.VIDEO),
+      join(this.configService.get(config.STATIC_PATH), folders.VIDEOS),
       video.videoFile.url,
     );
 
-    const [deletedVideo] = await this.prismaService.$transaction([
+    if (video.videoPreview) {
+      await removeFile(
+        join(this.configService.get(config.STATIC_PATH), folders.IMAGES),
+        video.videoPreview.url,
+      );
+    }
+
+    const dbOperations = [
       this.prismaService.video.delete({
         where: {
           id,
@@ -176,7 +185,19 @@ export class VideoService {
           id: video.videoFileId,
         },
       }),
-    ]);
+    ];
+
+    if (video.videoPreviewId) {
+      dbOperations.push(
+        this.prismaService.videoPreview.delete({
+          where: {
+            id: video.videoPreviewId,
+          },
+        }),
+      );
+    }
+
+    const [deletedVideo] = await this.prismaService.$transaction(dbOperations);
 
     return deletedVideo;
   }

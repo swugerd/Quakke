@@ -1,5 +1,5 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
-import { VideoFile } from '@prisma/client';
+import { VideoFile, VideoPreview } from '@prisma/client';
 import { Category } from 'src/categories/entities/category.entity';
 import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
 import { FileEntity } from 'src/utils/entities/file.entity';
@@ -33,6 +33,9 @@ export class Video {
 
   @Field(() => FileEntity)
   videoFile: VideoFile;
+
+  @Field(() => FileEntity, { nullable: true })
+  videoPreview?: VideoPreview;
 
   @Field(() => Category, { nullable: true })
   category?: Category;

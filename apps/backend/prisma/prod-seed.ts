@@ -21,7 +21,7 @@ const prisma = new PrismaClient();
     });
   } catch (e) {
     if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
-      console.log('Roles ADMIN, USER and MODERATOR already exists');
+      console.warn('Roles ADMIN, USER and MODERATOR already exists');
     } else {
       throw e;
     }
@@ -39,7 +39,7 @@ const prisma = new PrismaClient();
     });
   } catch (e) {
     if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
-      console.log('Admin already exists');
+      console.warn('Admin already exists');
     } else {
       throw e;
     }
