@@ -98,6 +98,16 @@ type Video {
   subCategory: SubCategory
 }
 
+type Playlist {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  privacy: String!
+  user: User!
+  videos: [Video!]
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -113,6 +123,8 @@ type Query {
   getTag(id: Int!): Tag!
   getVideos: [Video!]!
   getVideo(id: Int!): Video!
+  getPlaylists: [Playlist!]!
+  getPlaylist(id: Int!): Playlist!
 }
 
 input QuerySearchInput {
@@ -154,6 +166,9 @@ type Mutation {
   dropPreview(id: Int!): FileEntity!
   updateVideo(updateVideoInput: UpdateVideoInput!): Video!
   removeVideo(id: Int!): Video!
+  createPlaylist(createPlaylistInput: CreatePlaylistInput!): Playlist!
+  updatePlaylist(id: Int!, updatePlaylistInput: UpdatePlaylistInput!): Playlist!
+  removePlaylist(id: Int!): Playlist!
 }
 
 input CreateUserInput {
@@ -248,4 +263,13 @@ input UpdateVideoInput {
   subCategoryId: Int
   id: Int!
   preview: Upload
+}
+
+input CreatePlaylistInput {
+  name: String!
+}
+
+input UpdatePlaylistInput {
+  name: String
+  id: Int!
 }

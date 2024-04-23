@@ -14,6 +14,7 @@ import { SubCategoriesModule } from './sub-categories/sub-categories.module';
 import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
+import { PlaylistModule } from './playlist/playlist.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { VideoModule } from './video/video.module';
     SubCategoriesModule,
     TagModule,
     VideoModule,
+    PlaylistModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

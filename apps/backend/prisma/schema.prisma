@@ -253,7 +253,7 @@ model Playlist {
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   name    String
-  privacy Privacy
+  privacy Privacy @default(CLOSED)
 
   videos Video[]
 
