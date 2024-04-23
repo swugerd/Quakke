@@ -51,7 +51,7 @@ model Role {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
-  name Roles @default(USER)
+  name Roles @unique @default(USER)
 
   users User[]
 
