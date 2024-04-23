@@ -67,6 +67,7 @@ model Category {
 
   subCategories SubCategory[]
   users         CategoriesOnUsers[]
+  Video         Video[]
 
   @@map("categories")
 }
@@ -80,6 +81,7 @@ model SubCategory {
 
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int      @map("category_id")
+  Video      Video[]
 
   @@map("sub_categories")
 }
@@ -112,6 +114,12 @@ model Video {
   tags       Tag[]
   history    VideoHistory[]
   complaints Complaint[]
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?      @map("category_id")
+
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  subCategoryId Int?         @map("sub_category_id")
 
   author User @relation(fields: [userId], references: [id])
   userId Int  @map("userId")

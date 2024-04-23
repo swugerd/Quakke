@@ -3,8 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { JwtPayload } from 'src/auth/interfaces';
 import { folders } from 'src/constants';
+import config from 'src/constants/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FileInput } from 'src/utils/dto/file.input';
+import { exclude } from 'src/utils/exclude';
 import { removeFile } from 'src/utils/remove';
 import { uploadFile } from 'src/utils/upload';
 import * as uuid from 'uuid';
@@ -25,6 +27,13 @@ export class VideoService {
         description: createVideoInput.description,
         author: { connect: { id: user.id } },
         videoFile: { connect: { id: createVideoInput.videoId } },
+        category: { connect: { id: createVideoInput.categoryId } },
+      },
+      include: {
+        videoFile: true,
+        author: true,
+        category: true,
+        subCategory: true,
       },
     });
 
@@ -42,7 +51,7 @@ export class VideoService {
       .toLowerCase();
     const fileName = `${uuid.v4()}${fileExtenstion}`;
     const uploadDir = join(
-      this.configService.get('STATIC_PATH'),
+      this.configService.get(config.STATIC_PATH),
       folders.VIDEO,
     );
 
@@ -71,7 +80,7 @@ export class VideoService {
     });
 
     await removeFile(
-      join(this.configService.get('STATIC_PATH'), folders.VIDEO),
+      join(this.configService.get(config.STATIC_PATH), folders.VIDEO),
       videoFile.url,
     );
 
@@ -88,7 +97,11 @@ export class VideoService {
     const videos = await this.prismaService.video.findMany({
       include: {
         videoFile: true,
-        author: true,
+        author: {
+          select: exclude('User', ['password']),
+        },
+        category: true,
+        subCategory: true,
       },
     });
 
@@ -99,6 +112,14 @@ export class VideoService {
     const video = await this.prismaService.video.findUnique({
       where: {
         id,
+      },
+      include: {
+        videoFile: true,
+        author: {
+          select: exclude('User', ['password']),
+        },
+        category: true,
+        subCategory: true,
       },
     });
 
@@ -111,6 +132,14 @@ export class VideoService {
         id,
       },
       data: updateVideoInput,
+      include: {
+        videoFile: true,
+        author: {
+          select: exclude('User', ['password']),
+        },
+        category: true,
+        subCategory: true,
+      },
     });
 
     return video;
@@ -123,11 +152,16 @@ export class VideoService {
       },
       include: {
         videoFile: true,
+        author: {
+          select: exclude('User', ['password']),
+        },
+        category: true,
+        subCategory: true,
       },
     });
 
     await removeFile(
-      join(this.configService.get('STATIC_PATH'), folders.VIDEO),
+      join(this.configService.get(config.STATIC_PATH), folders.VIDEO),
       video.videoFile.url,
     );
 

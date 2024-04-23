@@ -2,6 +2,7 @@ import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { Response } from 'express';
+import config from 'src/constants/config';
 import { AuthService } from './auth.service';
 import { Cookie, Public, UserAgent } from './decorators';
 import { SignInInput } from './dto/signin-input';
@@ -111,7 +112,7 @@ export class AuthResolver {
       sameSite: 'lax',
       expires: new Date(tokens.refreshToken.expiresAt),
       secure:
-        this.configService.get('NODE_ENV', 'development') === 'production',
+        this.configService.get(config.NODE_ENV, 'development') === 'production',
       path: '/',
     });
   }

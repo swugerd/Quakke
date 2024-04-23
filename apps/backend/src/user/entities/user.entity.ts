@@ -20,7 +20,7 @@ export class User {
   @Field()
   name: string;
 
-  @Field()
+  @Field({ nullable: true })
   password: string;
 
   @Field()

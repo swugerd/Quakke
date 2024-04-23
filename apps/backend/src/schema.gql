@@ -9,7 +9,7 @@ type User {
   email: String!
   login: String!
   name: String!
-  password: String!
+  password: String
   isBanned: Boolean!
   isPartner: Boolean!
 }
@@ -92,6 +92,9 @@ type Video {
   isBanned: Boolean!
   userId: Int!
   author: User!
+  videoFile: FileEntity!
+  category: Category
+  subCategory: SubCategory
 }
 
 type Query {
@@ -221,6 +224,8 @@ input CreateVideoInput {
   name: String!
   description: String
   videoId: Int!
+  categoryId: Int
+  subCategoryId: Int
 }
 
 input FileInput {
@@ -234,6 +239,8 @@ input UpdateVideoInput {
   name: String
   description: String
   videoId: Int
+  categoryId: Int
+  subCategoryId: Int
   id: Int!
   preview: Upload
 }

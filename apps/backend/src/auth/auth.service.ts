@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Roles, User } from '@prisma/client';
 import { compareSync } from 'bcrypt';
 import { add } from 'date-fns';
+import config from 'src/constants/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { v4 } from 'uuid';
@@ -119,13 +120,13 @@ export class AuthService {
       update: {
         token: v4(),
         expiresAt: add(new Date(), {
-          days: Number(this.configService.get('JWT_REFRESH_EXP')[0]),
+          days: Number(this.configService.get(config.JWT_REFRESH_EXP)[0]),
         }),
       },
       create: {
         token: v4(),
         expiresAt: add(new Date(), {
-          days: Number(this.configService.get('JWT_REFRESH_EXP')[0]),
+          days: Number(this.configService.get(config.JWT_REFRESH_EXP)[0]),
         }),
         userId: user.id,
         userAgent: agent,

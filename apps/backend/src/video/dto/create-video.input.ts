@@ -10,4 +10,10 @@ export class CreateVideoInput {
 
   @Field(() => Int)
   videoId: number;
+
+  @Field(() => Int, { nullable: true })
+  categoryId: number;
+
+  @Field(() => Int, { nullable: true })
+  subCategoryId: number;
 }
