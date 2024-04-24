@@ -3,6 +3,7 @@ import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
 import { CreatePlaylistInput } from './dto/create-playlist.input';
 import { UpdatePlaylistInput } from './dto/update-playlist.input';
+import { VideoPlaylistInput } from './dto/video-playlist.input';
 import { Playlist } from './entities/playlist.entity';
 import { PlaylistService } from './playlist.service';
 
@@ -30,10 +31,26 @@ export class PlaylistResolver {
 
   @Mutation(() => Playlist)
   updatePlaylist(
-    @Args('id', { type: () => Int }) id: number,
     @Args('updatePlaylistInput') updatePlaylistInput: UpdatePlaylistInput,
   ) {
-    return this.playlistService.update(id, updatePlaylistInput);
+    return this.playlistService.update(updatePlaylistInput);
+  }
+
+  @Mutation(() => Playlist)
+  addVideoToPlaylist(
+    @Args('addVideoToPlaylistInput') addVideoToPlaylist: VideoPlaylistInput,
+  ) {
+    return this.playlistService.addToPlaylist(addVideoToPlaylist);
+  }
+
+  @Mutation(() => Playlist)
+  removeFromPlaylist(
+    @Args('removeVideoFromPlaylistInput')
+    removeVideoFromPlaylistInput: VideoPlaylistInput,
+  ) {
+    return this.playlistService.removeFromPlaylist(
+      removeVideoFromPlaylistInput,
+    );
   }
 
   @Mutation(() => Playlist)

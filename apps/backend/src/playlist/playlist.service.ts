@@ -4,12 +4,23 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { exclude } from 'src/utils/exclude';
 import { CreatePlaylistInput } from './dto/create-playlist.input';
 import { UpdatePlaylistInput } from './dto/update-playlist.input';
+import { VideoPlaylistInput } from './dto/video-playlist.input';
 
 const includeObject = {
   user: {
     select: exclude('User', ['password']),
   },
-  videos: true,
+  videos: {
+    select: {
+      video: {
+        include: {
+          author: {
+            select: exclude('User', ['password']),
+          },
+        },
+      },
+    },
+  },
 };
 
 @Injectable()
@@ -44,16 +55,47 @@ export class PlaylistService {
     return playlist;
   }
 
-  async update(id: number, updatePlaylistInput: UpdatePlaylistInput) {
+  async update(updatePlaylistInput: UpdatePlaylistInput) {
     const playlist = await this.prismaService.playlist.update({
       where: {
-        id: id,
+        id: updatePlaylistInput.id,
       },
       data: updatePlaylistInput,
       include: includeObject,
     });
 
     return playlist;
+  }
+
+  async addToPlaylist(videoPlaylistInput: VideoPlaylistInput) {
+    const updatedPlaylist = await this.prismaService.playlistsOnVideos.create({
+      data: videoPlaylistInput,
+      include: {
+        playlist: {
+          include: includeObject,
+        },
+      },
+    });
+
+    return updatedPlaylist.playlist;
+  }
+
+  async removeFromPlaylist(videoPlaylistInput: VideoPlaylistInput) {
+    const updatedPlaylist = await this.prismaService.playlistsOnVideos.delete({
+      where: {
+        videoId_playlistId: {
+          playlistId: videoPlaylistInput.playlistId,
+          videoId: videoPlaylistInput.videoId,
+        },
+      },
+      include: {
+        playlist: {
+          include: includeObject,
+        },
+      },
+    });
+
+    return updatedPlaylist.playlist;
   }
 
   async remove(id: number) {

@@ -1,7 +1,7 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import { Privacy } from '@prisma/client';
 import { User } from 'src/user/entities/user.entity';
-import { Video } from 'src/video/entities/video.entity';
+import { VideoPlaylist } from './video-field.entity';
 
 @ObjectType()
 export class Playlist {
@@ -23,6 +23,6 @@ export class Playlist {
   @Field(() => User)
   user: User;
 
-  @Field(() => [Video], { nullable: true })
-  videos: Video[];
+  @Field(() => [VideoPlaylist], { nullable: true })
+  videos: VideoPlaylist[];
 }

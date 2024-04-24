@@ -98,6 +98,10 @@ type Video {
   subCategory: SubCategory
 }
 
+type VideoPlaylist {
+  video: Video!
+}
+
 type Playlist {
   id: Int!
   createdAt: DateTime!
@@ -105,7 +109,7 @@ type Playlist {
   name: String!
   privacy: String!
   user: User!
-  videos: [Video!]
+  videos: [VideoPlaylist!]
 }
 
 type Query {
@@ -167,7 +171,9 @@ type Mutation {
   updateVideo(updateVideoInput: UpdateVideoInput!): Video!
   removeVideo(id: Int!): Video!
   createPlaylist(createPlaylistInput: CreatePlaylistInput!): Playlist!
-  updatePlaylist(id: Int!, updatePlaylistInput: UpdatePlaylistInput!): Playlist!
+  updatePlaylist(updatePlaylistInput: UpdatePlaylistInput!): Playlist!
+  addVideoToPlaylist(addVideoToPlaylistInput: VideoPlaylistInput!): Playlist!
+  removeFromPlaylist(removeVideoFromPlaylistInput: VideoPlaylistInput!): Playlist!
   removePlaylist(id: Int!): Playlist!
 }
 
@@ -272,4 +278,9 @@ input CreatePlaylistInput {
 input UpdatePlaylistInput {
   name: String
   id: Int!
+}
+
+input VideoPlaylistInput {
+  playlistId: Int!
+  videoId: Int!
 }
