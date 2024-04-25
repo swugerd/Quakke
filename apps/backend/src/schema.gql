@@ -113,6 +113,14 @@ type Playlist {
   videos: [VideoPlaylist!]
 }
 
+type View {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+  video: Video!
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -130,6 +138,8 @@ type Query {
   getVideo(id: Int!): Video!
   getPlaylists: [Playlist!]!
   getPlaylist(id: Int!): Playlist!
+  getViews: [View!]!
+  getView(id: Int!): View!
 }
 
 input QuerySearchInput {
@@ -176,6 +186,9 @@ type Mutation {
   addVideoToPlaylist(addVideoToPlaylistInput: VideoPlaylistInput!): Playlist!
   removeFromPlaylist(removeVideoFromPlaylistInput: VideoPlaylistInput!): Playlist!
   removePlaylist(id: Int!): Playlist!
+  createView(createViewInput: CreateViewInput!): View!
+  updateView(updateViewInput: UpdateViewInput!): View!
+  removeView(id: Int!): View!
 }
 
 input CreateUserInput {
@@ -282,4 +295,14 @@ input UpdatePlaylistInput {
 input VideoPlaylistInput {
   playlistId: Int!
   videoId: Int!
+}
+
+input CreateViewInput {
+  videoId: Int!
+}
+
+input UpdateViewInput {
+  videoId: Int
+  id: Int!
+  userId: Int!
 }
