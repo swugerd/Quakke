@@ -132,6 +132,15 @@ type Comment {
   replies: [Comment!]
 }
 
+type Like {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User
+  video: Video
+  comment: Comment
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -153,6 +162,8 @@ type Query {
   getView(id: Int!): View!
   getComments: [Comment!]!
   getComment(id: Int!): Comment!
+  getLikes: [Like!]!
+  getLike(id: Int!): Like!
 }
 
 input QuerySearchInput {
@@ -205,6 +216,9 @@ type Mutation {
   createComment(createCommentInput: CreateCommentInput!): Comment!
   updateComment(updateCommentInput: UpdateCommentInput!): Comment!
   removeComment(id: Int!): Comment!
+  createLike(createLikeInput: CreateLikeInput!): Like!
+  updateLike(updateLikeInput: UpdateLikeInput!): Like!
+  removeLike(id: Int!): Like!
 }
 
 input CreateUserInput {
@@ -333,5 +347,16 @@ input UpdateCommentInput {
   text: String
   videoId: Int
   parentId: Int
+  id: Int!
+}
+
+input CreateLikeInput {
+  videoId: Int
+  commentId: Int
+}
+
+input UpdateLikeInput {
+  videoId: Int
+  commentId: Int
   id: Int!
 }
