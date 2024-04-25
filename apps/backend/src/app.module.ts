@@ -16,6 +16,7 @@ import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { ViewsModule } from './views/views.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ViewsModule } from './views/views.module';
     VideoModule,
     PlaylistModule,
     ViewsModule,
+    CommentModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

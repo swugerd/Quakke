@@ -121,6 +121,17 @@ type View {
   video: Video!
 }
 
+type Comment {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  text: String!
+  user: User!
+  video: Video!
+  parent: Comment
+  replies: [Comment!]
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -140,6 +151,8 @@ type Query {
   getPlaylist(id: Int!): Playlist!
   getViews: [View!]!
   getView(id: Int!): View!
+  getComments: [Comment!]!
+  getComment(id: Int!): Comment!
 }
 
 input QuerySearchInput {
@@ -189,6 +202,9 @@ type Mutation {
   createView(createViewInput: CreateViewInput!): View!
   updateView(updateViewInput: UpdateViewInput!): View!
   removeView(id: Int!): View!
+  createComment(createCommentInput: CreateCommentInput!): Comment!
+  updateComment(updateCommentInput: UpdateCommentInput!): Comment!
+  removeComment(id: Int!): Comment!
 }
 
 input CreateUserInput {
@@ -305,4 +321,17 @@ input UpdateViewInput {
   videoId: Int
   id: Int!
   userId: Int!
+}
+
+input CreateCommentInput {
+  text: String!
+  videoId: Int!
+  parentId: Int
+}
+
+input UpdateCommentInput {
+  text: String
+  videoId: Int
+  parentId: Int
+  id: Int!
 }
