@@ -111,10 +111,10 @@ model Video {
   dislikes   Dislike[]
   comments   Comment[]
   views      View[]
-  tags       Tag[]
   history    VideoHistory[]
   complaints Complaint[]
   playlists  PlaylistsOnVideos[]
+  tags       TagsOnVideos[]
 
   category   Category? @relation(fields: [categoryId], references: [id])
   categoryId Int?      @map("category_id")
@@ -279,10 +279,20 @@ model Tag {
 
   name String
 
-  video   Video? @relation(fields: [videoId], references: [id])
-  videoId Int?   @map("video_id")
+  videos TagsOnVideos[]
 
   @@map("tags")
+}
+
+model TagsOnVideos {
+  video   Video @relation(fields: [videoId], references: [id])
+  videoId Int   @map("video_id")
+
+  tag   Tag @relation(fields: [tagId], references: [id])
+  tagId Int @map("tag_id")
+
+  @@id([videoId, tagId])
+  @@map("tags_on_videos")
 }
 
 model Banner {

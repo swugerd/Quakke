@@ -2,6 +2,7 @@ import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import { VideoFile, VideoPreview } from '@prisma/client';
 import { Category } from 'src/categories/entities/category.entity';
 import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
+import { Tag } from 'src/tag/entities/tag.entity';
 import { FileEntity } from 'src/utils/entities/file.entity';
 import { User } from './../../user/entities/user.entity';
 
@@ -42,4 +43,7 @@ export class Video {
 
   @Field(() => SubCategory, { nullable: true })
   subCategory?: SubCategory;
+
+  @Field(() => [Tag], { nullable: true })
+  tags?: Tag[];
 }

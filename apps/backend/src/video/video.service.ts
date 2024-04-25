@@ -7,7 +7,6 @@ import config from 'src/constants/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FileTypes } from 'src/types';
 import { FileInput } from 'src/utils/dto/file.input';
-import { exclude } from 'src/utils/exclude';
 import { removeFile } from 'src/utils/remove';
 import { uploadFile } from 'src/utils/upload';
 import * as uuid from 'uuid';
@@ -17,11 +16,10 @@ import { UpdateVideoInput } from './dto/update-video.input';
 const includeObject = {
   videoFile: true,
   videoPreview: true,
-  author: {
-    select: exclude('User', ['password']),
-  },
+  author: true,
   category: true,
   subCategory: true,
+  tags: true,
 };
 
 @Injectable()
@@ -147,7 +145,7 @@ export class VideoService {
       where: {
         id,
       },
-      data: updateVideoInput,
+      data: { ...updateVideoInput },
       include: includeObject,
     });
 

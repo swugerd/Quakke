@@ -1,22 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { exclude } from 'src/utils/exclude';
 import { CreatePlaylistInput } from './dto/create-playlist.input';
 import { UpdatePlaylistInput } from './dto/update-playlist.input';
 import { VideoPlaylistInput } from './dto/video-playlist.input';
 
 const includeObject = {
-  user: {
-    select: exclude('User', ['password']),
-  },
+  user: true,
   videos: {
     select: {
       video: {
         include: {
-          author: {
-            select: exclude('User', ['password']),
-          },
+          author: true,
         },
       },
     },

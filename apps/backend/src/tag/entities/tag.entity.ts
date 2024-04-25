@@ -14,6 +14,6 @@ export class Tag {
   @Field()
   name: string;
 
-  @Field(() => Int)
-  videoId: number;
+  @Field(() => Int, { nullable: true })
+  videoId?: number;
 }

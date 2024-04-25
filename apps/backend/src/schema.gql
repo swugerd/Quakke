@@ -71,7 +71,7 @@ type Tag {
   createdAt: DateTime!
   updatedAt: DateTime!
   name: String!
-  videoId: Int!
+  videoId: Int
 }
 
 type FileEntity {
@@ -96,6 +96,7 @@ type Video {
   videoPreview: FileEntity
   category: Category
   subCategory: SubCategory
+  tags: [Tag!]
 }
 
 type VideoPlaylist {
@@ -235,12 +236,10 @@ input UpdateSubCategoryInput {
 
 input CreateTagInput {
   name: String!
-  videoId: Int!
 }
 
 input UpdateTagInput {
   name: String
-  videoId: Int
   id: Int!
 }
 

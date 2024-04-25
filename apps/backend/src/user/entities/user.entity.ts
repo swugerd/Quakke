@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { excludePasswordMiddleware } from 'src/middlewares/exclude-password.middleware';
 
 @ObjectType()
 export class User {
@@ -20,7 +21,7 @@ export class User {
   @Field()
   name: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, middleware: [excludePasswordMiddleware] })
   password: string;
 
   @Field()
