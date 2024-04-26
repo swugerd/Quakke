@@ -33,6 +33,7 @@ model User {
   complaints         Complaint[]
   subscribers        User[]              @relation("Subscribers")
   refreshTokens      RefreshToken[]
+  banners            Banner[]
 
   role   Role @relation(fields: [roleId], references: [id])
   roleId Int  @default(2) @map("role_id")
@@ -128,7 +129,7 @@ model Video {
   videoFile   VideoFile @relation(fields: [videoFileId], references: [id], onDelete: Cascade)
   videoFileId Int       @unique @map("video_id")
 
-  videoPreview   VideoPreview? @relation(fields: [videoPreviewId], references: [id])
+  videoPreview   VideoPreview? @relation(fields: [videoPreviewId], references: [id], onDelete: Cascade)
   videoPreviewId Int?          @unique @map("preview_id")
 
   @@map("videos")
@@ -300,17 +301,20 @@ model Banner {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
-  publishDate   DateTime    @map("publish_date") @db.Timestamptz(1)
-  unbuplishDate DateTime    @map("unpublish_date") @db.Timestamptz(1)
+  publishDate   DateTime?   @default(now()) @map("publish_date") @db.Timestamptz(1)
+  unpublishDate DateTime?   @default(dbgenerated("NOW() + interval '1 day'")) @map("unpublish_date") @db.Timestamptz(1)
   title         String
   type          BannerTypes
   description   String?
 
-  bannerImage   BannerImage @relation(fields: [bannerImageId], references: [id])
-  bannerImageId Int         @map("image_id")
+  bannerImage   BannerImage @relation(fields: [bannerImageId], references: [id], onDelete: Cascade)
+  bannerImageId Int         @unique @map("image_id")
 
-  bannerVideo   BannerVideo? @relation(fields: [bannerVideoId], references: [id])
+  bannerVideo   BannerVideo? @relation(fields: [bannerVideoId], references: [id], onDelete: Cascade)
   bannerVideoId Int?         @unique @map("video_id")
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
 
   @@map("banners")
 }

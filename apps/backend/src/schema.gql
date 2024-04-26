@@ -38,6 +38,34 @@ type LogoutResponse {
   success: Boolean!
 }
 
+type FileEntity {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  url: String!
+  size: Int!
+  extension: String!
+}
+
+type Banner {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  publishDate: DateTime!
+  unpublishDate: DateTime!
+  title: String!
+  description: String
+
+  """VIDEO | STREAM | IMAGE"""
+  type: BannerTypeScalar!
+  bannerImage: FileEntity!
+  bannerVideo: FileEntity
+  user: User!
+}
+
+"""Custom scalar for banner types"""
+scalar BannerTypeScalar
+
 type SubCategory {
   id: Int!
   createdAt: DateTime!
@@ -65,15 +93,6 @@ type Tag {
   createdAt: DateTime!
   updatedAt: DateTime!
   name: String!
-}
-
-type FileEntity {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  url: String!
-  size: Int!
-  extension: String!
 }
 
 type Video {
@@ -174,6 +193,8 @@ type Query {
     """like | dislike"""
     type: RatingScalar!
   ): Rating!
+  getBanners: [Banner!]!
+  getBanner(id: Int!): Banner!
 }
 
 input QuerySearchInput {
@@ -237,6 +258,13 @@ type Mutation {
     """like | dislike"""
     type: RatingScalar!
   ): Rating!
+  createBanner(createBannerInput: CreateBannerInput!): Banner!
+  uploadBannerVideo(file: FileInput!): FileEntity!
+  dropBannerVideo(id: Int!): FileEntity!
+  uploadBannerImage(file: FileInput!): FileEntity!
+  dropBannerImage(id: Int!): FileEntity!
+  updateBanner(updateBannerInput: UpdateBannerInput!): Banner!
+  removeBanner(id: Int!): Banner!
 }
 
 input CreateUserInput {
@@ -328,7 +356,6 @@ input UpdateVideoInput {
   categoryId: Int
   subCategoryId: Int
   id: Int!
-  preview: Upload
 }
 
 input CreatePlaylistInput {
@@ -382,5 +409,30 @@ input UpdateRatingInput {
 
   """like | dislike"""
   type: RatingScalar
+  id: Int!
+}
+
+input CreateBannerInput {
+  publishDate: DateTime
+  unpublishDate: DateTime
+  title: String!
+  description: String
+
+  """VIDEO | STREAM | IMAGE"""
+  type: BannerTypeScalar!
+  bannerImageId: Int!
+  bannerVideoId: Int
+}
+
+input UpdateBannerInput {
+  publishDate: DateTime
+  unpublishDate: DateTime
+  title: String
+  description: String
+
+  """VIDEO | STREAM | IMAGE"""
+  type: BannerTypeScalar
+  bannerImageId: Int
+  bannerVideoId: Int
   id: Int!
 }
