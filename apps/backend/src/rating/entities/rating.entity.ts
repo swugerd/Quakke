@@ -1,7 +1,8 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import { User } from 'src/user/entities/user.entity';
 
 @ObjectType()
-export class Tag {
+export class Rating {
   @Field(() => Int)
   id: number;
 
@@ -11,6 +12,6 @@ export class Tag {
   @Field(() => GraphQLISODateTime)
   updatedAt: Date;
 
-  @Field()
-  name: string;
+  @Field(() => User)
+  user: User;
 }

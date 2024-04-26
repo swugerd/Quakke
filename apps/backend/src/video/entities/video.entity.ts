@@ -1,6 +1,8 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import { VideoFile, VideoPreview } from '@prisma/client';
 import { Category } from 'src/categories/entities/category.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
+import { Rating } from 'src/rating/entities/rating.entity';
 import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
 import { Tag } from 'src/tag/entities/tag.entity';
 import { FileEntity } from 'src/utils/entities/file.entity';
@@ -46,4 +48,13 @@ export class Video {
 
   @Field(() => [Tag], { nullable: true })
   tags?: Tag[];
+
+  @Field(() => [Comment], { nullable: true })
+  comments?: Comment[];
+
+  @Field(() => [Rating], { nullable: true })
+  likes?: Rating[];
+
+  @Field(() => [Rating], { nullable: true })
+  dislikes?: Rating[];
 }

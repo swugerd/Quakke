@@ -8,16 +8,17 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { CategoriesModule } from './categories/categories.module';
+import { CommentModule } from './comment/comment.module';
+import { PlaylistModule } from './playlist/playlist.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { RatingModule } from './rating/rating.module';
 import { RoleModule } from './role/role.module';
+import { RatingScalar } from './scalars/rating.scalar';
 import { SubCategoriesModule } from './sub-categories/sub-categories.module';
 import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
-import { PlaylistModule } from './playlist/playlist.module';
 import { ViewsModule } from './views/views.module';
-import { CommentModule } from './comment/comment.module';
-import { LikeModule } from './like/like.module';
 
 @Module({
   imports: [
@@ -28,6 +29,9 @@ import { LikeModule } from './like/like.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req, res }) => ({ req, res }),
       useGlobalPrefix: true,
+      resolvers: {
+        RatingScalar: RatingScalar,
+      },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), process.env.STATIC_PATH),
@@ -44,7 +48,7 @@ import { LikeModule } from './like/like.module';
     PlaylistModule,
     ViewsModule,
     CommentModule,
-    LikeModule,
+    RatingModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

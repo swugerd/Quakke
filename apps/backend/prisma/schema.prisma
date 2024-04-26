@@ -173,10 +173,10 @@ model Dislike {
   user   User @relation(fields: [userId], references: [id])
   userId Int  @map("user_id")
 
-  video   Video @relation(fields: [videoId], references: [id])
-  videoId Int   @map("video_id")
+  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId Int?   @map("video_id")
 
-  comment   Comment? @relation(fields: [commentId], references: [id])
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId Int?     @map("comment_id")
 
   @@map("dislikes")

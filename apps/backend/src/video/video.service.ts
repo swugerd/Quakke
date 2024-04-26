@@ -20,6 +20,14 @@ const includeObject = {
   category: true,
   subCategory: true,
   tags: true,
+  comments: {
+    include: {
+      likes: true,
+      dislikes: true,
+    },
+  },
+  likes: true,
+  dislikes: true,
 };
 
 @Injectable()

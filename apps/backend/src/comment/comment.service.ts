@@ -13,6 +13,8 @@ const includeObject = {
     },
   },
   video: true,
+  likes: true,
+  dislikes: true,
 };
 
 @Injectable()

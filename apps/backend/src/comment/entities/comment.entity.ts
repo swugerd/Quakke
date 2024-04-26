@@ -1,4 +1,5 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import { Rating } from 'src/rating/entities/rating.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Video } from 'src/video/entities/video.entity';
 
@@ -27,4 +28,10 @@ export class Comment {
 
   @Field(() => [Comment], { nullable: true })
   replies?: Comment[];
+
+  @Field(() => [Rating], { nullable: true })
+  likes?: Rating[];
+
+  @Field(() => [Rating], { nullable: true })
+  dislikes?: Rating[];
 }
