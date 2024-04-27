@@ -22,22 +22,22 @@ export class BannerResolver {
 
   @Mutation(() => FileEntity)
   uploadBannerVideo(@Args('file') file: FileInput) {
-    return this.bannerService.uploadFile(file, 'VIDEOS');
+    return this.bannerService.uploadFile(file, 'videos');
   }
 
   @Mutation(() => FileEntity)
   dropBannerVideo(@Args('id', { type: () => Int }) id: number) {
-    return this.bannerService.deleteFile(id, 'VIDEOS');
+    return this.bannerService.deleteFile(id, 'videos');
   }
 
   @Mutation(() => FileEntity)
   uploadBannerImage(@Args('file') file: FileInput) {
-    return this.bannerService.uploadFile(file, 'IMAGES');
+    return this.bannerService.uploadFile(file, 'images');
   }
 
   @Mutation(() => FileEntity)
   dropBannerImage(@Args('id', { type: () => Int }) id: number) {
-    return this.bannerService.deleteFile(id, 'IMAGES');
+    return this.bannerService.deleteFile(id, 'images');
   }
 
   @Query(() => [Banner])

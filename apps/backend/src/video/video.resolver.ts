@@ -22,22 +22,22 @@ export class VideoResolver {
 
   @Mutation(() => FileEntity)
   uploadVideo(@Args('file') file: FileInput) {
-    return this.videoService.uploadFile(file, 'VIDEOS');
+    return this.videoService.uploadFile(file, 'videos');
   }
 
   @Mutation(() => FileEntity)
   dropVideo(@Args('id', { type: () => Int }) id: number) {
-    return this.videoService.deleteFile(id, 'VIDEOS');
+    return this.videoService.deleteFile(id, 'videos');
   }
 
   @Mutation(() => FileEntity)
   uploadPreview(@Args('file') file: FileInput) {
-    return this.videoService.uploadFile(file, 'IMAGES');
+    return this.videoService.uploadFile(file, 'images');
   }
 
   @Mutation(() => FileEntity)
   dropPreview(@Args('id', { type: () => Int }) id: number) {
-    return this.videoService.deleteFile(id, 'IMAGES');
+    return this.videoService.deleteFile(id, 'images');
   }
 
   @Query(() => [Video])

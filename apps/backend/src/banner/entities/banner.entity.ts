@@ -1,6 +1,11 @@
-import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  GraphQLISODateTime,
+  Int,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { BannerImage, BannerTypes, BannerVideo } from '@prisma/client';
-import { BannerTypeScalar } from 'src/scalars/bannerTypes.scalar';
 import { User } from 'src/user/entities/user.entity';
 import { FileEntity } from 'src/utils/entities/file.entity';
 
@@ -27,9 +32,7 @@ export class Banner {
   @Field(() => String, { nullable: true })
   description?: string;
 
-  @Field(() => BannerTypeScalar, {
-    description: 'VIDEO | STREAM | IMAGE',
-  })
+  @Field(() => BannerTypes)
   type: BannerTypes;
 
   @Field(() => FileEntity)
@@ -41,3 +44,7 @@ export class Banner {
   @Field(() => User)
   user: User;
 }
+
+registerEnumType(BannerTypes, {
+  name: 'BannerTypes',
+});

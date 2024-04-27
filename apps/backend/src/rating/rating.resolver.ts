@@ -1,8 +1,7 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
-import { RatingScalar } from 'src/scalars/rating.scalar';
-import { LikeType } from 'src/types';
+import { LikesType, RatingEnum } from 'src/types';
 import { CreateRatingInput } from './dto/create-rating.input';
 import { UpdateRatingInput } from './dto/update-rating.input';
 import { Rating } from './entities/rating.entity';
@@ -22,8 +21,8 @@ export class RatingResolver {
 
   @Query(() => [Rating])
   getRatings(
-    @Args('type', { type: () => RatingScalar, description: 'like | dislike' })
-    type: LikeType,
+    @Args('type', { type: () => RatingEnum })
+    type: LikesType,
   ) {
     return this.ratingService.findAll(type);
   }
@@ -31,8 +30,8 @@ export class RatingResolver {
   @Query(() => Rating)
   getRating(
     @Args('id', { type: () => Int }) id: number,
-    @Args('type', { type: () => RatingScalar, description: 'like | dislike' })
-    type: LikeType,
+    @Args('type', { type: () => RatingEnum })
+    type: LikesType,
   ) {
     return this.ratingService.findOne(id, type);
   }
@@ -47,8 +46,8 @@ export class RatingResolver {
   @Mutation(() => Rating)
   removeRating(
     @Args('id', { type: () => Int }) id: number,
-    @Args('type', { type: () => RatingScalar, description: 'like | dislike' })
-    type: LikeType,
+    @Args('type', { type: () => RatingEnum })
+    type: LikesType,
   ) {
     return this.ratingService.remove(id, type);
   }

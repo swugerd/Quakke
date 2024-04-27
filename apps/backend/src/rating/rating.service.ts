@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LikeType } from 'src/types';
+import { LikesType } from 'src/types';
 import { CreateRatingInput } from './dto/create-rating.input';
 import { UpdateRatingInput } from './dto/update-rating.input';
 
@@ -147,7 +147,7 @@ export class RatingService {
     return rating;
   }
 
-  async findAll(type: LikeType) {
+  async findAll(type: LikesType) {
     if (type === 'like') {
       const rating = await this.prismaService.like.findMany({
         include: includeObject,
@@ -163,7 +163,7 @@ export class RatingService {
     return rating;
   }
 
-  async findOne(id: number, type: LikeType) {
+  async findOne(id: number, type: LikesType) {
     if (type === 'like') {
       const rating = await this.prismaService.like.findUnique({
         where: {
@@ -215,7 +215,7 @@ export class RatingService {
     return rating;
   }
 
-  async remove(id: number, type: LikeType) {
+  async remove(id: number, type: LikesType) {
     if (type === 'like') {
       const rating = await this.prismaService.like.delete({
         where: {

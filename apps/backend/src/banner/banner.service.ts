@@ -5,7 +5,7 @@ import { JwtPayload } from 'src/auth/interfaces';
 import { allowedFileTypes, folders } from 'src/constants';
 import config from 'src/constants/config';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { FileTypes } from 'src/types';
+import { FilesType } from 'src/types';
 import { FileInput } from 'src/utils/dto/file.input';
 import { removeFile } from 'src/utils/remove';
 import { uploadFile } from 'src/utils/upload';
@@ -38,11 +38,11 @@ export class BannerService {
     return banner;
   }
 
-  async uploadFile(file: FileInput, type: FileTypes) {
+  async uploadFile(file: FileInput, type: FilesType) {
     const uploadedFile = await file.file;
     if (!allowedFileTypes[type].includes(uploadedFile.mimetype)) {
       const errorMessage =
-        type === 'VIDEOS'
+        type === 'videos'
           ? 'File needs to be a video'
           : 'File needs to be an image';
       throw new BadRequestException(errorMessage);
@@ -64,7 +64,7 @@ export class BannerService {
     );
 
     const savedFile =
-      type === 'VIDEOS'
+      type === 'videos'
         ? await this.prismaService.bannerVideo.create({
             data: {
               extension: uploadedFile.mimetype,
@@ -83,9 +83,9 @@ export class BannerService {
     return savedFile;
   }
 
-  async deleteFile(id: number, type: FileTypes) {
+  async deleteFile(id: number, type: FilesType) {
     const file =
-      type === 'VIDEOS'
+      type === 'videos'
         ? await this.prismaService.bannerVideo.findUnique({
             where: {
               id,
@@ -103,7 +103,7 @@ export class BannerService {
     );
 
     const deletedFile =
-      type === 'VIDEOS'
+      type === 'videos'
         ? await this.prismaService.videoFile.delete({
             where: {
               id: file.id,

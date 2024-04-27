@@ -10,12 +10,11 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { BannerModule } from './banner/banner.module';
 import { CategoriesModule } from './categories/categories.module';
 import { CommentModule } from './comment/comment.module';
+import { NotificationModule } from './notification/notification.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RatingModule } from './rating/rating.module';
 import { RoleModule } from './role/role.module';
-import { BannerTypeScalar } from './scalars/bannerTypes.scalar';
-import { RatingScalar } from './scalars/rating.scalar';
 import { SubCategoriesModule } from './sub-categories/sub-categories.module';
 import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
@@ -31,10 +30,6 @@ import { ViewsModule } from './views/views.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req, res }) => ({ req, res }),
       useGlobalPrefix: true,
-      resolvers: {
-        RatingScalar,
-        BannerTypeScalar,
-      },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), process.env.STATIC_PATH),
@@ -53,6 +48,7 @@ import { ViewsModule } from './views/views.module';
     CommentModule,
     RatingModule,
     BannerModule,
+    NotificationModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

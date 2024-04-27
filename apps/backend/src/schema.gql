@@ -55,16 +55,17 @@ type Banner {
   unpublishDate: DateTime!
   title: String!
   description: String
-
-  """VIDEO | STREAM | IMAGE"""
-  type: BannerTypeScalar!
+  type: BannerTypes!
   bannerImage: FileEntity!
   bannerVideo: FileEntity
   user: User!
 }
 
-"""Custom scalar for banner types"""
-scalar BannerTypeScalar
+enum BannerTypes {
+  VIDEO
+  STREAM
+  IMAGE
+}
 
 type SubCategory {
   id: Int!
@@ -127,6 +128,24 @@ type Comment {
   dislikes: [Rating!]
 }
 
+type Notification {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: Notifications!
+  user: User
+}
+
+enum Notifications {
+  NEW_SUBSCRIBER
+  NEW_LIKE
+  NEW_DISLIKE
+  NEW_COMMENT
+  VIDEO_BLOCK
+  VIDEO_UNBLOCK
+  SYSTEM_UPDATE
+}
+
 type VideoPlaylist {
   video: Video!
 }
@@ -183,18 +202,13 @@ type Query {
   getView(id: Int!): View!
   getComments: [Comment!]!
   getComment(id: Int!): Comment!
-  getRatings(
-    """like | dislike"""
-    type: RatingScalar!
-  ): [Rating!]!
-  getRating(
-    id: Int!
-
-    """like | dislike"""
-    type: RatingScalar!
-  ): Rating!
+  getRatings(type: RatingEnum!): [Rating!]!
+  getRating(id: Int!, type: RatingEnum!): Rating!
   getBanners: [Banner!]!
   getBanner(id: Int!): Banner!
+  getNotifications: [Notification!]!
+  getNotification(id: Int!): Notification!
+  getUserNotifications: [Notification!]!
 }
 
 input QuerySearchInput {
@@ -209,8 +223,10 @@ input QuerySearchInput {
   isPartner: Boolean
 }
 
-"""Custom scalar for like or dislike"""
-scalar RatingScalar
+enum RatingEnum {
+  LIKE
+  DISLIKE
+}
 
 type Mutation {
   removeUser(id: Int!): User!
@@ -252,12 +268,7 @@ type Mutation {
   removeComment(id: Int!): Comment!
   createRating(createRatingInput: CreateRatingInput!): Rating!
   updateRating(updateRatingInput: UpdateRatingInput!): Rating!
-  removeRating(
-    id: Int!
-
-    """like | dislike"""
-    type: RatingScalar!
-  ): Rating!
+  removeRating(id: Int!, type: RatingEnum!): Rating!
   createBanner(createBannerInput: CreateBannerInput!): Banner!
   uploadBannerVideo(file: FileInput!): FileEntity!
   dropBannerVideo(id: Int!): FileEntity!
@@ -265,6 +276,9 @@ type Mutation {
   dropBannerImage(id: Int!): FileEntity!
   updateBanner(updateBannerInput: UpdateBannerInput!): Banner!
   removeBanner(id: Int!): Banner!
+  createNotification(createNotificationInput: CreateNotificationInput!): Notification!
+  updateNotification(updateNotificationInput: UpdateNotificationInput!): Notification!
+  removeNotification(id: Int!): Notification!
 }
 
 input CreateUserInput {
@@ -398,17 +412,13 @@ input UpdateCommentInput {
 input CreateRatingInput {
   videoId: Int
   commentId: Int
-
-  """like | dislike"""
-  type: RatingScalar!
+  type: RatingEnum!
 }
 
 input UpdateRatingInput {
   videoId: Int
   commentId: Int
-
-  """like | dislike"""
-  type: RatingScalar
+  type: RatingEnum
   id: Int!
 }
 
@@ -417,9 +427,6 @@ input CreateBannerInput {
   unpublishDate: DateTime
   title: String!
   description: String
-
-  """VIDEO | STREAM | IMAGE"""
-  type: BannerTypeScalar!
   bannerImageId: Int!
   bannerVideoId: Int
 }
@@ -429,10 +436,18 @@ input UpdateBannerInput {
   unpublishDate: DateTime
   title: String
   description: String
-
-  """VIDEO | STREAM | IMAGE"""
-  type: BannerTypeScalar
   bannerImageId: Int
   bannerVideoId: Int
+  id: Int!
+}
+
+input CreateNotificationInput {
+  userId: Int
+  type: Notifications!
+}
+
+input UpdateNotificationInput {
+  userId: Int
+  type: Notifications
   id: Int!
 }
