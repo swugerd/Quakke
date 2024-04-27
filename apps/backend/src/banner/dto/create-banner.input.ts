@@ -1,4 +1,5 @@
 import { Field, GraphQLISODateTime, InputType, Int } from '@nestjs/graphql';
+import { BannerTypes } from '@prisma/client';
 
 @InputType()
 export class CreateBannerInput {
@@ -14,8 +15,8 @@ export class CreateBannerInput {
   @Field(() => String, { nullable: true })
   description?: string;
 
-  // @Field(() => BannerTypes)
-  // type: BannerTypes;
+  @Field(() => BannerTypes)
+  type: BannerTypes;
 
   @Field(() => Int)
   bannerImageId: number;

@@ -427,6 +427,7 @@ input CreateBannerInput {
   unpublishDate: DateTime
   title: String!
   description: String
+  type: BannerTypes!
   bannerImageId: Int!
   bannerVideoId: Int
 }
@@ -436,6 +437,7 @@ input UpdateBannerInput {
   unpublishDate: DateTime
   title: String
   description: String
+  type: BannerTypes
   bannerImageId: Int
   bannerVideoId: Int
   id: Int!

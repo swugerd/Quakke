@@ -3,6 +3,7 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: 'production' | 'development';
       DATABASE_URL: string;
+      CLIENT_HOST: string;
       SERVER_PORT: string;
       SERVER_HOST: string;
       SERVER_GLOBAL_PREFIX: string;
@@ -11,6 +12,12 @@ declare global {
       JWT_ACCESS_EXP: string;
       JWT_REFRESH_EXP: string;
       STATIC_PATH: string;
+      SMTP_USERNAME: string;
+      SMTP_FROM: string;
+      SMTP_USER_PASSWORD: string;
+      SMTP_HOST: string;
+      SMTP_PORT: string;
+      SMTP_SECURE: boolean;
     }
   }
 }
