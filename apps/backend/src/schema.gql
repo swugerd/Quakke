@@ -185,6 +185,19 @@ type View {
   video: Video!
 }
 
+type Setting {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  privacy: Privacy!
+  user: User!
+}
+
+enum Privacy {
+  OPEN
+  CLOSED
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -216,6 +229,9 @@ type Query {
   getNotifications: [Notification!]!
   getNotification(id: Int!): Notification!
   getUserNotifications: [Notification!]!
+  getSettings: [Setting!]!
+  getSettingsById(id: Int!): Setting!
+  getUserSettings: Setting!
 }
 
 input QuerySearchInput {
@@ -287,6 +303,9 @@ type Mutation {
   createNotification(createNotificationInput: CreateNotificationInput!): Notification!
   updateNotification(updateNotificationInput: UpdateNotificationInput!): Notification!
   removeNotification(id: Int!): Notification!
+  createSettings(createSettingInput: CreateSettingInput!): Setting!
+  updateSettings(updateSettingInput: UpdateSettingInput!): Setting!
+  removeSettings(id: Int!): Setting!
 }
 
 input CreateUserInput {
@@ -466,4 +485,14 @@ input UpdateNotificationInput {
   userId: Int
   type: Notifications
   id: Int!
+}
+
+input CreateSettingInput {
+  userId: Int!
+}
+
+input UpdateSettingInput {
+  id: Int!
+  userId: Int
+  privacy: Privacy
 }

@@ -240,8 +240,8 @@ model Settings {
 
   privacy Privacy @default(OPEN)
 
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?  @unique @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique @map("user_id")
 
   @@map("settings")
 }

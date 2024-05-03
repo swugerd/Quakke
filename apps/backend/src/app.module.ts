@@ -21,6 +21,7 @@ import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
 import { ViewsModule } from './views/views.module';
 import { MailModule } from './mail/mail.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { MailModule } from './mail/mail.module';
     BannerModule,
     NotificationModule,
     MailModule,
+    SettingsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
