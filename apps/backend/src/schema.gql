@@ -177,14 +177,6 @@ enum Roles {
   ADMIN
 }
 
-type View {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  user: User!
-  video: Video!
-}
-
 type Setting {
   id: Int!
   createdAt: DateTime!
@@ -196,6 +188,22 @@ type Setting {
 enum Privacy {
   OPEN
   CLOSED
+}
+
+type Monitoring {
+  viewsCount: Int!
+  likesCount: Int!
+  dislikesCount: Int!
+  commentsCount: Int!
+  subscribersCount: Int!
+}
+
+type View {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+  video: Video!
 }
 
 type Query {
@@ -495,4 +503,8 @@ input UpdateSettingInput {
   id: Int!
   userId: Int
   privacy: Privacy
+}
+
+type Subscription {
+  getMonitoring: Monitoring!
 }

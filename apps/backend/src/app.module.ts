@@ -10,18 +10,19 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { BannerModule } from './banner/banner.module';
 import { CategoriesModule } from './categories/categories.module';
 import { CommentModule } from './comment/comment.module';
+import { MailModule } from './mail/mail.module';
 import { NotificationModule } from './notification/notification.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RatingModule } from './rating/rating.module';
 import { RoleModule } from './role/role.module';
+import { SettingsModule } from './settings/settings.module';
+import { StatsModule } from './stats/stats.module';
 import { SubCategoriesModule } from './sub-categories/sub-categories.module';
 import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
 import { ViewsModule } from './views/views.module';
-import { MailModule } from './mail/mail.module';
-import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { SettingsModule } from './settings/settings.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req, res }) => ({ req, res }),
       useGlobalPrefix: true,
+      installSubscriptionHandlers: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), process.env.STATIC_PATH),
@@ -53,6 +55,7 @@ import { SettingsModule } from './settings/settings.module';
     NotificationModule,
     MailModule,
     SettingsModule,
+    StatsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

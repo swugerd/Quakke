@@ -53,7 +53,7 @@ export class VideoService {
     const uploadedFile = await file.file;
     if (!allowedFileTypes[type].includes(uploadedFile.mimetype)) {
       const errorMessage =
-        type === 'videos'
+        type === 'VIDEOS'
           ? 'File needs to be a video'
           : 'File needs to be an image';
       throw new BadRequestException(errorMessage);
@@ -75,7 +75,7 @@ export class VideoService {
     );
 
     const savedFile =
-      type === 'videos'
+      type === 'VIDEOS'
         ? await this.prismaService.videoFile.create({
             data: {
               extension: uploadedFile.mimetype,
@@ -96,7 +96,7 @@ export class VideoService {
 
   async deleteFile(id: number, type: FilesType) {
     const file =
-      type === 'videos'
+      type === 'VIDEOS'
         ? await this.prismaService.videoFile.findUnique({
             where: {
               id,
@@ -114,7 +114,7 @@ export class VideoService {
     );
 
     const deletedFile =
-      type === 'videos'
+      type === 'VIDEOS'
         ? await this.prismaService.videoFile.delete({
             where: {
               id: file.id,

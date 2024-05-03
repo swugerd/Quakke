@@ -1,9 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { PubSub } from 'graphql-subscriptions';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LikesType } from 'src/types';
 import { CreateRatingInput } from './dto/create-rating.input';
 import { UpdateRatingInput } from './dto/update-rating.input';
+
+const pubSub = new PubSub();
 
 const includeObject = {
   user: true,
@@ -14,7 +17,7 @@ export class RatingService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createRatingInput: CreateRatingInput, user: JwtPayload) {
-    if (createRatingInput.type === 'like') {
+    if (createRatingInput.type === 'LIKE') {
       const isLikeExists = await this.prismaService.like.findFirst({
         where: {
           AND: [
@@ -77,6 +80,8 @@ export class RatingService {
         },
         include: includeObject,
       });
+
+      pubSub.publish('getMonitoring', { createdLike: rating });
 
       return rating;
     }
@@ -148,7 +153,7 @@ export class RatingService {
   }
 
   async findAll(type: LikesType) {
-    if (type === 'like') {
+    if (type === 'LIKE') {
       const rating = await this.prismaService.like.findMany({
         include: includeObject,
       });
@@ -160,11 +165,13 @@ export class RatingService {
       include: includeObject,
     });
 
+    pubSub.publish('getMonitoring', { createdLike: rating });
+
     return rating;
   }
 
   async findOne(id: number, type: LikesType) {
-    if (type === 'like') {
+    if (type === 'LIKE') {
       const rating = await this.prismaService.like.findUnique({
         where: {
           id,
@@ -186,7 +193,7 @@ export class RatingService {
   }
 
   async update(id: number, updateRatingInput: UpdateRatingInput) {
-    if (updateRatingInput.type === 'like') {
+    if (updateRatingInput.type === 'LIKE') {
       const rating = await this.prismaService.like.update({
         where: {
           id,
@@ -216,7 +223,7 @@ export class RatingService {
   }
 
   async remove(id: number, type: LikesType) {
-    if (type === 'like') {
+    if (type === 'LIKE') {
       const rating = await this.prismaService.like.delete({
         where: {
           id,

@@ -1,7 +1,7 @@
-export type FilesType = 'images' | 'videos';
-export type LikesType = 'like' | 'dislike';
+export type FilesType = 'IMAGES' | 'VIDEOS';
+export type LikesType = 'LIKE' | 'DISLIKE';
 
 export enum RatingEnum {
-  LIKE,
-  DISLIKE,
+  LIKE = 'LIKE',
+  DISLIKE = 'DISLIKE',
 }
