@@ -34,6 +34,10 @@ type AuthResponse {
   accessToken: String!
 }
 
+type EmailResponse {
+  message: String!
+}
+
 type LogoutResponse {
   success: Boolean!
 }
@@ -186,6 +190,9 @@ type Query {
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
   getUser(id: Int!): User!
   getMe: ProfileResponse!
+  sendEmailVerification(email: String!): EmailResponse!
+  verifyEmail(token: String!): EmailResponse!
+  sendEmailForgotPassword(email: String!): EmailResponse!
   getRoles: [Role!]!
   getRole(id: Int!): Role!
   getCategories: [Category!]!
@@ -236,6 +243,7 @@ type Mutation {
   login(input: SignInInput!): AuthResponse!
   logout: LogoutResponse!
   refreshTokens: AuthResponse!
+  setNewPassord(input: ResetPasswordInput!): EmailResponse!
   createRole(createRoleInput: CreateRoleInput!): Role!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
   removeRole(id: Int!): Role!
@@ -306,6 +314,12 @@ input SignUpInput {
 input SignInInput {
   credentials: String!
   password: String!
+}
+
+input ResetPasswordInput {
+  email: String!
+  newPassword: String!
+  token: String!
 }
 
 input CreateRoleInput {

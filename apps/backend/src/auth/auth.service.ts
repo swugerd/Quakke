@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -9,12 +11,15 @@ import { JwtService } from '@nestjs/jwt';
 import { Roles, User } from '@prisma/client';
 import { compareSync } from 'bcrypt';
 import { add } from 'date-fns';
+import { mailMinutesToExpire } from 'src/constants';
 import config from 'src/constants/config';
+import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { v4 } from 'uuid';
-import { SignInInput } from './dto/signin-input';
-import { SignUpInput } from './dto/signup-input';
+import { ResetPasswordInput } from './dto/reset-password.input';
+import { SignInInput } from './dto/signin.input';
+import { SignUpInput } from './dto/signup.input';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +29,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
 
   async refreshTokens(refreshToken: string, agent: string) {
@@ -53,9 +59,7 @@ export class AuthService {
       });
 
     if (userExists) {
-      throw new ConflictException(
-        'Пользователь с таким email уже зарегистрирован',
-      );
+      throw new ConflictException('User with this email already registered');
     }
 
     const user = await this.userService.create(dto).catch((err) => {
@@ -134,6 +138,152 @@ export class AuthService {
     });
 
     return refreshToken;
+  }
+
+  async createEmailToken(email: string) {
+    const emailVerification =
+      await this.prismaService.emailVerification.findUnique({
+        where: {
+          email,
+        },
+      });
+
+    if (
+      emailVerification &&
+      (new Date().getTime() - emailVerification.timestamp.getTime()) / 60000 <
+        mailMinutesToExpire
+    ) {
+      throw new BadRequestException(
+        `Email already sent recently (${mailMinutesToExpire} min)`,
+      );
+    }
+
+    await this.prismaService.emailVerification.upsert({
+      where: {
+        email,
+      },
+      create: {
+        email: email,
+        token: v4(),
+        timestamp: new Date(),
+      },
+      update: {
+        email: email,
+        token: v4(),
+        timestamp: new Date(),
+      },
+    });
+
+    const isEmailSent = await this.mailService.sendUserConfirmation(email);
+
+    if (isEmailSent) {
+      return { message: 'Email sent' };
+    }
+
+    return new BadRequestException('An error occurried while sending email');
+  }
+
+  async createForgottenPasswordToken(email: string) {
+    const forgottenPassword =
+      await this.prismaService.forgottenPassword.findUnique({
+        where: {
+          email,
+        },
+      });
+
+    if (
+      forgottenPassword &&
+      (new Date().getTime() - forgottenPassword.timestamp.getTime()) / 60000 <
+        mailMinutesToExpire
+    ) {
+      throw new BadRequestException(
+        `Email already sent recently (${mailMinutesToExpire} min)`,
+      );
+    }
+
+    await this.prismaService.forgottenPassword.upsert({
+      where: {
+        email,
+      },
+      create: {
+        email: email,
+        token: (Math.floor(Math.random() * 900000) + 100000).toString(),
+        timestamp: new Date(),
+      },
+      update: {
+        email: email,
+        token: (Math.floor(Math.random() * 900000) + 100000).toString(),
+        timestamp: new Date(),
+      },
+    });
+
+    const isEmailSent = await this.mailService.sendForgotPassword(email);
+
+    if (isEmailSent) {
+      return { message: 'Email sent' };
+    }
+
+    return new BadRequestException('An error occurried while sending email');
+  }
+
+  async verifyEmail(token: string) {
+    const emailVerif = await this.prismaService.emailVerification.findUnique({
+      where: {
+        token,
+      },
+    });
+
+    if (emailVerif && emailVerif.email) {
+      const userFromDb = await this.prismaService.user.findUnique({
+        where: {
+          email: emailVerif.email,
+        },
+      });
+
+      if (userFromDb) {
+        await this.prismaService.emailVerification.delete({
+          where: {
+            id: emailVerif.id,
+          },
+        });
+
+        return { message: 'Email verified' };
+      }
+    }
+
+    throw new ForbiddenException('Incorrect token');
+  }
+
+  async verifyPasswordChange(resetPasswordInput: ResetPasswordInput) {
+    const dbForgottenPassword =
+      await this.prismaService.forgottenPassword.findUnique({
+        where: {
+          token: resetPasswordInput.token,
+        },
+      });
+
+    if (!dbForgottenPassword) {
+      return { message: 'Incorrect token' };
+    }
+
+    if (dbForgottenPassword.email !== resetPasswordInput.email) {
+      return {
+        message: `Incorrect email for token - ${dbForgottenPassword.token}`,
+      };
+    }
+
+    await this.userService.setPassword(
+      dbForgottenPassword.email,
+      resetPasswordInput.newPassword,
+    );
+
+    await this.prismaService.forgottenPassword.delete({
+      where: {
+        id: dbForgottenPassword.id,
+      },
+    });
+
+    return { message: 'Password chnaged' };
   }
 
   deleteRefreshToken(token: string) {

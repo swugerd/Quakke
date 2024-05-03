@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import { genSaltSync, hash } from 'bcrypt';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { CreateUserInput } from './dto/create-user.input';
@@ -124,6 +125,24 @@ export class UserService {
     return this.prismaService.user.delete({
       where: { id },
     });
+  }
+
+  async setPassword(email: string, newPassword: string) {
+    const userFromDb = await this.prismaService.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!userFromDb)
+      throw new HttpException('LOGIN.USER_NOT_FOUND', HttpStatus.NOT_FOUND);
+
+    this.update({
+      id: userFromDb.id,
+      password: await bcrypt.hash(newPassword, 10),
+    });
+
+    return true;
   }
 
   private async hashPassword(password: string) {

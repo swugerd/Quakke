@@ -1,14 +1,16 @@
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Response } from 'express';
 import config from 'src/constants/config';
 import { AuthService } from './auth.service';
 import { Cookie, Public, UserAgent } from './decorators';
-import { SignInInput } from './dto/signin-input';
-import { SignUpInput } from './dto/signup-input';
+import { ResetPasswordInput } from './dto/reset-password.input';
+import { SignInInput } from './dto/signin.input';
+import { SignUpInput } from './dto/signup.input';
 import { Tokens } from './interfaces';
 import { AuthResponse } from './responses/auth-response';
+import { EmailResponse } from './responses/email-response';
 import { LogoutResponse } from './responses/logout-response';
 
 const REFRESH_TOKEN = 'refreshToken';
@@ -100,6 +102,32 @@ export class AuthResolver {
     this.setRefreshTokenToCookies(tokens, res);
 
     return { accessToken: tokens.accessToken };
+  }
+
+  @Public()
+  @Query(() => EmailResponse)
+  public async sendEmailVerification(@Args('email') email: string) {
+    return await this.authService.createEmailToken(email);
+  }
+
+  @Public()
+  @Query(() => EmailResponse)
+  public async verifyEmail(@Args('token') token: string) {
+    return await this.authService.verifyEmail(token);
+  }
+
+  @Public()
+  @Query(() => EmailResponse)
+  public async sendEmailForgotPassword(@Args('email') email: string) {
+    return await this.authService.createForgottenPasswordToken(email);
+  }
+
+  @Public()
+  @Mutation(() => EmailResponse)
+  public async setNewPassord(
+    @Args('input') resetPasswordInput: ResetPasswordInput,
+  ) {
+    return await this.authService.verifyPasswordChange(resetPasswordInput);
   }
 
   private setRefreshTokenToCookies(tokens: Tokens, res: Response): void {
