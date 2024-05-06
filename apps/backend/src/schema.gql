@@ -206,6 +206,22 @@ type View {
   video: Video!
 }
 
+type Complaint {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  reason: ComplaintReasons!
+  message: String!
+  user: User
+  video: Video
+}
+
+enum ComplaintReasons {
+  NEGATIVE
+  INCONSISTENCY
+  RACISM
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -240,6 +256,8 @@ type Query {
   getSettings: [Setting!]!
   getSettingsById(id: Int!): Setting!
   getUserSettings: Setting!
+  getComplaints: [Complaint!]!
+  getComplaint(id: Int!): Complaint!
 }
 
 input QuerySearchInput {
@@ -314,6 +332,9 @@ type Mutation {
   createSettings(createSettingInput: CreateSettingInput!): Setting!
   updateSettings(updateSettingInput: UpdateSettingInput!): Setting!
   removeSettings(id: Int!): Setting!
+  createComplaint(createComplaintInput: CreateComplaintInput!): Complaint!
+  updateComplaint(updateComplaintInput: UpdateComplaintInput!): Complaint!
+  removeComplaint(id: Int!): Complaint!
 }
 
 input CreateUserInput {
@@ -503,6 +524,21 @@ input UpdateSettingInput {
   id: Int!
   userId: Int
   privacy: Privacy
+}
+
+input CreateComplaintInput {
+  reason: ComplaintReasons!
+  message: String!
+  userId: Int
+  videoId: Int
+}
+
+input UpdateComplaintInput {
+  reason: ComplaintReasons
+  message: String
+  userId: Int
+  videoId: Int
+  id: Int!
 }
 
 type Subscription {

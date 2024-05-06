@@ -211,7 +211,7 @@ model View {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
-  video   Video? @relation(fields: [videoId], references: [id])
+  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId Int?   @map("video_id")
 
   user   User? @relation(fields: [userId], references: [id])
