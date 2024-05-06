@@ -222,6 +222,21 @@ enum ComplaintReasons {
   RACISM
 }
 
+type PartnerRequest {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  message: String!
+  status: PartnerRequestStatuses!
+  user: User!
+}
+
+enum PartnerRequestStatuses {
+  OPEN
+  APPROVED
+  REJECTED
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -258,6 +273,8 @@ type Query {
   getUserSettings: Setting!
   getComplaints: [Complaint!]!
   getComplaint(id: Int!): Complaint!
+  getPartnerRequests: [PartnerRequest!]!
+  getPartnerRequest(id: Int!): PartnerRequest!
 }
 
 input QuerySearchInput {
@@ -335,6 +352,9 @@ type Mutation {
   createComplaint(createComplaintInput: CreateComplaintInput!): Complaint!
   updateComplaint(updateComplaintInput: UpdateComplaintInput!): Complaint!
   removeComplaint(id: Int!): Complaint!
+  createPartnerRequest(createPartnerRequestInput: CreatePartnerRequestInput!): PartnerRequest!
+  updatePartnerRequest(updatePartnerRequestInput: UpdatePartnerRequestInput!): PartnerRequest!
+  removePartnerRequest(id: Int!): PartnerRequest!
 }
 
 input CreateUserInput {
@@ -539,6 +559,16 @@ input UpdateComplaintInput {
   userId: Int
   videoId: Int
   id: Int!
+}
+
+input CreatePartnerRequestInput {
+  message: String!
+}
+
+input UpdatePartnerRequestInput {
+  message: String
+  id: Int!
+  status: PartnerRequestStatuses
 }
 
 type Subscription {

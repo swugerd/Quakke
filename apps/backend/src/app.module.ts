@@ -24,6 +24,7 @@ import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
 import { ViewsModule } from './views/views.module';
 import { ComplaintModule } from './complaint/complaint.module';
+import { PartnerRequestModule } from './partner-request/partner-request.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { ComplaintModule } from './complaint/complaint.module';
     SettingsModule,
     StatsModule,
     ComplaintModule,
+    PartnerRequestModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

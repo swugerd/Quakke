@@ -395,10 +395,10 @@ model PartnerRequest {
   updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
 
   message String
-  status  PartnerRequestStatuses
+  status  PartnerRequestStatuses @default(OPEN)
 
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
 
   @@map("partner_requests")
 }
