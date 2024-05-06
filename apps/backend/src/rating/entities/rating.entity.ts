@@ -13,5 +13,5 @@ export class Rating {
   updatedAt: Date;
 
   @Field(() => User)
-  user: User;
+  user: () => User;
 }

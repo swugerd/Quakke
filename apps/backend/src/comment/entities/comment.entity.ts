@@ -18,10 +18,10 @@ export class Comment {
   text: string;
 
   @Field(() => User)
-  user: User;
+  user: () => User;
 
   @Field(() => Video)
-  video: Video;
+  video: () => Video;
 
   @Field(() => Comment, { nullable: true })
   parent?: Comment;

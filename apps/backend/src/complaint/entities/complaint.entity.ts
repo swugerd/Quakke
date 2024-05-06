@@ -27,7 +27,7 @@ export class Complaint {
   message: string;
 
   @Field(() => User, { nullable: true })
-  user?: User;
+  user?: () => User;
 
   @Field(() => Video, { nullable: true })
   video?: Video;

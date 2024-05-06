@@ -42,7 +42,7 @@ export class Banner {
   bannerVideo?: BannerVideo;
 
   @Field(() => User)
-  user: User;
+  user: () => User;
 }
 
 registerEnumType(BannerTypes, {

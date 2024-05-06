@@ -32,7 +32,7 @@ export class Video {
   userId: number;
 
   @Field(() => User)
-  author: User;
+  author: () => User;
 
   @Field(() => FileEntity)
   videoFile: VideoFile;

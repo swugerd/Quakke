@@ -2,46 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime
-  email: String!
-  login: String!
-  name: String!
-  password: String
-  isBanned: Boolean!
-  isPartner: Boolean!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type UserPagination {
-  data: [User!]!
-  count: Int!
-}
-
-type ProfileResponse {
-  id: String!
-  email: String!
-  role: String!
-}
-
-type AuthResponse {
-  accessToken: String!
-}
-
-type EmailResponse {
-  message: String!
-}
-
-type LogoutResponse {
-  success: Boolean!
-}
-
 type FileEntity {
   id: Int!
   createdAt: DateTime!
@@ -50,6 +10,11 @@ type FileEntity {
   size: Int!
   extension: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Banner {
   id: Int!
@@ -71,6 +36,13 @@ enum BannerTypes {
   IMAGE
 }
 
+type Rating {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+}
+
 type SubCategory {
   id: Int!
   createdAt: DateTime!
@@ -84,13 +56,6 @@ type Category {
   updatedAt: DateTime
   name: String!
   subCategories: [SubCategory!]!
-}
-
-type Rating {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  user: User!
 }
 
 type Tag {
@@ -219,6 +184,59 @@ type Setting {
 enum Privacy {
   OPEN
   CLOSED
+}
+
+type SelectedCategory {
+  category: Category!
+}
+
+type User {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  email: String!
+  login: String!
+  name: String!
+  password: String
+  isBanned: Boolean!
+  isPartner: Boolean!
+  role: Role!
+  selectedCategories: [SelectedCategory!]
+  banners: [Banner!]
+  comments: [Comment!]
+  complaints: [Complaint!]
+  likes: [Rating!]
+  dislikes: [Rating!]
+  notifications: [Notification!]
+  partnerRequests: [PartnerRequest!]
+  playlists: [Playlist!]
+  settings: [Setting!]!
+  subscribers: [User!]
+  userAvatar: FileEntity
+  videos: [Video!]
+}
+
+type UserPagination {
+  data: [User!]!
+  count: Int!
+}
+
+type ProfileResponse {
+  id: String!
+  email: String!
+  role: String!
+}
+
+type AuthResponse {
+  accessToken: String!
+}
+
+type EmailResponse {
+  message: String!
+}
+
+type LogoutResponse {
+  success: Boolean!
 }
 
 type Monitoring {

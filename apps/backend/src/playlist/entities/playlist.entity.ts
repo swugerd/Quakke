@@ -21,7 +21,7 @@ export class Playlist {
   privacy: Privacy;
 
   @Field(() => User)
-  user: User;
+  user: () => User;
 
   @Field(() => [VideoPlaylist], { nullable: true })
   videos: VideoPlaylist[];

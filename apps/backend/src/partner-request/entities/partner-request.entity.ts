@@ -26,7 +26,7 @@ export class PartnerRequest {
   status: PartnerRequestStatuses;
 
   @Field(() => User)
-  user: User;
+  user: () => User;
 }
 
 registerEnumType(PartnerRequestStatuses, {

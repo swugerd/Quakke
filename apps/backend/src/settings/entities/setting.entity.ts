@@ -23,7 +23,7 @@ export class Setting {
   privacy: Privacy;
 
   @Field(() => User)
-  user: User;
+  user: () => User;
 }
 
 registerEnumType(Privacy, {

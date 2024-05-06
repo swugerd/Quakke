@@ -7,6 +7,27 @@ import { CreateUserInput } from './dto/create-user.input';
 import { QuerySearchInput } from './dto/query-search.input';
 import { UpdateUserInput } from './dto/update-user.input';
 
+const includeObject = {
+  selectedCategories: {
+    select: {
+      category: true,
+    },
+  },
+  banners: true,
+  comments: true,
+  complaints: true,
+  dislikes: true,
+  history: true,
+  likes: true,
+  notifications: true,
+  partnerRequests: true,
+  playlists: true,
+  role: true,
+  settings: true,
+  subscribers: true,
+  userAvatar: true,
+  videos: true,
+};
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -19,6 +40,7 @@ export class UserService {
         ...dto,
         password: hashedPassword,
       },
+      include: includeObject,
     });
 
     return user;
@@ -30,13 +52,16 @@ export class UserService {
       data: {
         ...dto,
       },
+      include: includeObject,
     });
 
     return user;
   }
 
   async getAll() {
-    const users = await this.prismaService.user.findMany();
+    const users = await this.prismaService.user.findMany({
+      include: includeObject,
+    });
 
     return users;
   }
@@ -46,6 +71,7 @@ export class UserService {
       where: {},
       skip: query.offset,
       take: query.limit,
+      include: includeObject,
     };
 
     if (query.isBanned) {
@@ -86,14 +112,17 @@ export class UserService {
   }
 
   async getById(id: number) {
-    const user = this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: {
         id,
       },
+      include: includeObject,
     });
+
     if (!user) {
       return null;
     }
+
     return user;
   }
 
@@ -102,10 +131,13 @@ export class UserService {
       where: {
         email,
       },
+      include: includeObject,
     });
+
     if (!user) {
       return null;
     }
+
     return user;
   }
 
@@ -124,6 +156,7 @@ export class UserService {
 
     return this.prismaService.user.delete({
       where: { id },
+      include: includeObject,
     });
   }
 

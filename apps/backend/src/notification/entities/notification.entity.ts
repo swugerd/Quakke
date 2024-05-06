@@ -23,7 +23,7 @@ export class Notification {
   type: Notifications;
 
   @Field(() => User, { nullable: true })
-  user?: User;
+  user?: () => User;
 }
 
 registerEnumType(Notifications, {
