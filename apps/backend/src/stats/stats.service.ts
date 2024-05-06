@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from 'src/prisma/prisma.service';
-
-const pubSub = new PubSub();
 
 @Injectable()
 export class StatsService {
@@ -42,8 +39,6 @@ export class StatsService {
         },
       }),
     ]);
-
-    pubSub.asyncIterator('getMonitoring');
 
     return {
       viewsCount:

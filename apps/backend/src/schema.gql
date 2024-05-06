@@ -132,6 +132,22 @@ type Comment {
   dislikes: [Rating!]
 }
 
+type Complaint {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  reason: ComplaintReasons!
+  message: String!
+  user: User
+  video: Video
+}
+
+enum ComplaintReasons {
+  NEGATIVE
+  INCONSISTENCY
+  RACISM
+}
+
 type Notification {
   id: Int!
   createdAt: DateTime!
@@ -148,6 +164,21 @@ enum Notifications {
   VIDEO_BLOCK
   VIDEO_UNBLOCK
   SYSTEM_UPDATE
+}
+
+type PartnerRequest {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  message: String!
+  status: PartnerRequestStatuses!
+  user: User!
+}
+
+enum PartnerRequestStatuses {
+  OPEN
+  APPROVED
+  REJECTED
 }
 
 type VideoPlaylist {
@@ -206,37 +237,6 @@ type View {
   video: Video!
 }
 
-type Complaint {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  reason: ComplaintReasons!
-  message: String!
-  user: User
-  video: Video
-}
-
-enum ComplaintReasons {
-  NEGATIVE
-  INCONSISTENCY
-  RACISM
-}
-
-type PartnerRequest {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  message: String!
-  status: PartnerRequestStatuses!
-  user: User!
-}
-
-enum PartnerRequestStatuses {
-  OPEN
-  APPROVED
-  REJECTED
-}
-
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchInput!): UserPagination!
@@ -271,6 +271,7 @@ type Query {
   getSettings: [Setting!]!
   getSettingsById(id: Int!): Setting!
   getUserSettings: Setting!
+  getMonitoring: Monitoring!
   getComplaints: [Complaint!]!
   getComplaint(id: Int!): Complaint!
   getPartnerRequests: [PartnerRequest!]!
@@ -569,8 +570,4 @@ input UpdatePartnerRequestInput {
   message: String
   id: Int!
   status: PartnerRequestStatuses
-}
-
-type Subscription {
-  getMonitoring: Monitoring!
 }
