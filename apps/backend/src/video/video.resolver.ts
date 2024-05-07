@@ -1,10 +1,10 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
-import { FileInput } from 'src/utils/dto/file.input';
+import { FileDto } from 'src/utils/dto/file.dto';
 import { FileEntity } from 'src/utils/entities/file.entity';
-import { CreateVideoInput } from './dto/create-video.input';
-import { UpdateVideoInput } from './dto/update-video.input';
+import { CreateVideoDto } from './dto/create-video.dto';
+import { UpdateVideoDto } from './dto/update-video.dto';
 import { Video } from './entities/video.entity';
 import { VideoService } from './video.service';
 
@@ -14,14 +14,14 @@ export class VideoResolver {
 
   @Mutation(() => Video)
   createVideo(
-    @Args('createVideoInput') createVideoInput: CreateVideoInput,
+    @Args('dto') dto: CreateVideoDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.videoService.create(createVideoInput, user);
+    return this.videoService.create(dto, user);
   }
 
   @Mutation(() => FileEntity)
-  uploadVideo(@Args('file') file: FileInput) {
+  uploadVideo(@Args('file') file: FileDto) {
     return this.videoService.uploadFile(file, 'VIDEOS');
   }
 
@@ -31,7 +31,7 @@ export class VideoResolver {
   }
 
   @Mutation(() => FileEntity)
-  uploadPreview(@Args('file') file: FileInput) {
+  uploadPreview(@Args('file') file: FileDto) {
     return this.videoService.uploadFile(file, 'IMAGES');
   }
 
@@ -51,8 +51,8 @@ export class VideoResolver {
   }
 
   @Mutation(() => Video)
-  updateVideo(@Args('updateVideoInput') updateVideoInput: UpdateVideoInput) {
-    return this.videoService.update(updateVideoInput.id, updateVideoInput);
+  updateVideo(@Args('dto') dto: UpdateVideoDto) {
+    return this.videoService.update(dto.id, dto);
   }
 
   @Mutation(() => Video)

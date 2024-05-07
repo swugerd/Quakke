@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateTagInput } from './dto/create-tag.input';
-import { UpdateTagInput } from './dto/update-tag.input';
+import { CreateTagDto } from './dto/create-tag.input';
+import { UpdateTagDto } from './dto/update-tag.input';
 
 @Injectable()
 export class TagService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createTagInput: CreateTagInput) {
+  async create(dto: CreateTagDto) {
     const tag = await this.prismaService.tag.create({
-      data: createTagInput,
+      data: dto,
     });
 
     return tag;
@@ -31,12 +31,12 @@ export class TagService {
     return tag;
   }
 
-  async update(id: number, updateTagInput: UpdateTagInput) {
+  async update(id: number, dto: UpdateTagDto) {
     const tag = await this.prismaService.tag.update({
       where: {
         id,
       },
-      data: updateTagInput,
+      data: dto,
     });
 
     return tag;

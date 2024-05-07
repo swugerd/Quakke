@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 
@@ -36,7 +36,7 @@ describe('UserResolver', () => {
 
   describe('createUser', () => {
     it('should create a new user', async () => {
-      const createUserInput: CreateUserInput = {
+      const createUserInput: CreateUserDto = {
         email: 'email@mail.ru',
         login: 'login',
         name: 'name',
@@ -100,7 +100,7 @@ describe('UserResolver', () => {
   });
 
   describe('getUser', () => {
-    it('should return user by ID', async () => {
+    it('should return user by Int', async () => {
       const userId = 1;
       const user: User = {
         id: 1,
@@ -124,9 +124,9 @@ describe('UserResolver', () => {
   });
 
   describe('updateUser', () => {
-    it('should update user by ID', async () => {
+    it('should update user by Int', async () => {
       const userId = 1;
-      const updateUserInput: UpdateUserInput = {
+      const dto: UpdateUserDto = {
         id: userId,
         name: 'name',
       };
@@ -139,17 +139,17 @@ describe('UserResolver', () => {
         userId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ...updateUserInput,
+        ...dto,
       };
 
       jest.spyOn(service, 'update').mockResolvedValue(updatedUser as User);
 
-      expect(await resolver.updateUser(updateUserInput)).toEqual(updatedUser);
+      expect(await resolver.updateUser(dto)).toEqual(updatedUser);
     });
   });
 
   describe('removeUser', () => {
-    it('should remove user by ID', async () => {
+    it('should remove user by Int', async () => {
       const userId = 1;
       const removedUser: User = {
         id: userId,

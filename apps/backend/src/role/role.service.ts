@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { CreateRoleInput } from './dto/create-role.input';
-import { UpdateRoleInput } from './dto/update-role.input';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
 export class RoleService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createRoleInput: CreateRoleInput) {
+  async create(dto: CreateRoleDto) {
     const role = await this.prismaService.role.create({
-      data: createRoleInput,
+      data: dto,
     });
 
     return role;
@@ -31,12 +31,12 @@ export class RoleService {
     return role;
   }
 
-  async update(id: number, updateRoleInput: UpdateRoleInput) {
+  async update(id: number, dto: UpdateRoleDto) {
     const role = await this.prismaService.role.update({
       where: {
         id,
       },
-      data: updateRoleInput,
+      data: dto,
     });
 
     return role;

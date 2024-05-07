@@ -3,8 +3,8 @@ import { PubSub } from 'graphql-subscriptions';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LikesType } from 'src/types';
-import { CreateRatingInput } from './dto/create-rating.input';
-import { UpdateRatingInput } from './dto/update-rating.input';
+import { CreateRatingDto } from './dto/create-rating.dto';
+import { UpdateRatingDto } from './dto/update-rating.dto';
 
 const pubSub = new PubSub();
 
@@ -16,18 +16,18 @@ const includeObject = {
 export class RatingService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createRatingInput: CreateRatingInput, user: JwtPayload) {
-    if (createRatingInput.type === 'LIKE') {
+  async create(dto: CreateRatingDto, user: JwtPayload) {
+    if (dto.type === 'LIKE') {
       const isLikeExists = await this.prismaService.like.findFirst({
         where: {
           AND: [
             {
               OR: [
                 {
-                  videoId: createRatingInput.videoId,
+                  videoId: dto.videoId,
                 },
                 {
-                  commentId: createRatingInput.commentId,
+                  commentId: dto.commentId,
                 },
               ],
             },
@@ -50,10 +50,10 @@ export class RatingService {
             {
               OR: [
                 {
-                  videoId: createRatingInput.videoId,
+                  videoId: dto.videoId,
                 },
                 {
-                  commentId: createRatingInput.commentId,
+                  commentId: dto.commentId,
                 },
               ],
             },
@@ -74,8 +74,8 @@ export class RatingService {
 
       const rating = await this.prismaService.like.create({
         data: {
-          commentId: createRatingInput.commentId,
-          videoId: createRatingInput.videoId,
+          commentId: dto.commentId,
+          videoId: dto.videoId,
           userId: user.id,
         },
         include: includeObject,
@@ -92,10 +92,10 @@ export class RatingService {
           {
             OR: [
               {
-                videoId: createRatingInput.videoId,
+                videoId: dto.videoId,
               },
               {
-                commentId: createRatingInput.commentId,
+                commentId: dto.commentId,
               },
             ],
           },
@@ -118,10 +118,10 @@ export class RatingService {
           {
             OR: [
               {
-                videoId: createRatingInput.videoId,
+                videoId: dto.videoId,
               },
               {
-                commentId: createRatingInput.commentId,
+                commentId: dto.commentId,
               },
             ],
           },
@@ -142,8 +142,8 @@ export class RatingService {
 
     const rating = await this.prismaService.dislike.create({
       data: {
-        commentId: createRatingInput.commentId,
-        videoId: createRatingInput.videoId,
+        commentId: dto.commentId,
+        videoId: dto.videoId,
         userId: user.id,
       },
       include: includeObject,
@@ -192,15 +192,15 @@ export class RatingService {
     return rating;
   }
 
-  async update(id: number, updateRatingInput: UpdateRatingInput) {
-    if (updateRatingInput.type === 'LIKE') {
+  async update(id: number, dto: UpdateRatingDto) {
+    if (dto.type === 'LIKE') {
       const rating = await this.prismaService.like.update({
         where: {
           id,
         },
         data: {
-          commentId: updateRatingInput.commentId,
-          videoId: updateRatingInput.videoId,
+          commentId: dto.commentId,
+          videoId: dto.videoId,
         },
         include: includeObject,
       });
@@ -213,8 +213,8 @@ export class RatingService {
         id,
       },
       data: {
-        commentId: updateRatingInput.commentId,
-        videoId: updateRatingInput.videoId,
+        commentId: dto.commentId,
+        videoId: dto.videoId,
       },
       include: includeObject,
     });

@@ -5,9 +5,9 @@ import { Response } from 'express';
 import config from 'src/constants/config';
 import { AuthService } from './auth.service';
 import { Cookie, Public, UserAgent } from './decorators';
-import { ResetPasswordInput } from './dto/reset-password.input';
-import { SignInInput } from './dto/signin.input';
-import { SignUpInput } from './dto/signup.input';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { SignInDto } from './dto/signin.dto';
+import { SignUpDto } from './dto/signup.dto';
 import { Tokens } from './interfaces';
 import { AuthResponse } from './responses/auth-response';
 import { EmailResponse } from './responses/email-response';
@@ -25,15 +25,15 @@ export class AuthResolver {
   @Public()
   @Mutation(() => AuthResponse)
   async register(
-    @Args('input') input: SignUpInput,
+    @Args('dto') dto: SignUpDto,
     @Context('res') res: Response,
     @UserAgent('userAgent') agent: string,
   ) {
-    const tokens = await this.authService.register(input, agent);
+    const tokens = await this.authService.register(dto, agent);
 
     if (!tokens) {
       throw new Error(
-        `Failed to register user with data ${JSON.stringify(input)}`,
+        `Failed to register user with data ${JSON.stringify(dto)}`,
       );
     }
 
@@ -45,15 +45,15 @@ export class AuthResolver {
   @Public()
   @Mutation(() => AuthResponse)
   async login(
-    @Args('input') input: SignInInput,
+    @Args('dto') dto: SignInDto,
     @Context('res') res: Response,
     @UserAgent('userAgent') agent: string,
   ) {
-    const tokens = await this.authService.login(input, agent);
+    const tokens = await this.authService.login(dto, agent);
 
     if (!tokens) {
       throw new BadRequestException(
-        `Can't login with data: ${JSON.stringify(input)}`,
+        `Can't login with data: ${JSON.stringify(dto)}`,
       );
     }
 
@@ -124,10 +124,8 @@ export class AuthResolver {
 
   @Public()
   @Mutation(() => EmailResponse)
-  public async setNewPassord(
-    @Args('input') resetPasswordInput: ResetPasswordInput,
-  ) {
-    return await this.authService.verifyPasswordChange(resetPasswordInput);
+  public async setNewPassord(@Args('dto') dto: ResetPasswordDto) {
+    return await this.authService.verifyPasswordChange(dto);
   }
 
   private setRefreshTokenToCookies(tokens: Tokens, res: Response): void {

@@ -8,7 +8,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { BannerModule } from './banner/banner.module';
-import { CategoriesModule } from './categories/categories.module';
+import { Categoryodule } from './category/category.module';
 import { CommentModule } from './comment/comment.module';
 import { ComplaintModule } from './complaint/complaint.module';
 import { MailModule } from './mail/mail.module';
@@ -20,7 +20,7 @@ import { RatingModule } from './rating/rating.module';
 import { RoleModule } from './role/role.module';
 import { SettingsModule } from './settings/settings.module';
 import { StatsModule } from './stats/stats.module';
-import { SubCategoriesModule } from './sub-categories/sub-categories.module';
+import { SubCategoryModule } from './sub-category/sub-category.module';
 import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
@@ -54,8 +54,8 @@ import { ViewsModule } from './views/views.module';
     AuthModule,
     PrismaModule,
     RoleModule,
-    CategoriesModule,
-    SubCategoriesModule,
+    Categoryodule,
+    SubCategoryModule,
     TagModule,
     VideoModule,
     PlaylistModule,

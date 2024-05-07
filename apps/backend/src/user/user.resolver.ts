@@ -1,9 +1,9 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtPayload } from 'src/auth/interfaces';
 import { CurrentUser } from '../../src/auth/decorators';
-import { CreateUserInput } from './dto/create-user.input';
-import { QuerySearchInput } from './dto/query-search.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserDto } from './dto/create-user.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserPagination } from './entities/user-pagination.entity';
 import { User } from './entities/user.entity';
 import { ProfileResponse } from './responses/profile-response';
@@ -19,7 +19,7 @@ export class UserResolver {
   }
 
   @Query(() => UserPagination)
-  getUsersWithQuery(@Args('query') query: QuerySearchInput) {
+  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
     return this.userService.getAllWithQuery(query);
   }
 
@@ -39,12 +39,12 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  createUser(@Args('input') input: CreateUserInput) {
-    return this.userService.create(input);
+  createUser(@Args('dto') dto: CreateUserDto) {
+    return this.userService.create(dto);
   }
 
   @Mutation(() => User)
-  updateUser(@Args('input') input: UpdateUserInput) {
-    return this.userService.update(input);
+  updateUser(@Args('dto') dto: UpdateUserDto) {
+    return this.userService.update(dto);
   }
 }

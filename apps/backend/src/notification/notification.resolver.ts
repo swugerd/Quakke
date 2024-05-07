@@ -1,8 +1,8 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
-import { CreateNotificationInput } from './dto/create-notification.input';
-import { UpdateNotificationInput } from './dto/update-notification.input';
+import { CreateNotificationDto } from './dto/create-notification.dto';
+import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { Notification } from './entities/notification.entity';
 import { NotificationService } from './notification.service';
 
@@ -12,10 +12,10 @@ export class NotificationResolver {
 
   @Mutation(() => Notification)
   createNotification(
-    @Args('createNotificationInput')
-    createNotificationInput: CreateNotificationInput,
+    @Args('dto')
+    dto: CreateNotificationDto,
   ) {
-    return this.notificationService.create(createNotificationInput);
+    return this.notificationService.create(dto);
   }
 
   @Query(() => [Notification])
@@ -30,13 +30,10 @@ export class NotificationResolver {
 
   @Mutation(() => Notification)
   updateNotification(
-    @Args('updateNotificationInput')
-    updateNotificationInput: UpdateNotificationInput,
+    @Args('dto')
+    dto: UpdateNotificationDto,
   ) {
-    return this.notificationService.update(
-      updateNotificationInput.id,
-      updateNotificationInput,
-    );
+    return this.notificationService.update(dto.id, dto);
   }
 
   @Mutation(() => Notification)

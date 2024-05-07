@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Role } from '@prisma/client';
-import { CreateRoleInput } from './dto/create-role.input';
-import { UpdateRoleInput } from './dto/update-role.input';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleResolver } from './role.resolver';
 import { RoleService } from './role.service';
 
@@ -36,17 +36,17 @@ describe('RoleResolver', () => {
 
   describe('createRole', () => {
     it('should create a new role', async () => {
-      const createRoleInput: CreateRoleInput = { name: 'ADMIN' };
+      const dto: CreateRoleDto = { name: 'ADMIN' };
       const createdRole = {
         id: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ...createRoleInput,
+        ...dto,
       };
 
       jest.spyOn(service, 'create').mockResolvedValue(createdRole);
 
-      expect(await resolver.createRole(createRoleInput)).toEqual(createdRole);
+      expect(await resolver.createRole(dto)).toEqual(createdRole);
     });
   });
 
@@ -64,7 +64,7 @@ describe('RoleResolver', () => {
   });
 
   describe('getRole', () => {
-    it('should return a role by ID', async () => {
+    it('should return a role by Int', async () => {
       const roleId = 1;
       const role: Role = {
         id: roleId,
@@ -80,9 +80,9 @@ describe('RoleResolver', () => {
   });
 
   describe('updateRole', () => {
-    it('should update a role by ID', async () => {
+    it('should update a role by Int', async () => {
       const roleId = 1;
-      const updateRoleInput: UpdateRoleInput = {
+      const updateRoleInput: UpdateRoleDto = {
         id: roleId,
         name: 'ADMIN',
       };
@@ -99,7 +99,7 @@ describe('RoleResolver', () => {
   });
 
   describe('removeRole', () => {
-    it('should remove a role by ID', async () => {
+    it('should remove a role by Int', async () => {
       const roleId = 1;
       const removedRole: Role = {
         id: roleId,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreatePartnerRequestInput } from './dto/create-partner-request.input';
-import { UpdatePartnerRequestInput } from './dto/update-partner-request.input';
+import { CreatePartnerRequestDto } from './dto/create-partner-request.dto';
+import { UpdatePartnerRequestDto } from './dto/update-partner-request.dto';
 
 const includeObject = {
   user: true,
@@ -11,13 +11,10 @@ const includeObject = {
 export class PartnerRequestService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(
-    createPartnerRequestInput: CreatePartnerRequestInput,
-    userId: number,
-  ) {
+  async create(dto: CreatePartnerRequestDto, userId: number) {
     const request = await this.prismaService.partnerRequest.create({
       data: {
-        ...createPartnerRequestInput,
+        ...dto,
         userId,
       },
       include: includeObject,
@@ -45,15 +42,12 @@ export class PartnerRequestService {
     return request;
   }
 
-  async update(
-    id: number,
-    updatePartnerRequestInput: UpdatePartnerRequestInput,
-  ) {
+  async update(id: number, dto: UpdatePartnerRequestDto) {
     const request = await this.prismaService.partnerRequest.update({
       where: {
         id,
       },
-      data: updatePartnerRequestInput,
+      data: dto,
       include: includeObject,
     });
 

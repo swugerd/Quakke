@@ -1,9 +1,9 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import { VideoFile, VideoPreview } from '@prisma/client';
-import { Category } from 'src/categories/entities/category.entity';
+import { Category } from 'src/category/entities/category.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { Rating } from 'src/rating/entities/rating.entity';
-import { SubCategory } from 'src/sub-categories/entities/sub-category.entity';
+import { SubCategory } from 'src/sub-category/entities/sub-category.entity';
 import { Tag } from 'src/tag/entities/tag.entity';
 import { FileEntity } from 'src/utils/entities/file.entity';
 import { User } from './../../user/entities/user.entity';
@@ -19,13 +19,13 @@ export class Video {
   @Field(() => GraphQLISODateTime)
   updatedAt: Date;
 
-  @Field()
+  @Field(() => String)
   name: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
-  @Field()
+  @Field(() => Boolean)
   isBanned: boolean;
 
   @Field(() => Int)

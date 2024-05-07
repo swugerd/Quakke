@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateNotificationInput } from './dto/create-notification.input';
-import { UpdateNotificationInput } from './dto/update-notification.input';
+import { CreateNotificationDto } from './dto/create-notification.dto';
+import { UpdateNotificationDto } from './dto/update-notification.dto';
 
 const includeObject = {
   user: true,
@@ -12,9 +12,9 @@ const includeObject = {
 export class NotificationService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createNotificationInput: CreateNotificationInput) {
+  async create(dto: CreateNotificationDto) {
     const notification = await this.prismaService.notification.create({
-      data: createNotificationInput,
+      data: dto,
       include: includeObject,
     });
 
@@ -40,12 +40,12 @@ export class NotificationService {
     return notification;
   }
 
-  async update(id: number, updateNotificationInput: UpdateNotificationInput) {
+  async update(id: number, dto: UpdateNotificationDto) {
     const notification = await this.prismaService.notification.update({
       where: {
         id,
       },
-      data: updateNotificationInput,
+      data: dto,
       include: includeObject,
     });
 

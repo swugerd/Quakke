@@ -1,12 +1,17 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, registerEnumType } from '@nestjs/graphql';
 import { IsIn } from 'class-validator';
+import { OrderEnum } from 'src/types';
 
 @InputType()
-export class OrderInput {
-  @Field({ nullable: true })
+export class OrderDto {
+  @Field(() => String, { nullable: true })
   orderBy?: string;
 
-  @Field({ nullable: true })
-  @IsIn(['asc', 'desc'])
-  orderDirection?: string = 'asc';
+  @Field(() => OrderEnum, { nullable: true })
+  @IsIn([OrderEnum.ASC, OrderEnum.DESC])
+  orderDirection?: OrderEnum = OrderEnum.ASC;
 }
+
+registerEnumType(OrderEnum, {
+  name: 'OrderEnum',
+});

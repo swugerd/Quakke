@@ -6,12 +6,12 @@ import { allowedFileTypes, folders } from 'src/constants';
 import config from 'src/constants/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FilesType } from 'src/types';
-import { FileInput } from 'src/utils/dto/file.input';
+import { FileDto } from 'src/utils/dto/file.dto';
 import { removeFile } from 'src/utils/remove';
 import { uploadFile } from 'src/utils/upload';
 import * as uuid from 'uuid';
-import { CreateVideoInput } from './dto/create-video.input';
-import { UpdateVideoInput } from './dto/update-video.input';
+import { CreateVideoDto } from './dto/create-video.dto';
+import { UpdateVideoDto } from './dto/update-video.dto';
 
 const includeObject = {
   videoFile: true,
@@ -37,10 +37,10 @@ export class VideoService {
     private readonly configService: ConfigService,
   ) {}
 
-  async create(createVideoInput: CreateVideoInput, user: JwtPayload) {
+  async create(dto: CreateVideoDto, user: JwtPayload) {
     const video = await this.prismaService.video.create({
       data: {
-        ...createVideoInput,
+        ...dto,
         userId: user.id,
       },
       include: includeObject,
@@ -49,7 +49,7 @@ export class VideoService {
     return video;
   }
 
-  async uploadFile(file: FileInput, type: FilesType) {
+  async uploadFile(file: FileDto, type: FilesType) {
     const uploadedFile = await file.file;
     if (!allowedFileTypes[type].includes(uploadedFile.mimetype)) {
       const errorMessage =
@@ -148,12 +148,12 @@ export class VideoService {
     return video;
   }
 
-  async update(id: number, updateVideoInput: UpdateVideoInput) {
+  async update(id: number, dto: UpdateVideoDto) {
     const video = await this.prismaService.video.update({
       where: {
         id,
       },
-      data: { ...updateVideoInput },
+      data: { ...dto },
       include: includeObject,
     });
 

@@ -1,9 +1,9 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
-import { CreatePlaylistInput } from './dto/create-playlist.input';
-import { UpdatePlaylistInput } from './dto/update-playlist.input';
-import { VideoPlaylistInput } from './dto/video-playlist.input';
+import { CreatePlaylistDto } from './dto/create-playlist.dto';
+import { UpdatePlaylistDto } from './dto/update-playlist.dto';
+import { VideoPlaylistDto } from './dto/video-playlist.dto';
 import { Playlist } from './entities/playlist.entity';
 import { PlaylistService } from './playlist.service';
 
@@ -13,10 +13,10 @@ export class PlaylistResolver {
 
   @Mutation(() => Playlist)
   createPlaylist(
-    @Args('createPlaylistInput') createPlaylistInput: CreatePlaylistInput,
+    @Args('dto') dto: CreatePlaylistDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.playlistService.create(createPlaylistInput, user);
+    return this.playlistService.create(dto, user);
   }
 
   @Query(() => [Playlist])
@@ -30,27 +30,21 @@ export class PlaylistResolver {
   }
 
   @Mutation(() => Playlist)
-  updatePlaylist(
-    @Args('updatePlaylistInput') updatePlaylistInput: UpdatePlaylistInput,
-  ) {
-    return this.playlistService.update(updatePlaylistInput);
+  updatePlaylist(@Args('dto') dto: UpdatePlaylistDto) {
+    return this.playlistService.update(dto);
   }
 
   @Mutation(() => Playlist)
-  addVideoToPlaylist(
-    @Args('addVideoToPlaylistInput') addVideoToPlaylist: VideoPlaylistInput,
-  ) {
-    return this.playlistService.addToPlaylist(addVideoToPlaylist);
+  addVideoToPlaylist(@Args('dto') dto: VideoPlaylistDto) {
+    return this.playlistService.addToPlaylist(dto);
   }
 
   @Mutation(() => Playlist)
   removeFromPlaylist(
-    @Args('removeVideoFromPlaylistInput')
-    removeVideoFromPlaylistInput: VideoPlaylistInput,
+    @Args('dto')
+    dto: VideoPlaylistDto,
   ) {
-    return this.playlistService.removeFromPlaylist(
-      removeVideoFromPlaylistInput,
-    );
+    return this.playlistService.removeFromPlaylist(dto);
   }
 
   @Mutation(() => Playlist)

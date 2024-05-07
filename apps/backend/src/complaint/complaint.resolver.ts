@@ -1,7 +1,7 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ComplaintService } from './complaint.service';
-import { CreateComplaintInput } from './dto/create-complaint.input';
-import { UpdateComplaintInput } from './dto/update-complaint.input';
+import { CreateComplaintDto } from './dto/create-complaint.dto';
+import { UpdateComplaintDto } from './dto/update-complaint.dto';
 import { Complaint } from './entities/complaint.entity';
 
 @Resolver(() => Complaint)
@@ -9,10 +9,8 @@ export class ComplaintResolver {
   constructor(private readonly complaintService: ComplaintService) {}
 
   @Mutation(() => Complaint)
-  createComplaint(
-    @Args('createComplaintInput') createComplaintInput: CreateComplaintInput,
-  ) {
-    return this.complaintService.create(createComplaintInput);
+  createComplaint(@Args('dto') dto: CreateComplaintDto) {
+    return this.complaintService.create(dto);
   }
 
   @Query(() => [Complaint])
@@ -26,13 +24,8 @@ export class ComplaintResolver {
   }
 
   @Mutation(() => Complaint)
-  updateComplaint(
-    @Args('updateComplaintInput') updateComplaintInput: UpdateComplaintInput,
-  ) {
-    return this.complaintService.update(
-      updateComplaintInput.id,
-      updateComplaintInput,
-    );
+  updateComplaint(@Args('dto') dto: UpdateComplaintDto) {
+    return this.complaintService.update(dto.id, dto);
   }
 
   @Mutation(() => Complaint)

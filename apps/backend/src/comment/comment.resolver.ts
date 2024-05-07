@@ -2,8 +2,8 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
 import { CommentService } from './comment.service';
-import { CreateCommentInput } from './dto/create-comment.input';
-import { UpdateCommentInput } from './dto/update-comment.input';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
 
 @Resolver(() => Comment)
@@ -12,10 +12,10 @@ export class CommentResolver {
 
   @Mutation(() => Comment)
   createComment(
-    @Args('createCommentInput') createCommentInput: CreateCommentInput,
+    @Args('dto') dto: CreateCommentDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.commentService.create(createCommentInput, user);
+    return this.commentService.create(dto, user);
   }
 
   @Query(() => [Comment])
@@ -29,13 +29,8 @@ export class CommentResolver {
   }
 
   @Mutation(() => Comment)
-  updateComment(
-    @Args('updateCommentInput') updateCommentInput: UpdateCommentInput,
-  ) {
-    return this.commentService.update(
-      updateCommentInput.id,
-      updateCommentInput,
-    );
+  updateComment(@Args('dto') dto: UpdateCommentDto) {
+    return this.commentService.update(dto.id, dto);
   }
 
   @Mutation(() => Comment)

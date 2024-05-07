@@ -22,8 +22,8 @@ export class User {
   @Field(() => GraphQLISODateTime)
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  updatedAt?: Date;
+  @Field(() => GraphQLISODateTime)
+  updatedAt: Date;
 
   @Field(() => String)
   email: string;

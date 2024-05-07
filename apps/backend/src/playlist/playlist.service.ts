@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreatePlaylistInput } from './dto/create-playlist.input';
-import { UpdatePlaylistInput } from './dto/update-playlist.input';
-import { VideoPlaylistInput } from './dto/video-playlist.input';
+import { CreatePlaylistDto } from './dto/create-playlist.dto';
+import { UpdatePlaylistDto } from './dto/update-playlist.dto';
+import { VideoPlaylistDto } from './dto/video-playlist.dto';
 
 const includeObject = {
   user: true,
@@ -22,9 +22,9 @@ const includeObject = {
 export class PlaylistService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createPlaylistInput: CreatePlaylistInput, user: JwtPayload) {
+  async create(dto: CreatePlaylistDto, user: JwtPayload) {
     const playlist = await this.prismaService.playlist.create({
-      data: { ...createPlaylistInput, userId: user.id },
+      data: { ...dto, userId: user.id },
       include: includeObject,
     });
 
@@ -50,21 +50,21 @@ export class PlaylistService {
     return playlist;
   }
 
-  async update(updatePlaylistInput: UpdatePlaylistInput) {
+  async update(dto: UpdatePlaylistDto) {
     const playlist = await this.prismaService.playlist.update({
       where: {
-        id: updatePlaylistInput.id,
+        id: dto.id,
       },
-      data: updatePlaylistInput,
+      data: dto,
       include: includeObject,
     });
 
     return playlist;
   }
 
-  async addToPlaylist(videoPlaylistInput: VideoPlaylistInput) {
+  async addToPlaylist(dto: VideoPlaylistDto) {
     const updatedPlaylist = await this.prismaService.playlistsOnVideos.create({
-      data: videoPlaylistInput,
+      data: dto,
       include: {
         playlist: {
           include: includeObject,
@@ -75,12 +75,12 @@ export class PlaylistService {
     return updatedPlaylist.playlist;
   }
 
-  async removeFromPlaylist(videoPlaylistInput: VideoPlaylistInput) {
+  async removeFromPlaylist(dto: VideoPlaylistDto) {
     const updatedPlaylist = await this.prismaService.playlistsOnVideos.delete({
       where: {
         videoId_playlistId: {
-          playlistId: videoPlaylistInput.playlistId,
-          videoId: videoPlaylistInput.videoId,
+          playlistId: dto.playlistId,
+          videoId: dto.videoId,
         },
       },
       include: {

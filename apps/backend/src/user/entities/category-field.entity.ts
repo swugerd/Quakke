@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Category } from 'src/categories/entities/category.entity';
+import { Category } from 'src/category/entities/category.entity';
 
 @ObjectType()
 export class SelectedCategory {

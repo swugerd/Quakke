@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateViewInput } from './dto/create-view.input';
-import { UpdateViewInput } from './dto/update-view.input';
+import { CreateViewDto } from './dto/create-view.dto';
+import { UpdateViewDto } from './dto/update-view.dto';
 
 const includeObject = {
   user: true,
@@ -13,10 +13,10 @@ const includeObject = {
 export class ViewsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createViewInput: CreateViewInput, user: JwtPayload) {
+  async create(dto: CreateViewDto, user: JwtPayload) {
     const isViewExists = await this.prismaService.view.findFirst({
       where: {
-        AND: [{ videoId: createViewInput.videoId }, { userId: user.id }],
+        AND: [{ videoId: dto.videoId }, { userId: user.id }],
       },
     });
 
@@ -29,7 +29,7 @@ export class ViewsService {
     const view = await this.prismaService.view.create({
       data: {
         userId: user.id,
-        videoId: createViewInput.videoId,
+        videoId: dto.videoId,
       },
       include: includeObject,
     });
@@ -56,12 +56,12 @@ export class ViewsService {
     return view;
   }
 
-  async update(id: number, updateViewInput: UpdateViewInput) {
+  async update(id: number, dto: UpdateViewDto) {
     const view = await this.prismaService.view.update({
       where: {
         id,
       },
-      data: updateViewInput,
+      data: dto,
       include: includeObject,
     });
 

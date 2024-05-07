@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateSettingInput } from './dto/create-setting.input';
-import { UpdateSettingInput } from './dto/update-setting.input';
+import { CreateSettingDto } from './dto/create-setting.dto';
+import { UpdateSettingDto } from './dto/update-setting.dto';
 
 const includeObject = {
   user: true,
@@ -11,9 +11,9 @@ const includeObject = {
 export class SettingsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createSettingInput: CreateSettingInput) {
+  async create(dto: CreateSettingDto) {
     const settings = await this.prismaService.settings.create({
-      data: createSettingInput,
+      data: dto,
       include: includeObject,
     });
 
@@ -39,12 +39,12 @@ export class SettingsService {
     return settings;
   }
 
-  async update(updateSettingInput: UpdateSettingInput) {
+  async update(dto: UpdateSettingDto) {
     const settings = await this.prismaService.settings.update({
       where: {
-        id: updateSettingInput.id,
+        id: dto.id,
       },
-      data: updateSettingInput,
+      data: dto,
       include: includeObject,
     });
 

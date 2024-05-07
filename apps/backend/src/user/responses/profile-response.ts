@@ -1,13 +1,14 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Roles } from '@prisma/client';
 
 @ObjectType()
 export class ProfileResponse {
-  @Field()
-  id: string;
+  @Field(() => Int)
+  id: number;
 
-  @Field()
+  @Field(() => String)
   email: string;
 
-  @Field()
-  role: string;
+  @Field(() => Roles)
+  role: Roles;
 }

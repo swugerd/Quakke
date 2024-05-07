@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -38,7 +38,7 @@ describe('UserService', () => {
 
   describe('create', () => {
     it('should create a new user', async () => {
-      const createUserInput: CreateUserInput = {
+      const dto: CreateUserDto = {
         email: 'email@mail.ru',
         login: 'login',
         name: 'name',
@@ -53,12 +53,12 @@ describe('UserService', () => {
         userId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ...createUserInput,
+        ...dto,
       };
 
       jest.spyOn(prismaService.user, 'create').mockResolvedValue(createdUser);
 
-      expect(await service.create(createUserInput)).toEqual(createdUser);
+      expect(await service.create(dto)).toEqual(createdUser);
     });
   });
 
@@ -102,7 +102,7 @@ describe('UserService', () => {
   });
 
   describe('getById', () => {
-    it('should return user by ID', async () => {
+    it('should return user by Int', async () => {
       const userId = 1;
       const user: User = {
         id: 1,
@@ -126,9 +126,9 @@ describe('UserService', () => {
   });
 
   describe('update', () => {
-    it('should update user by ID', async () => {
+    it('should update user by Int', async () => {
       const userId = 1;
-      const updateUserInput: UpdateUserInput = {
+      const dto: UpdateUserDto = {
         id: userId,
         name: 'name',
       };
@@ -141,7 +141,7 @@ describe('UserService', () => {
         userId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ...updateUserInput,
+        ...dto,
       };
 
       jest.spyOn(service, 'update').mockResolvedValue(updatedUser as User);
@@ -151,7 +151,7 @@ describe('UserService', () => {
   });
 
   describe('remove', () => {
-    it('should remove user by ID', async () => {
+    it('should remove user by Int', async () => {
       const userId = 1;
       const removedUser: User = {
         id: userId,

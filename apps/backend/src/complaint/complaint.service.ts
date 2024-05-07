@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateComplaintInput } from './dto/create-complaint.input';
-import { UpdateComplaintInput } from './dto/update-complaint.input';
+import { CreateComplaintDto } from './dto/create-complaint.dto';
+import { UpdateComplaintDto } from './dto/update-complaint.dto';
 
 const includeObject = {
   user: true,
@@ -12,9 +12,9 @@ const includeObject = {
 export class ComplaintService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createComplaintInput: CreateComplaintInput) {
+  async create(dto: CreateComplaintDto) {
     const complaint = await this.prismaService.complaint.create({
-      data: createComplaintInput,
+      data: dto,
       include: includeObject,
     });
 
@@ -40,12 +40,12 @@ export class ComplaintService {
     return complaint;
   }
 
-  async update(id: number, updateComplaintInput: UpdateComplaintInput) {
+  async update(id: number, dto: UpdateComplaintDto) {
     const complaint = await this.prismaService.complaint.update({
       where: {
         id,
       },
-      data: updateComplaintInput,
+      data: dto,
       include: includeObject,
     });
 

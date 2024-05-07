@@ -2,8 +2,8 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
 import { LikesType, RatingEnum } from 'src/types';
-import { CreateRatingInput } from './dto/create-rating.input';
-import { UpdateRatingInput } from './dto/update-rating.input';
+import { CreateRatingDto } from './dto/create-rating.dto';
+import { UpdateRatingDto } from './dto/update-rating.dto';
 import { Rating } from './entities/rating.entity';
 import { RatingService } from './rating.service';
 
@@ -13,10 +13,10 @@ export class RatingResolver {
 
   @Mutation(() => Rating)
   createRating(
-    @Args('createRatingInput') createRatingInput: CreateRatingInput,
+    @Args('dto') dto: CreateRatingDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.ratingService.create(createRatingInput, user);
+    return this.ratingService.create(dto, user);
   }
 
   @Query(() => [Rating])
@@ -37,10 +37,8 @@ export class RatingResolver {
   }
 
   @Mutation(() => Rating)
-  updateRating(
-    @Args('updateRatingInput') updateRatingInput: UpdateRatingInput,
-  ) {
-    return this.ratingService.update(updateRatingInput.id, updateRatingInput);
+  updateRating(@Args('dto') dto: UpdateRatingDto) {
+    return this.ratingService.update(dto.id, dto);
   }
 
   @Mutation(() => Rating)

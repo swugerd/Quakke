@@ -6,12 +6,12 @@ import { allowedFileTypes, folders } from 'src/constants';
 import config from 'src/constants/config';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FilesType } from 'src/types';
-import { FileInput } from 'src/utils/dto/file.input';
+import { FileDto } from 'src/utils/dto/file.dto';
 import { removeFile } from 'src/utils/remove';
 import { uploadFile } from 'src/utils/upload';
 import * as uuid from 'uuid';
-import { CreateBannerInput } from './dto/create-banner.input';
-import { UpdateBannerInput } from './dto/update-banner.input';
+import { CreateBannerDto } from './dto/create-banner.dto';
+import { UpdateBannerDto } from './dto/update-banner.dto';
 
 const includeObject = {
   bannerImage: true,
@@ -26,10 +26,10 @@ export class BannerService {
     private readonly configService: ConfigService,
   ) {}
 
-  async create(createBannerInput: CreateBannerInput, user: JwtPayload) {
+  async create(dto: CreateBannerDto, user: JwtPayload) {
     const banner = await this.prismaService.banner.create({
       data: {
-        ...createBannerInput,
+        ...dto,
         userId: user.id,
       },
       include: includeObject,
@@ -38,7 +38,7 @@ export class BannerService {
     return banner;
   }
 
-  async uploadFile(file: FileInput, type: FilesType) {
+  async uploadFile(file: FileDto, type: FilesType) {
     const uploadedFile = await file.file;
     if (!allowedFileTypes[type].includes(uploadedFile.mimetype)) {
       const errorMessage =
@@ -137,12 +137,12 @@ export class BannerService {
     return banner;
   }
 
-  async update(id: number, updateBannerInput: UpdateBannerInput) {
+  async update(id: number, dto: UpdateBannerDto) {
     const banner = await this.prismaService.banner.update({
       where: {
         id,
       },
-      data: updateBannerInput,
+      data: dto,
       include: includeObject,
     });
 

@@ -1,8 +1,8 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
-import { CreatePartnerRequestInput } from './dto/create-partner-request.input';
-import { UpdatePartnerRequestInput } from './dto/update-partner-request.input';
+import { CreatePartnerRequestDto } from './dto/create-partner-request.dto';
+import { UpdatePartnerRequestDto } from './dto/update-partner-request.dto';
 import { PartnerRequest } from './entities/partner-request.entity';
 import { PartnerRequestService } from './partner-request.service';
 
@@ -12,14 +12,11 @@ export class PartnerRequestResolver {
 
   @Mutation(() => PartnerRequest)
   createPartnerRequest(
-    @Args('createPartnerRequestInput')
-    createPartnerRequestInput: CreatePartnerRequestInput,
+    @Args('dto')
+    dto: CreatePartnerRequestDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.partnerRequestService.create(
-      createPartnerRequestInput,
-      user.id,
-    );
+    return this.partnerRequestService.create(dto, user.id);
   }
 
   @Query(() => [PartnerRequest])
@@ -34,13 +31,10 @@ export class PartnerRequestResolver {
 
   @Mutation(() => PartnerRequest)
   updatePartnerRequest(
-    @Args('updatePartnerRequestInput')
-    updatePartnerRequestInput: UpdatePartnerRequestInput,
+    @Args('dto')
+    dto: UpdatePartnerRequestDto,
   ) {
-    return this.partnerRequestService.update(
-      updatePartnerRequestInput.id,
-      updatePartnerRequestInput,
-    );
+    return this.partnerRequestService.update(dto.id, dto);
   }
 
   @Mutation(() => PartnerRequest)

@@ -5,3 +5,8 @@ export enum RatingEnum {
   LIKE = 'LIKE',
   DISLIKE = 'DISLIKE',
 }
+
+export enum OrderEnum {
+  ASC = 'asc',
+  DESC = 'desc',
+}

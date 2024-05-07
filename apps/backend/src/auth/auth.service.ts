@@ -17,9 +17,9 @@ import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { v4 } from 'uuid';
-import { ResetPasswordInput } from './dto/reset-password.input';
-import { SignInInput } from './dto/signin.input';
-import { SignUpInput } from './dto/signup.input';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { SignInDto } from './dto/signin.dto';
+import { SignUpDto } from './dto/signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -46,7 +46,7 @@ export class AuthService {
     return this.generateTokens(user, agent);
   }
 
-  async register(dto: SignUpInput, agent: string) {
+  async register(dto: SignUpDto, agent: string) {
     const userExists = await this.prismaService.user
       .findFirst({
         where: {
@@ -70,7 +70,7 @@ export class AuthService {
     return this.generateTokens(user, agent);
   }
 
-  async login(dto: SignInInput, agent: string) {
+  async login(dto: SignInDto, agent: string) {
     const user = await this.prismaService.user
       .findFirst({
         where: {
@@ -254,11 +254,11 @@ export class AuthService {
     throw new ForbiddenException('Incorrect token');
   }
 
-  async verifyPasswordChange(resetPasswordInput: ResetPasswordInput) {
+  async verifyPasswordChange(dto: ResetPasswordDto) {
     const dbForgottenPassword =
       await this.prismaService.forgottenPassword.findUnique({
         where: {
-          token: resetPasswordInput.token,
+          token: dto.token,
         },
       });
 
@@ -266,7 +266,7 @@ export class AuthService {
       return { message: 'Incorrect token' };
     }
 
-    if (dbForgottenPassword.email !== resetPasswordInput.email) {
+    if (dbForgottenPassword.email !== dto.email) {
       return {
         message: `Incorrect email for token - ${dbForgottenPassword.token}`,
       };
@@ -274,7 +274,7 @@ export class AuthService {
 
     await this.userService.setPassword(
       dbForgottenPassword.email,
-      resetPasswordInput.newPassword,
+      dto.newPassword,
     );
 
     await this.prismaService.forgottenPassword.delete({

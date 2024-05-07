@@ -1,11 +1,11 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
-import { FileInput } from 'src/utils/dto/file.input';
+import { FileDto } from 'src/utils/dto/file.dto';
 import { FileEntity } from 'src/utils/entities/file.entity';
 import { BannerService } from './banner.service';
-import { CreateBannerInput } from './dto/create-banner.input';
-import { UpdateBannerInput } from './dto/update-banner.input';
+import { CreateBannerDto } from './dto/create-banner.dto';
+import { UpdateBannerDto } from './dto/update-banner.dto';
 import { Banner } from './entities/banner.entity';
 
 @Resolver(() => Banner)
@@ -14,14 +14,14 @@ export class BannerResolver {
 
   @Mutation(() => Banner)
   createBanner(
-    @Args('createBannerInput') createBannerInput: CreateBannerInput,
+    @Args('dto') dto: CreateBannerDto,
     @CurrentUser() user: JwtPayload,
   ) {
-    return this.bannerService.create(createBannerInput, user);
+    return this.bannerService.create(dto, user);
   }
 
   @Mutation(() => FileEntity)
-  uploadBannerVideo(@Args('file') file: FileInput) {
+  uploadBannerVideo(@Args('file') file: FileDto) {
     return this.bannerService.uploadFile(file, 'VIDEOS');
   }
 
@@ -31,7 +31,7 @@ export class BannerResolver {
   }
 
   @Mutation(() => FileEntity)
-  uploadBannerImage(@Args('file') file: FileInput) {
+  uploadBannerImage(@Args('file') file: FileDto) {
     return this.bannerService.uploadFile(file, 'IMAGES');
   }
 
@@ -51,10 +51,8 @@ export class BannerResolver {
   }
 
   @Mutation(() => Banner)
-  updateBanner(
-    @Args('updateBannerInput') updateBannerInput: UpdateBannerInput,
-  ) {
-    return this.bannerService.update(updateBannerInput.id, updateBannerInput);
+  updateBanner(@Args('dto') dto: UpdateBannerDto) {
+    return this.bannerService.update(dto.id, dto);
   }
 
   @Mutation(() => Banner)

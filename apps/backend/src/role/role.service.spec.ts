@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Role } from '@prisma/client';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { CreateRoleInput } from './dto/create-role.input';
-import { UpdateRoleInput } from './dto/update-role.input';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleService } from './role.service';
 
 describe('RoleService', () => {
@@ -38,17 +38,17 @@ describe('RoleService', () => {
 
   describe('create', () => {
     it('should create a new role', async () => {
-      const createRoleInput: CreateRoleInput = { name: 'ADMIN' };
+      const dto: CreateRoleDto = { name: 'ADMIN' };
       const createdRole = {
         id: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ...createRoleInput,
+        ...dto,
       };
 
       jest.spyOn(prismaService.role, 'create').mockResolvedValue(createdRole);
 
-      expect(await service.create(createRoleInput)).toEqual(createdRole);
+      expect(await service.create(dto)).toEqual(createdRole);
     });
   });
 
@@ -66,7 +66,7 @@ describe('RoleService', () => {
   });
 
   describe('findOne', () => {
-    it('should return a role by ID', async () => {
+    it('should return a role by Int', async () => {
       const roleId = 1;
       const role: Role = {
         id: roleId,
@@ -82,28 +82,26 @@ describe('RoleService', () => {
   });
 
   describe('update', () => {
-    it('should update a role by ID', async () => {
+    it('should update a role by Int', async () => {
       const roleId = 1;
-      const updateRoleInput: UpdateRoleInput = {
+      const dto: UpdateRoleDto = {
         id: roleId,
         name: 'ADMIN',
       };
       const updatedRole = {
-        ...updateRoleInput,
+        ...dto,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
       jest.spyOn(service, 'update').mockResolvedValue(updatedRole as Role);
 
-      expect(await service.update(roleId, updateRoleInput)).toEqual(
-        updatedRole,
-      );
+      expect(await service.update(roleId, dto)).toEqual(updatedRole);
     });
   });
 
   describe('remove', () => {
-    it('should remove a role by ID', async () => {
+    it('should remove a role by Int', async () => {
       const roleId = 1;
       const removedRole: Role = {
         id: roleId,

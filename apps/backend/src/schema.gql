@@ -193,7 +193,7 @@ type SelectedCategory {
 type User {
   id: Int!
   createdAt: DateTime!
-  updatedAt: DateTime
+  updatedAt: DateTime!
   email: String!
   login: String!
   name: String!
@@ -222,9 +222,9 @@ type UserPagination {
 }
 
 type ProfileResponse {
-  id: String!
+  id: Int!
   email: String!
-  role: String!
+  role: Roles!
 }
 
 type AuthResponse {
@@ -257,7 +257,7 @@ type View {
 
 type Query {
   getUsers: [User!]!
-  getUsersWithQuery(query: QuerySearchInput!): UserPagination!
+  getUsersWithQuery(query: QuerySearchDto!): UserPagination!
   getUser(id: Int!): User!
   getMe: ProfileResponse!
   sendEmailVerification(email: String!): EmailResponse!
@@ -296,16 +296,21 @@ type Query {
   getPartnerRequest(id: Int!): PartnerRequest!
 }
 
-input QuerySearchInput {
+input QuerySearchDto {
   limit: Int!
   offset: Int! = 100
   orderBy: String
-  orderDirection: String = "asc"
+  orderDirection: OrderEnum = ASC
   email: String
   login: String
   name: String
   isBanned: Boolean
   isPartner: Boolean
+}
+
+enum OrderEnum {
+  ASC
+  DESC
 }
 
 enum RatingEnum {
@@ -315,75 +320,75 @@ enum RatingEnum {
 
 type Mutation {
   removeUser(id: Int!): User!
-  createUser(input: CreateUserInput!): User!
-  updateUser(input: UpdateUserInput!): User!
-  register(input: SignUpInput!): AuthResponse!
-  login(input: SignInInput!): AuthResponse!
+  createUser(dto: CreateUserDto!): User!
+  updateUser(dto: UpdateUserDto!): User!
+  register(dto: SignUpDto!): AuthResponse!
+  login(dto: SignInDto!): AuthResponse!
   logout: LogoutResponse!
   refreshTokens: AuthResponse!
-  setNewPassord(input: ResetPasswordInput!): EmailResponse!
-  createRole(createRoleInput: CreateRoleInput!): Role!
-  updateRole(updateRoleInput: UpdateRoleInput!): Role!
+  setNewPassord(dto: ResetPasswordDto!): EmailResponse!
+  createRole(dto: CreateRoleDto!): Role!
+  updateRole(dto: UpdateRoleDto!): Role!
   removeRole(id: Int!): Role!
-  createCategory(createCategoryInput: CreateCategoryInput!): Category!
-  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  createCategory(dto: CreateCategoryDto!): Category!
+  updateCategory(dto: UpdateCategoryDto!): Category!
   removeCategory(id: Int!): Category!
-  createSubCategory(createSubCategoryInput: CreateSubCategoryInput!): SubCategory!
-  updateSubCategory(updateSubCategoryInput: UpdateSubCategoryInput!): SubCategory!
+  createSubCategory(dto: CreateSubCategoryDto!): SubCategory!
+  updateSubCategory(dto: UpdateSubCategoryDto!): SubCategory!
   removeSubCategory(id: Int!): SubCategory!
-  createTag(createTagInput: CreateTagInput!): Tag!
-  updateTag(updateTagInput: UpdateTagInput!): Tag!
+  createTag(dto: CreateTagDto!): Tag!
+  updateTag(dto: UpdateTagDto!): Tag!
   removeTag(id: Int!): Tag!
-  createVideo(createVideoInput: CreateVideoInput!): Video!
-  uploadVideo(file: FileInput!): FileEntity!
+  createVideo(dto: CreateVideoDto!): Video!
+  uploadVideo(file: FileDto!): FileEntity!
   dropVideo(id: Int!): FileEntity!
-  uploadPreview(file: FileInput!): FileEntity!
+  uploadPreview(file: FileDto!): FileEntity!
   dropPreview(id: Int!): FileEntity!
-  updateVideo(updateVideoInput: UpdateVideoInput!): Video!
+  updateVideo(dto: UpdateVideoDto!): Video!
   removeVideo(id: Int!): Video!
-  createPlaylist(createPlaylistInput: CreatePlaylistInput!): Playlist!
-  updatePlaylist(updatePlaylistInput: UpdatePlaylistInput!): Playlist!
-  addVideoToPlaylist(addVideoToPlaylistInput: VideoPlaylistInput!): Playlist!
-  removeFromPlaylist(removeVideoFromPlaylistInput: VideoPlaylistInput!): Playlist!
+  createPlaylist(dto: CreatePlaylistDto!): Playlist!
+  updatePlaylist(dto: UpdatePlaylistDto!): Playlist!
+  addVideoToPlaylist(dto: VideoPlaylistDto!): Playlist!
+  removeFromPlaylist(dto: VideoPlaylistDto!): Playlist!
   removePlaylist(id: Int!): Playlist!
-  createView(createViewInput: CreateViewInput!): View!
-  updateView(updateViewInput: UpdateViewInput!): View!
+  createView(dto: CreateViewDto!): View!
+  updateView(dto: UpdateViewDto!): View!
   removeView(id: Int!): View!
-  createComment(createCommentInput: CreateCommentInput!): Comment!
-  updateComment(updateCommentInput: UpdateCommentInput!): Comment!
+  createComment(dto: CreateCommentDto!): Comment!
+  updateComment(dto: UpdateCommentDto!): Comment!
   removeComment(id: Int!): Comment!
-  createRating(createRatingInput: CreateRatingInput!): Rating!
-  updateRating(updateRatingInput: UpdateRatingInput!): Rating!
+  createRating(dto: CreateRatingDto!): Rating!
+  updateRating(dto: UpdateRatingDto!): Rating!
   removeRating(id: Int!, type: RatingEnum!): Rating!
-  createBanner(createBannerInput: CreateBannerInput!): Banner!
-  uploadBannerVideo(file: FileInput!): FileEntity!
+  createBanner(dto: CreateBannerDto!): Banner!
+  uploadBannerVideo(file: FileDto!): FileEntity!
   dropBannerVideo(id: Int!): FileEntity!
-  uploadBannerImage(file: FileInput!): FileEntity!
+  uploadBannerImage(file: FileDto!): FileEntity!
   dropBannerImage(id: Int!): FileEntity!
-  updateBanner(updateBannerInput: UpdateBannerInput!): Banner!
+  updateBanner(dto: UpdateBannerDto!): Banner!
   removeBanner(id: Int!): Banner!
-  createNotification(createNotificationInput: CreateNotificationInput!): Notification!
-  updateNotification(updateNotificationInput: UpdateNotificationInput!): Notification!
+  createNotification(dto: CreateNotificationDto!): Notification!
+  updateNotification(dto: UpdateNotificationDto!): Notification!
   removeNotification(id: Int!): Notification!
-  createSettings(createSettingInput: CreateSettingInput!): Setting!
-  updateSettings(updateSettingInput: UpdateSettingInput!): Setting!
+  createSettings(dto: CreateSettingDto!): Setting!
+  updateSettings(dto: UpdateSettingDto!): Setting!
   removeSettings(id: Int!): Setting!
-  createComplaint(createComplaintInput: CreateComplaintInput!): Complaint!
-  updateComplaint(updateComplaintInput: UpdateComplaintInput!): Complaint!
+  createComplaint(dto: CreateComplaintDto!): Complaint!
+  updateComplaint(dto: UpdateComplaintDto!): Complaint!
   removeComplaint(id: Int!): Complaint!
-  createPartnerRequest(createPartnerRequestInput: CreatePartnerRequestInput!): PartnerRequest!
-  updatePartnerRequest(updatePartnerRequestInput: UpdatePartnerRequestInput!): PartnerRequest!
+  createPartnerRequest(dto: CreatePartnerRequestDto!): PartnerRequest!
+  updatePartnerRequest(dto: UpdatePartnerRequestDto!): PartnerRequest!
   removePartnerRequest(id: Int!): PartnerRequest!
 }
 
-input CreateUserInput {
+input CreateUserDto {
   email: String!
   login: String!
   name: String!
   password: String!
 }
 
-input UpdateUserInput {
+input UpdateUserDto {
   email: String
   login: String
   name: String
@@ -391,63 +396,63 @@ input UpdateUserInput {
   id: Int!
 }
 
-input SignUpInput {
+input SignUpDto {
   name: String!
   login: String!
   email: String!
   password: String!
 }
 
-input SignInInput {
+input SignInDto {
   credentials: String!
   password: String!
 }
 
-input ResetPasswordInput {
+input ResetPasswordDto {
   email: String!
   newPassword: String!
   token: String!
 }
 
-input CreateRoleInput {
+input CreateRoleDto {
   name: Roles!
 }
 
-input UpdateRoleInput {
+input UpdateRoleDto {
   name: Roles
   id: Int!
 }
 
-input CreateCategoryInput {
+input CreateCategoryDto {
   name: String!
 }
 
-input UpdateCategoryInput {
+input UpdateCategoryDto {
   name: String
   id: Int!
 }
 
-input CreateSubCategoryInput {
+input CreateSubCategoryDto {
   name: String!
   categoryId: Int!
 }
 
-input UpdateSubCategoryInput {
+input UpdateSubCategoryDto {
   name: String
   categoryId: Int
   id: Int!
 }
 
-input CreateTagInput {
+input CreateTagDto {
   name: String!
 }
 
-input UpdateTagInput {
+input UpdateTagDto {
   name: String
   id: Int!
 }
 
-input CreateVideoInput {
+input CreateVideoDto {
   name: String!
   description: String
   videoFileId: Int!
@@ -456,14 +461,14 @@ input CreateVideoInput {
   subCategoryId: Int
 }
 
-input FileInput {
+input FileDto {
   file: Upload!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-input UpdateVideoInput {
+input UpdateVideoDto {
   name: String
   description: String
   videoFileId: Int
@@ -473,57 +478,57 @@ input UpdateVideoInput {
   id: Int!
 }
 
-input CreatePlaylistInput {
+input CreatePlaylistDto {
   name: String!
 }
 
-input UpdatePlaylistInput {
+input UpdatePlaylistDto {
   name: String
   id: Int!
 }
 
-input VideoPlaylistInput {
+input VideoPlaylistDto {
   playlistId: Int!
   videoId: Int!
 }
 
-input CreateViewInput {
+input CreateViewDto {
   videoId: Int!
 }
 
-input UpdateViewInput {
+input UpdateViewDto {
   videoId: Int
   id: Int!
   userId: Int!
 }
 
-input CreateCommentInput {
+input CreateCommentDto {
   text: String!
   videoId: Int!
   parentId: Int
 }
 
-input UpdateCommentInput {
+input UpdateCommentDto {
   text: String
   videoId: Int
   parentId: Int
   id: Int!
 }
 
-input CreateRatingInput {
+input CreateRatingDto {
   videoId: Int
   commentId: Int
   type: RatingEnum!
 }
 
-input UpdateRatingInput {
+input UpdateRatingDto {
   videoId: Int
   commentId: Int
   type: RatingEnum
   id: Int!
 }
 
-input CreateBannerInput {
+input CreateBannerDto {
   publishDate: DateTime
   unpublishDate: DateTime
   title: String!
@@ -533,7 +538,7 @@ input CreateBannerInput {
   bannerVideoId: Int
 }
 
-input UpdateBannerInput {
+input UpdateBannerDto {
   publishDate: DateTime
   unpublishDate: DateTime
   title: String
@@ -544,35 +549,35 @@ input UpdateBannerInput {
   id: Int!
 }
 
-input CreateNotificationInput {
+input CreateNotificationDto {
   userId: Int
   type: Notifications!
 }
 
-input UpdateNotificationInput {
+input UpdateNotificationDto {
   userId: Int
   type: Notifications
   id: Int!
 }
 
-input CreateSettingInput {
+input CreateSettingDto {
   userId: Int!
 }
 
-input UpdateSettingInput {
+input UpdateSettingDto {
   id: Int!
   userId: Int
   privacy: Privacy
 }
 
-input CreateComplaintInput {
+input CreateComplaintDto {
   reason: ComplaintReasons!
   message: String!
   userId: Int
   videoId: Int
 }
 
-input UpdateComplaintInput {
+input UpdateComplaintDto {
   reason: ComplaintReasons
   message: String
   userId: Int
@@ -580,11 +585,11 @@ input UpdateComplaintInput {
   id: Int!
 }
 
-input CreatePartnerRequestInput {
+input CreatePartnerRequestDto {
   message: String!
 }
 
-input UpdatePartnerRequestInput {
+input UpdatePartnerRequestDto {
   message: String
   id: Int!
   status: PartnerRequestStatuses

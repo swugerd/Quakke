@@ -1,8 +1,8 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
-import { CreateViewInput } from './dto/create-view.input';
-import { UpdateViewInput } from './dto/update-view.input';
+import { CreateViewDto } from './dto/create-view.dto';
+import { UpdateViewDto } from './dto/update-view.dto';
 import { View } from './entities/view.entity';
 import { ViewsService } from './views.service';
 
@@ -11,11 +11,8 @@ export class ViewsResolver {
   constructor(private readonly viewsService: ViewsService) {}
 
   @Mutation(() => View)
-  createView(
-    @Args('createViewInput') createViewInput: CreateViewInput,
-    @CurrentUser() user: JwtPayload,
-  ) {
-    return this.viewsService.create(createViewInput, user);
+  createView(@Args('dto') dto: CreateViewDto, @CurrentUser() user: JwtPayload) {
+    return this.viewsService.create(dto, user);
   }
 
   @Query(() => [View])
@@ -29,8 +26,8 @@ export class ViewsResolver {
   }
 
   @Mutation(() => View)
-  updateView(@Args('updateViewInput') updateViewInput: UpdateViewInput) {
-    return this.viewsService.update(updateViewInput.id, updateViewInput);
+  updateView(@Args('dto') dto: UpdateViewDto) {
+    return this.viewsService.update(dto.id, dto);
   }
 
   @Mutation(() => View)

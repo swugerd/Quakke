@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCommentInput } from './dto/create-comment.input';
-import { UpdateCommentInput } from './dto/update-comment.input';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 const includeObject = {
   user: true,
@@ -21,10 +21,10 @@ const includeObject = {
 export class CommentService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createCommentInput: CreateCommentInput, user: JwtPayload) {
+  async create(dto: CreateCommentDto, user: JwtPayload) {
     const comment = await this.prismaService.comment.create({
       data: {
-        ...createCommentInput,
+        ...dto,
         userId: user.id,
       },
       include: includeObject,
@@ -52,12 +52,12 @@ export class CommentService {
     return comment;
   }
 
-  async update(id: number, updateCommentInput: UpdateCommentInput) {
+  async update(id: number, dto: UpdateCommentDto) {
     const comment = await this.prismaService.comment.update({
       where: {
         id,
       },
-      data: updateCommentInput,
+      data: dto,
       include: includeObject,
     });
 

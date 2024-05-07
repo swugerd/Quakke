@@ -1,8 +1,8 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
-import { CreateSettingInput } from './dto/create-setting.input';
-import { UpdateSettingInput } from './dto/update-setting.input';
+import { CreateSettingDto } from './dto/create-setting.dto';
+import { UpdateSettingDto } from './dto/update-setting.dto';
 import { Setting } from './entities/setting.entity';
 import { SettingsService } from './settings.service';
 
@@ -11,10 +11,8 @@ export class SettingsResolver {
   constructor(private readonly settingsService: SettingsService) {}
 
   @Mutation(() => Setting)
-  createSettings(
-    @Args('createSettingInput') createSettingInput: CreateSettingInput,
-  ) {
-    return this.settingsService.create(createSettingInput);
+  createSettings(@Args('dto') dto: CreateSettingDto) {
+    return this.settingsService.create(dto);
   }
 
   @Query(() => [Setting])
@@ -33,10 +31,8 @@ export class SettingsResolver {
   }
 
   @Mutation(() => Setting)
-  updateSettings(
-    @Args('updateSettingInput') updateSettingInput: UpdateSettingInput,
-  ) {
-    return this.settingsService.update(updateSettingInput);
+  updateSettings(@Args('dto') dto: UpdateSettingDto) {
+    return this.settingsService.update(dto);
   }
 
   @Mutation(() => Setting)

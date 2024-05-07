@@ -11,6 +11,6 @@ export class Tag {
   @Field(() => GraphQLISODateTime)
   updatedAt: Date;
 
-  @Field()
+  @Field(() => String)
   name: string;
 }

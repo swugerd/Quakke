@@ -18,6 +18,6 @@ export class FileEntity {
   @Field(() => Int)
   size: number;
 
-  @Field()
+  @Field(() => String)
   extension: string;
 }

@@ -3,9 +3,9 @@ import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { genSaltSync, hash } from 'bcrypt';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { CreateUserInput } from './dto/create-user.input';
-import { QuerySearchInput } from './dto/query-search.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserDto } from './dto/create-user.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 const includeObject = {
   selectedCategories: {
@@ -32,7 +32,7 @@ const includeObject = {
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(dto: CreateUserInput) {
+  async create(dto: CreateUserDto) {
     const hashedPassword = await this.hashPassword(dto.password);
 
     const user = await this.prismaService.user.create({
@@ -46,7 +46,7 @@ export class UserService {
     return user;
   }
 
-  async update(dto: UpdateUserInput) {
+  async update(dto: UpdateUserDto) {
     const user = await this.prismaService.user.update({
       where: { id: dto.id },
       data: {
@@ -66,7 +66,7 @@ export class UserService {
     return users;
   }
 
-  async getAllWithQuery(query: QuerySearchInput) {
+  async getAllWithQuery(query: QuerySearchDto) {
     const findManyOptions: Prisma.UserFindManyArgs = {
       where: {},
       skip: query.offset,
