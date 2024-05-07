@@ -11,6 +11,8 @@ import { BannerModule } from './banner/banner.module';
 import { Categoryodule } from './category/category.module';
 import { CommentModule } from './comment/comment.module';
 import { ComplaintModule } from './complaint/complaint.module';
+import { FileModule } from './file/file.module';
+import { FileService } from './file/file.service';
 import { MailModule } from './mail/mail.module';
 import { NotificationModule } from './notification/notification.module';
 import { PartnerRequestModule } from './partner-request/partner-request.module';
@@ -69,7 +71,8 @@ import { ViewsModule } from './views/views.module';
     StatsModule,
     ComplaintModule,
     PartnerRequestModule,
+    FileModule,
   ],
-  providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
+  providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }, FileService],
 })
 export class AppModule {}

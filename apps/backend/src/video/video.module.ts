@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { VideoService } from './video.service';
+import { FileService } from 'src/file/file.service';
 import { VideoResolver } from './video.resolver';
+import { VideoService } from './video.service';
 
 @Module({
-  providers: [VideoResolver, VideoService],
+  providers: [VideoResolver, VideoService, FileService],
 })
 export class VideoModule {}

@@ -1,15 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { JwtPayload } from 'src/auth/interfaces';
-import { allowedFileTypes, folders } from 'src/constants';
+import { folders } from 'src/constants';
 import config from 'src/constants/config';
+import { FileService } from 'src/file/file.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FilesType } from 'src/types';
 import { FileDto } from 'src/utils/dto/file.dto';
-import { removeFile } from 'src/utils/remove';
-import { uploadFile } from 'src/utils/upload';
-import * as uuid from 'uuid';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 
@@ -35,6 +33,7 @@ export class VideoService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
+    private readonly fileService: FileService,
   ) {}
 
   async create(dto: CreateVideoDto, user: JwtPayload) {
@@ -51,27 +50,9 @@ export class VideoService {
 
   async uploadFile(file: FileDto, type: FilesType) {
     const uploadedFile = await file.file;
-    if (!allowedFileTypes[type].includes(uploadedFile.mimetype)) {
-      const errorMessage =
-        type === 'VIDEOS'
-          ? 'File needs to be a video'
-          : 'File needs to be an image';
-      throw new BadRequestException(errorMessage);
-    }
-
-    const fileExtenstion = uploadedFile.filename
-      .slice(uploadedFile.filename.lastIndexOf('.'))
-      .toLowerCase();
-    const fileName = `${uuid.v4()}${fileExtenstion}`;
-    const uploadDir = join(
-      this.configService.get(config.STATIC_PATH),
-      folders[type],
-    );
-
-    const fileSize = await uploadFile(
-      uploadedFile.createReadStream,
-      uploadDir,
-      fileName,
+    const { fileName, fileSize } = await this.fileService.createFile(
+      file,
+      type,
     );
 
     const savedFile =
@@ -108,7 +89,7 @@ export class VideoService {
             },
           });
 
-    await removeFile(
+    await this.fileService.deleteFile(
       join(this.configService.get(config.STATIC_PATH), folders[type]),
       file.url,
     );
@@ -168,13 +149,13 @@ export class VideoService {
       include: includeObject,
     });
 
-    await removeFile(
+    await this.fileService.deleteFile(
       join(this.configService.get(config.STATIC_PATH), folders.VIDEOS),
       video.videoFile.url,
     );
 
     if (video.videoPreview) {
-      await removeFile(
+      await this.fileService.deleteFile(
         join(this.configService.get(config.STATIC_PATH), folders.IMAGES),
         video.videoPreview.url,
       );
