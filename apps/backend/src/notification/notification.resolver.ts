@@ -2,7 +2,9 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
 import { CreateNotificationDto } from './dto/create-notification.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { NotificationPagination } from './entities/notification-pagination.entity';
 import { Notification } from './entities/notification.entity';
 import { NotificationService } from './notification.service';
 
@@ -21,6 +23,11 @@ export class NotificationResolver {
   @Query(() => [Notification])
   getNotifications() {
     return this.notificationService.findAll();
+  }
+
+  @Query(() => NotificationPagination)
+  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
+    return this.notificationService.getAllWithQuery(query);
   }
 
   @Query(() => Notification)

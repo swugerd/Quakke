@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
@@ -23,6 +25,40 @@ export class CategoryService {
     });
 
     return categories;
+  }
+
+  async getAllWithQuery(query: QuerySearchDto) {
+    const findManyOptions: Prisma.CategoryFindManyArgs = {
+      where: {},
+      skip: query.offset,
+      take: query.limit,
+    };
+
+    if (query.orderBy && query.orderDirection) {
+      findManyOptions.orderBy = [
+        Object.fromEntries([[query.orderBy, query.orderDirection]]),
+      ];
+    }
+
+    const searchParams = PrismaService.getPrismaSearchingProperties({
+      name: query.name,
+    });
+
+    if (searchParams.length) {
+      findManyOptions.where.OR = [...searchParams];
+    }
+
+    const [data, count] = await this.prismaService.$transaction([
+      this.prismaService.category.findMany({
+        ...findManyOptions,
+      }),
+      this.prismaService.category.count({ where: findManyOptions.where }),
+    ]);
+
+    return {
+      data,
+      count,
+    };
   }
 
   async findOne(id: number) {

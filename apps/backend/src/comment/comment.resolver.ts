@@ -3,7 +3,9 @@ import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { CommentPagination } from './entities/comment-pagination.entity';
 import { Comment } from './entities/comment.entity';
 
 @Resolver(() => Comment)
@@ -21,6 +23,11 @@ export class CommentResolver {
   @Query(() => [Comment])
   getComments() {
     return this.commentService.findAll();
+  }
+
+  @Query(() => CommentPagination)
+  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
+    return this.commentService.getAllWithQuery(query);
   }
 
   @Query(() => Comment)

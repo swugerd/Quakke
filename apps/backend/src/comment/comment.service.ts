@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 const includeObject = {
@@ -39,6 +41,40 @@ export class CommentService {
     });
 
     return comments;
+  }
+
+  async getAllWithQuery(query: QuerySearchDto) {
+    const findManyOptions: Prisma.CommentFindManyArgs = {
+      where: {},
+      skip: query.offset,
+      take: query.limit,
+    };
+
+    if (query.orderBy && query.orderDirection) {
+      findManyOptions.orderBy = [
+        Object.fromEntries([[query.orderBy, query.orderDirection]]),
+      ];
+    }
+
+    const searchParams = PrismaService.getPrismaSearchingProperties({
+      name: query.text,
+    });
+
+    if (searchParams.length) {
+      findManyOptions.where.OR = [...searchParams];
+    }
+
+    const [data, count] = await this.prismaService.$transaction([
+      this.prismaService.comment.findMany({
+        ...findManyOptions,
+      }),
+      this.prismaService.comment.count({ where: findManyOptions.where }),
+    ]);
+
+    return {
+      data,
+      count,
+    };
   }
 
   async findOne(id: number) {

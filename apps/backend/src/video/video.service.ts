@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Prisma } from '@prisma/client';
 import { join } from 'path';
 import { JwtPayload } from 'src/auth/interfaces';
 import { folders } from 'src/constants';
@@ -9,6 +10,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { FilesType } from 'src/types';
 import { FileDto } from 'src/utils/dto/file.dto';
 import { CreateVideoDto } from './dto/create-video.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 
 const includeObject = {
@@ -116,6 +118,46 @@ export class VideoService {
     });
 
     return videos;
+  }
+
+  async getAllWithQuery(query: QuerySearchDto) {
+    const findManyOptions: Prisma.VideoFindManyArgs = {
+      where: {},
+      skip: query.offset,
+      take: query.limit,
+      include: includeObject,
+    };
+
+    if (query.isBanned) {
+      findManyOptions.where.isBanned = true;
+    }
+
+    if (query.orderBy && query.orderDirection) {
+      findManyOptions.orderBy = [
+        Object.fromEntries([[query.orderBy, query.orderDirection]]),
+      ];
+    }
+
+    const searchParams = PrismaService.getPrismaSearchingProperties({
+      name: query.name,
+      description: query.description,
+    });
+
+    if (searchParams.length) {
+      findManyOptions.where.OR = [...searchParams];
+    }
+
+    const [data, count] = await this.prismaService.$transaction([
+      this.prismaService.video.findMany({
+        ...findManyOptions,
+      }),
+      this.prismaService.video.count({ where: findManyOptions.where }),
+    ]);
+
+    return {
+      data,
+      count,
+    };
   }
 
   async findOne(id: number) {

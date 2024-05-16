@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 
 const includeObject = {
@@ -27,6 +29,32 @@ export class NotificationService {
     });
 
     return notifications;
+  }
+
+  async getAllWithQuery(query: QuerySearchDto) {
+    const findManyOptions: Prisma.NotificationFindManyArgs = {
+      where: {},
+      skip: query.offset,
+      take: query.limit,
+    };
+
+    if (query.orderBy && query.orderDirection) {
+      findManyOptions.orderBy = [
+        Object.fromEntries([[query.orderBy, query.orderDirection]]),
+      ];
+    }
+
+    const [data, count] = await this.prismaService.$transaction([
+      this.prismaService.notification.findMany({
+        ...findManyOptions,
+      }),
+      this.prismaService.notification.count({ where: findManyOptions.where }),
+    ]);
+
+    return {
+      data,
+      count,
+    };
   }
 
   async findOne(id: number) {

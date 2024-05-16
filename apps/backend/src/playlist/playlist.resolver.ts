@@ -2,8 +2,10 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { VideoPlaylistDto } from './dto/video-playlist.dto';
+import { PlaylistPagination } from './entities/playlist-pagination.entity';
 import { Playlist } from './entities/playlist.entity';
 import { PlaylistService } from './playlist.service';
 
@@ -22,6 +24,11 @@ export class PlaylistResolver {
   @Query(() => [Playlist])
   getPlaylists() {
     return this.playlistService.findAll();
+  }
+
+  @Query(() => PlaylistPagination)
+  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
+    return this.playlistService.getAllWithQuery(query);
   }
 
   @Query(() => Playlist)

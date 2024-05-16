@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { VideoPlaylistDto } from './dto/video-playlist.dto';
 
@@ -37,6 +39,41 @@ export class PlaylistService {
     });
 
     return playlists;
+  }
+
+  async getAllWithQuery(query: QuerySearchDto) {
+    const findManyOptions: Prisma.PlaylistFindManyArgs = {
+      where: {},
+      skip: query.offset,
+      take: query.limit,
+    };
+
+    if (query.orderBy && query.orderDirection) {
+      findManyOptions.orderBy = [
+        Object.fromEntries([[query.orderBy, query.orderDirection]]),
+      ];
+    }
+
+    const searchParams = PrismaService.getPrismaSearchingProperties({
+      name: query.name,
+      privacy: query.privacy,
+    });
+
+    if (searchParams.length) {
+      findManyOptions.where.OR = [...searchParams];
+    }
+
+    const [data, count] = await this.prismaService.$transaction([
+      this.prismaService.playlist.findMany({
+        ...findManyOptions,
+      }),
+      this.prismaService.playlist.count({ where: findManyOptions.where }),
+    ]);
+
+    return {
+      data,
+      count,
+    };
   }
 
   async findOne(id: number) {

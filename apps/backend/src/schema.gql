@@ -239,12 +239,47 @@ type LogoutResponse {
   success: Boolean!
 }
 
+type CategoryPagination {
+  data: [Category!]!
+  count: Int!
+}
+
+type CommentPagination {
+  data: [Comment!]!
+  count: Int!
+}
+
+type ComplaintPagination {
+  data: [Complaint!]!
+  count: Int!
+}
+
+type NotificationPagination {
+  data: [Notification!]!
+  count: Int!
+}
+
+type PartnerRequestPagination {
+  data: [PartnerRequest!]!
+  count: Int!
+}
+
+type PlaylistPagination {
+  data: [Playlist!]!
+  count: Int!
+}
+
 type Monitoring {
   viewsCount: Int!
   likesCount: Int!
   dislikesCount: Int!
   commentsCount: Int!
   subscribersCount: Int!
+}
+
+type VideoPagination {
+  data: [Video!]!
+  count: Int!
 }
 
 type View {
@@ -257,7 +292,7 @@ type View {
 
 type Query {
   getUsers: [User!]!
-  getUsersWithQuery(query: QuerySearchDto!): UserPagination!
+  getUsersWithQuery(query: QuerySearchDto!): PartnerRequestPagination!
   getUser(id: Int!): User!
   getMe: ProfileResponse!
   sendEmailVerification(email: String!): EmailResponse!
@@ -301,11 +336,8 @@ input QuerySearchDto {
   offset: Int! = 100
   orderBy: String
   orderDirection: OrderEnum = ASC
-  email: String
-  login: String
-  name: String
-  isBanned: Boolean
-  isPartner: Boolean
+  message: String
+  status: PartnerRequestStatuses
 }
 
 enum OrderEnum {

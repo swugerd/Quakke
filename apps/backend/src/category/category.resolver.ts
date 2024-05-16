@@ -3,6 +3,8 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
+import { CategoryPagination } from './entities/category-pagination.entity';
+import { QuerySearchDto } from './dto/query-search.dto';
 
 @Resolver(() => Category)
 export class CategoryResolver {
@@ -16,6 +18,11 @@ export class CategoryResolver {
   @Query(() => [Category])
   getCategories() {
     return this.categoryService.findAll();
+  }
+
+  @Query(() => CategoryPagination)
+  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
+    return this.categoryService.getAllWithQuery(query);
   }
 
   @Query(() => Category)

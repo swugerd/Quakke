@@ -1,7 +1,9 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ComplaintService } from './complaint.service';
 import { CreateComplaintDto } from './dto/create-complaint.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateComplaintDto } from './dto/update-complaint.dto';
+import { ComplaintPagination } from './entities/complaint-pagination.entity';
 import { Complaint } from './entities/complaint.entity';
 
 @Resolver(() => Complaint)
@@ -16,6 +18,11 @@ export class ComplaintResolver {
   @Query(() => [Complaint])
   getComplaints() {
     return this.complaintService.findAll();
+  }
+
+  @Query(() => ComplaintPagination)
+  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
+    return this.complaintService.getAllWithQuery(query);
   }
 
   @Query(() => Complaint)

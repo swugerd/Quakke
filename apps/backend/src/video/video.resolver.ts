@@ -4,7 +4,9 @@ import { JwtPayload } from 'src/auth/interfaces';
 import { FileDto } from 'src/utils/dto/file.dto';
 import { FileEntity } from 'src/utils/entities/file.entity';
 import { CreateVideoDto } from './dto/create-video.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { VideoPagination } from './entities/video-pagination.entity';
 import { Video } from './entities/video.entity';
 import { VideoService } from './video.service';
 
@@ -43,6 +45,11 @@ export class VideoResolver {
   @Query(() => [Video])
   getVideos() {
     return this.videoService.findAll();
+  }
+
+  @Query(() => VideoPagination)
+  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
+    return this.videoService.getAllWithQuery(query);
   }
 
   @Query(() => Video)
