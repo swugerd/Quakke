@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { FileService } from 'src/file/file.service';
 import { MailService } from 'src/mail/mail.service';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
@@ -16,6 +17,7 @@ import { STRATEGIES } from './strategies';
     AuthService,
     MailService,
     UserService,
+    FileService,
     ...STRATEGIES,
     ...GUARDS,
   ],

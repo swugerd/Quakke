@@ -1,5 +1,7 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtPayload } from 'src/auth/interfaces';
+import { FileDto } from 'src/utils/dto/file.dto';
+import { FileEntity } from 'src/utils/entities/file.entity';
 import { CurrentUser } from '../../src/auth/decorators';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QuerySearchDto } from './dto/query-search.dto';
@@ -21,6 +23,16 @@ export class UserResolver {
   @Query(() => UserPagination)
   getUsersWithQuery(@Args('query') query: QuerySearchDto) {
     return this.userService.getAllWithQuery(query);
+  }
+
+  @Mutation(() => FileEntity)
+  uploadAvatar(@Args('file') file: FileDto) {
+    return this.userService.uploadFile(file);
+  }
+
+  @Mutation(() => FileEntity)
+  dropAvatar(@Args('id', { type: () => Int }) id: number) {
+    return this.userService.deleteFile(id);
   }
 
   @Query(() => User)

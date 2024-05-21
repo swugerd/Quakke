@@ -351,6 +351,8 @@ enum RatingEnum {
 }
 
 type Mutation {
+  uploadAvatar(file: FileDto!): FileEntity!
+  dropAvatar(id: Int!): FileEntity!
   removeUser(id: Int!): User!
   createUser(dto: CreateUserDto!): User!
   updateUser(dto: UpdateUserDto!): User!
@@ -413,11 +415,19 @@ type Mutation {
   removePartnerRequest(id: Int!): PartnerRequest!
 }
 
+input FileDto {
+  file: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input CreateUserDto {
   email: String!
   login: String!
   name: String!
   password: String!
+  userAvatarId: Int
 }
 
 input UpdateUserDto {
@@ -425,6 +435,7 @@ input UpdateUserDto {
   login: String
   name: String
   password: String
+  userAvatarId: Int
   id: Int!
 }
 
@@ -492,13 +503,6 @@ input CreateVideoDto {
   categoryId: Int
   subCategoryId: Int
 }
-
-input FileDto {
-  file: Upload!
-}
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
 
 input UpdateVideoDto {
   name: String

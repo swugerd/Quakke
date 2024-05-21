@@ -47,7 +47,7 @@ export class User {
   isPartner: boolean;
 
   @Field(() => Role)
-  role?: Role;
+  role: Role;
 
   @Field(() => [SelectedCategory], { nullable: true })
   selectedCategories?: SelectedCategory[];

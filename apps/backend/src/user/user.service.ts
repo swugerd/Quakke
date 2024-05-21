@@ -1,7 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { genSaltSync, hash } from 'bcrypt';
+import { join } from 'path';
+import { folders } from 'src/constants';
+import config from 'src/constants/config';
+import { FileService } from 'src/file/file.service';
+import { FileDto } from 'src/utils/dto/file.dto';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QuerySearchDto } from './dto/query-search.dto';
@@ -30,7 +36,11 @@ const includeObject = {
 };
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly fileService: FileService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async create(dto: CreateUserDto) {
     const hashedPassword = await this.hashPassword(dto.password);
@@ -64,6 +74,45 @@ export class UserService {
     });
 
     return users;
+  }
+
+  async uploadFile(file: FileDto) {
+    const uploadedFile = await file.file;
+    const { fileName, fileSize } = await this.fileService.createFile(
+      file,
+      'IMAGES',
+    );
+
+    const savedFile = await this.prismaService.userAvatar.create({
+      data: {
+        extension: uploadedFile.mimetype,
+        size: fileSize,
+        url: fileName,
+      },
+    });
+
+    return savedFile;
+  }
+
+  async deleteFile(id: number) {
+    const file = await this.prismaService.userAvatar.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    await this.fileService.deleteFile(
+      join(this.configService.get(config.STATIC_PATH), folders['IMAGES']),
+      file.url,
+    );
+
+    const deletedFile = await this.prismaService.userAvatar.delete({
+      where: {
+        id: file.id,
+      },
+    });
+
+    return deletedFile;
   }
 
   async getAllWithQuery(query: QuerySearchDto) {

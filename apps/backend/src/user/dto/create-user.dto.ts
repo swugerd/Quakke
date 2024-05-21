@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateUserDto {
@@ -13,4 +13,7 @@ export class CreateUserDto {
 
   @Field(() => String)
   password: string;
+
+  @Field(() => Int, { nullable: true })
+  userAvatarId?: number;
 }
