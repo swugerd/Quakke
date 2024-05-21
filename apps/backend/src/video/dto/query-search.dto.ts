@@ -5,7 +5,10 @@ import { OrderDto } from 'src/utils/dto/order.input';
 import { PaginationDto } from 'src/utils/dto/pagination.dto';
 
 @InputType()
-export class QuerySearchDto extends IntersectionType(PaginationDto, OrderDto) {
+export class VideoQuerySearchDto extends IntersectionType(
+  PaginationDto,
+  OrderDto,
+) {
   @Field(() => String, { nullable: true })
   @IsString()
   @MaxLength(256)

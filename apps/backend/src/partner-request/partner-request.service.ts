@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePartnerRequestDto } from './dto/create-partner-request.dto';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { PartnerRequestQuerySearchDto } from './dto/query-search.dto';
 import { UpdatePartnerRequestDto } from './dto/update-partner-request.dto';
 
 const includeObject = {
@@ -33,7 +33,7 @@ export class PartnerRequestService {
     return requests;
   }
 
-  async getAllWithQuery(query: QuerySearchDto) {
+  async getAllWithQuery(query: PartnerRequestQuerySearchDto) {
     const findManyOptions: Prisma.PartnerRequestFindManyArgs = {
       where: {},
       skip: query.offset,

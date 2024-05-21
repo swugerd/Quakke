@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { NotificationQuerySearchDto } from './dto/query-search.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 
 const includeObject = {
@@ -31,7 +31,7 @@ export class NotificationService {
     return notifications;
   }
 
-  async getAllWithQuery(query: QuerySearchDto) {
+  async getAllWithQuery(query: NotificationQuerySearchDto) {
     const findManyOptions: Prisma.NotificationFindManyArgs = {
       where: {},
       skip: query.offset,

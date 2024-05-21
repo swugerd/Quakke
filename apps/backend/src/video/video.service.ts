@@ -10,7 +10,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { FilesType } from 'src/types';
 import { FileDto } from 'src/utils/dto/file.dto';
 import { CreateVideoDto } from './dto/create-video.dto';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { VideoQuerySearchDto } from './dto/query-search.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 
 const includeObject = {
@@ -120,7 +120,7 @@ export class VideoService {
     return videos;
   }
 
-  async getAllWithQuery(query: QuerySearchDto) {
+  async getAllWithQuery(query: VideoQuerySearchDto) {
     const findManyOptions: Prisma.VideoFindManyArgs = {
       where: {},
       skip: query.offset,

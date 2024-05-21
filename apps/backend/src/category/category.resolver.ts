@@ -1,10 +1,10 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { CategoriesQuerySearchDto } from './dto/query-search.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Category } from './entities/category.entity';
 import { CategoryPagination } from './entities/category-pagination.entity';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { Category } from './entities/category.entity';
 
 @Resolver(() => Category)
 export class CategoryResolver {
@@ -21,7 +21,7 @@ export class CategoryResolver {
   }
 
   @Query(() => CategoryPagination)
-  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
+  getCategoriesWithQuery(@Args('query') query: CategoriesQuerySearchDto) {
     return this.categoryService.getAllWithQuery(query);
   }
 

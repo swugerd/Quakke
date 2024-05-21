@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { CategoriesQuerySearchDto } from './dto/query-search.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class CategoryService {
     return categories;
   }
 
-  async getAllWithQuery(query: QuerySearchDto) {
+  async getAllWithQuery(query: CategoriesQuerySearchDto) {
     const findManyOptions: Prisma.CategoryFindManyArgs = {
       where: {},
       skip: query.offset,

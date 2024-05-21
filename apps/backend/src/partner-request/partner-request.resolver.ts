@@ -2,7 +2,7 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators';
 import { JwtPayload } from 'src/auth/interfaces';
 import { CreatePartnerRequestDto } from './dto/create-partner-request.dto';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { PartnerRequestQuerySearchDto } from './dto/query-search.dto';
 import { UpdatePartnerRequestDto } from './dto/update-partner-request.dto';
 import { PartnerRequestPagination } from './entities/partner-request-pagination.entity';
 import { PartnerRequest } from './entities/partner-request.entity';
@@ -27,7 +27,9 @@ export class PartnerRequestResolver {
   }
 
   @Query(() => PartnerRequestPagination)
-  getUsersWithQuery(@Args('query') query: QuerySearchDto) {
+  getPartnerRequestsWithQuery(
+    @Args('query') query: PartnerRequestQuerySearchDto,
+  ) {
     return this.partnerRequestService.getAllWithQuery(query);
   }
 

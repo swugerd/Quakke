@@ -5,16 +5,19 @@ import { OrderDto } from 'src/utils/dto/order.input';
 import { PaginationDto } from 'src/utils/dto/pagination.dto';
 
 @InputType()
-export class QuerySearchDto extends IntersectionType(PaginationDto, OrderDto) {
+export class ComplaintQuerySearchDto extends IntersectionType(
+  PaginationDto,
+  OrderDto,
+) {
   @Field(() => ComplaintReasons, { nullable: true })
   @IsString()
   @MaxLength(256)
   @IsOptional()
   reason?: ComplaintReasons;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @IsString()
   @MaxLength(256)
   @IsOptional()
-  message: string;
+  message?: string;
 }

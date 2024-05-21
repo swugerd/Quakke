@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { CommentsQuerySearchDto } from './dto/query-search.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 const includeObject = {
@@ -43,7 +43,7 @@ export class CommentService {
     return comments;
   }
 
-  async getAllWithQuery(query: QuerySearchDto) {
+  async getAllWithQuery(query: CommentsQuerySearchDto) {
     const findManyOptions: Prisma.CommentFindManyArgs = {
       where: {},
       skip: query.offset,

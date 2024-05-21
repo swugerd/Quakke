@@ -292,7 +292,7 @@ type View {
 
 type Query {
   getUsers: [User!]!
-  getUsersWithQuery(query: QuerySearchDto!): PartnerRequestPagination!
+  getUsersWithQuery(query: QuerySearchDto!): UserPagination!
   getUser(id: Int!): User!
   getMe: ProfileResponse!
   sendEmailVerification(email: String!): EmailResponse!
@@ -301,24 +301,29 @@ type Query {
   getRoles: [Role!]!
   getRole(id: Int!): Role!
   getCategories: [Category!]!
+  getCategoriesWithQuery(query: CategoriesQuerySearchDto!): CategoryPagination!
   getCategory(id: Int!): Category!
   getSubCategories: [SubCategory!]!
   getSubCategory(id: Int!): SubCategory!
   getTags: [Tag!]!
   getTag(id: Int!): Tag!
   getVideos: [Video!]!
+  getVideosWithQuery(query: VideoQuerySearchDto!): VideoPagination!
   getVideo(id: Int!): Video!
   getPlaylists: [Playlist!]!
+  getPlaylistsWithQuery(query: PlaylistQuerySearchDto!): PlaylistPagination!
   getPlaylist(id: Int!): Playlist!
   getViews: [View!]!
   getView(id: Int!): View!
   getComments: [Comment!]!
+  getCommentsWithQuery(query: CommentsQuerySearchDto!): CommentPagination!
   getComment(id: Int!): Comment!
   getRatings(type: RatingEnum!): [Rating!]!
   getRating(id: Int!, type: RatingEnum!): Rating!
   getBanners: [Banner!]!
   getBanner(id: Int!): Banner!
   getNotifications: [Notification!]!
+  getNotificationsWithQuery(query: NotificationQuerySearchDto!): NotificationPagination!
   getNotification(id: Int!): Notification!
   getUserNotifications: [Notification!]!
   getSettings: [Setting!]!
@@ -326,8 +331,10 @@ type Query {
   getUserSettings: Setting!
   getMonitoring: Monitoring!
   getComplaints: [Complaint!]!
+  getComplaintsWithQuery(query: ComplaintQuerySearchDto!): ComplaintPagination!
   getComplaint(id: Int!): Complaint!
   getPartnerRequests: [PartnerRequest!]!
+  getPartnerRequestsWithQuery(query: PartnerRequestQuerySearchDto!): PartnerRequestPagination!
   getPartnerRequest(id: Int!): PartnerRequest!
 }
 
@@ -336,8 +343,11 @@ input QuerySearchDto {
   offset: Int! = 100
   orderBy: String
   orderDirection: OrderEnum = ASC
-  message: String
-  status: PartnerRequestStatuses
+  email: String
+  login: String
+  name: String
+  isBanned: Boolean
+  isPartner: Boolean
 }
 
 enum OrderEnum {
@@ -345,9 +355,69 @@ enum OrderEnum {
   DESC
 }
 
+input CategoriesQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  name: String
+}
+
+input VideoQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  name: String
+  description: String
+  isBanned: Boolean
+}
+
+input PlaylistQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  name: String
+  privacy: Privacy
+}
+
+input CommentsQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  text: String
+}
+
 enum RatingEnum {
   LIKE
   DISLIKE
+}
+
+input NotificationQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+}
+
+input ComplaintQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  reason: ComplaintReasons
+  message: String
+}
+
+input PartnerRequestQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  message: String
+  status: PartnerRequestStatuses
 }
 
 type Mutation {

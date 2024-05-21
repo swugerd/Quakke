@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateComplaintDto } from './dto/create-complaint.dto';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { ComplaintQuerySearchDto } from './dto/query-search.dto';
 import { UpdateComplaintDto } from './dto/update-complaint.dto';
 
 const includeObject = {
@@ -31,7 +31,7 @@ export class ComplaintService {
     return complaints;
   }
 
-  async getAllWithQuery(query: QuerySearchDto) {
+  async getAllWithQuery(query: ComplaintQuerySearchDto) {
     const findManyOptions: Prisma.ComplaintFindManyArgs = {
       where: {},
       skip: query.offset,

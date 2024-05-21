@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
-import { QuerySearchDto } from './dto/query-search.dto';
+import { PlaylistQuerySearchDto } from './dto/query-search.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { VideoPlaylistDto } from './dto/video-playlist.dto';
 
@@ -41,7 +41,7 @@ export class PlaylistService {
     return playlists;
   }
 
-  async getAllWithQuery(query: QuerySearchDto) {
+  async getAllWithQuery(query: PlaylistQuerySearchDto) {
     const findManyOptions: Prisma.PlaylistFindManyArgs = {
       where: {},
       skip: query.offset,
