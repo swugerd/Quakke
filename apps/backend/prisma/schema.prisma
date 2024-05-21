@@ -1,0 +1,499 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  email     String  @unique
+  login     String  @unique
+  name      String
+  password  String
+  isBanned  Boolean @default(false) @map("is_banned")
+  isPartner Boolean @default(false) @map("is_partner")
+
+  selectedCategories CategoriesOnUsers[]
+  likes              Like[]
+  dislikes           Dislike[]
+  comments           Comment[]
+  views              View[]
+  notifications      Notification[]
+  videos             Video[]
+  playlists          Playlist[]
+  settings           Settings[]
+  history            VideoHistory[]
+  partnerRequests    PartnerRequest[]
+  complaints         Complaint[]
+  subscribers        User[]              @relation("Subscribers")
+  refreshTokens      RefreshToken[]
+  banners            Banner[]
+
+  role   Role @relation(fields: [roleId], references: [id])
+  roleId Int  @default(2) @map("role_id")
+
+  user   User? @relation("Subscribers", fields: [userId], references: [id])
+  userId Int?  @unique @map("user_id")
+
+  userAvatar   UserAvatar? @relation(fields: [userAvatarId], references: [id])
+  userAvatarId Int?        @unique @map("avatar_id")
+
+  @@map("users")
+}
+
+model Role {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  name Roles @unique @default(USER)
+
+  users User[]
+
+  @@map("roles")
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  name String @unique
+
+  subCategories SubCategory[]
+  users         CategoriesOnUsers[]
+  Video         Video[]
+
+  @@map("categories")
+}
+
+model SubCategory {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  name String @unique
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int      @map("category_id")
+  Video      Video[]
+
+  @@map("sub_categories")
+}
+
+model CategoriesOnUsers {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int      @map("category_id")
+
+  @@id([userId, categoryId])
+  @@map("categories_on_users")
+}
+
+model Video {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  name        String
+  description String?
+  isBanned    Boolean @default(false)
+  privacy     Privacy @default(OPEN)
+
+  likes      Like[]
+  dislikes   Dislike[]
+  comments   Comment[]
+  views      View[]
+  history    VideoHistory[]
+  complaints Complaint[]
+  playlists  PlaylistsOnVideos[]
+  tags       TagsOnVideos[]
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?      @map("category_id")
+
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  subCategoryId Int?         @map("sub_category_id")
+
+  author User @relation(fields: [userId], references: [id])
+  userId Int  @map("userId")
+
+  videoFile   VideoFile @relation(fields: [videoFileId], references: [id], onDelete: Cascade)
+  videoFileId Int       @unique @map("video_id")
+
+  videoPreview   VideoPreview? @relation(fields: [videoPreviewId], references: [id], onDelete: Cascade)
+  videoPreviewId Int?          @unique @map("preview_id")
+
+  @@map("videos")
+}
+
+model VideoHistory {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  video   Video? @relation(fields: [videoId], references: [id])
+  videoId Int?   @map("video_id")
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  @@map("video_history")
+}
+
+model Like {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId Int?   @map("video_id")
+
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int?     @map("comment_id")
+
+  @@map("likes")
+}
+
+model Dislike {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId Int?   @map("video_id")
+
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int?     @map("comment_id")
+
+  @@map("dislikes")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  text String
+
+  likes    Like[]
+  dislikes Dislike[]
+  replies  Comment[] @relation("ChildToParent")
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  parent   Comment? @relation("ChildToParent", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId Int?     @map("parent_id")
+
+  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId Int?   @map("video_id")
+
+  @@map("comments")
+}
+
+model View {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId Int?   @map("video_id")
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  @@map("views")
+}
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  type Notifications
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  @@map("notifications")
+}
+
+model Settings {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  privacy Privacy @default(OPEN)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique @map("user_id")
+
+  @@map("settings")
+}
+
+model Playlist {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  name    String
+  privacy Privacy @default(CLOSED)
+
+  videos PlaylistsOnVideos[]
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  @@map("playlists")
+}
+
+model PlaylistsOnVideos {
+  video   Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId Int   @map("video_id")
+
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  playlistId Int      @map("playlist_id")
+
+  @@id([videoId, playlistId])
+  @@map("playlists_on_videos")
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  name String
+
+  videos TagsOnVideos[]
+
+  @@map("tags")
+}
+
+model TagsOnVideos {
+  video   Video @relation(fields: [videoId], references: [id])
+  videoId Int   @map("video_id")
+
+  tag   Tag @relation(fields: [tagId], references: [id])
+  tagId Int @map("tag_id")
+
+  @@id([videoId, tagId])
+  @@map("tags_on_videos")
+}
+
+model Banner {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  publishDate   DateTime?   @default(now()) @map("publish_date") @db.Timestamptz(1)
+  unpublishDate DateTime?   @default(dbgenerated("NOW() + interval '1 day'")) @map("unpublish_date") @db.Timestamptz(1)
+  title         String
+  type          BannerTypes
+  description   String?
+
+  bannerImage   BannerImage @relation(fields: [bannerImageId], references: [id], onDelete: Cascade)
+  bannerImageId Int         @unique @map("image_id")
+
+  bannerVideo   BannerVideo? @relation(fields: [bannerVideoId], references: [id], onDelete: Cascade)
+  bannerVideoId Int?         @unique @map("video_id")
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  @@map("banners")
+}
+
+model UserAvatar {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  user User[]
+
+  @@map("user_avatars")
+}
+
+model BannerImage {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  banner Banner[]
+
+  @@map("banner_images")
+}
+
+model BannerVideo {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  banner Banner[]
+
+  @@map("banner_videos")
+}
+
+model VideoFile {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  video Video[]
+
+  @@map("video_files")
+}
+
+model VideoPreview {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  url       String
+  size      Int
+  extension String
+
+  video Video[]
+
+  @@map("video_previews")
+}
+
+model PartnerRequest {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  message String
+  status  PartnerRequestStatuses @default(OPEN)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@map("partner_requests")
+}
+
+model Complaint {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  reason  ComplaintReasons
+  message String
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  video   Video? @relation(fields: [videoId], references: [id])
+  videoId Int?
+
+  @@map("complaints")
+}
+
+model RefreshToken {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(1)
+  userAgent String   @map("user_agent")
+  token     String   @unique
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  @@map("refresh_tokens")
+}
+
+model EmailVerification {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  email     String   @unique
+  token     String   @unique
+  timestamp DateTime @db.Timestamptz(1)
+
+  @@map("email_verifications")
+}
+
+model ForgottenPassword {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(1)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(1)
+
+  email     String   @unique
+  token     String   @unique
+  timestamp DateTime @db.Timestamptz(1)
+
+  @@map("forgotten_passwords")
+}
+
+enum ComplaintReasons {
+  NEGATIVE
+  INCONSISTENCY
+  RACISM
+}
+
+enum Privacy {
+  OPEN
+  CLOSED
+}
+
+enum PartnerRequestStatuses {
+  OPEN
+  APPROVED
+  REJECTED
+}
+
+enum BannerTypes {
+  VIDEO
+  STREAM
+  IMAGE
+}
+
+enum Roles {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum Notifications {
+  NEW_SUBSCRIBER
+  NEW_LIKE
+  NEW_DISLIKE
+  NEW_COMMENT
+  VIDEO_BLOCK
+  VIDEO_UNBLOCK
+  SYSTEM_UPDATE
+}

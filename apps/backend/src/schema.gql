@@ -1,0 +1,702 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type FileEntity {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  url: String!
+  size: Int!
+  extension: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Banner {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  publishDate: DateTime!
+  unpublishDate: DateTime!
+  title: String!
+  description: String
+  type: BannerTypes!
+  bannerImage: FileEntity!
+  bannerVideo: FileEntity
+  user: User!
+}
+
+enum BannerTypes {
+  VIDEO
+  STREAM
+  IMAGE
+}
+
+type Rating {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+}
+
+type SubCategory {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+}
+
+type Category {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  subCategories: [SubCategory!]!
+}
+
+type Tag {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+}
+
+type Video {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  description: String
+  isBanned: Boolean!
+  userId: Int!
+  author: User!
+  videoFile: FileEntity!
+  videoPreview: FileEntity
+  category: Category
+  subCategory: SubCategory
+  tags: [Tag!]
+  comments: [Comment!]
+  likes: [Rating!]
+  dislikes: [Rating!]
+}
+
+type Comment {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  text: String!
+  user: User!
+  video: Video!
+  parent: Comment
+  replies: [Comment!]
+  likes: [Rating!]
+  dislikes: [Rating!]
+}
+
+type Complaint {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  reason: ComplaintReasons!
+  message: String!
+  user: User
+  video: Video
+}
+
+enum ComplaintReasons {
+  NEGATIVE
+  INCONSISTENCY
+  RACISM
+}
+
+type Notification {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: Notifications!
+  user: User
+}
+
+enum Notifications {
+  NEW_SUBSCRIBER
+  NEW_LIKE
+  NEW_DISLIKE
+  NEW_COMMENT
+  VIDEO_BLOCK
+  VIDEO_UNBLOCK
+  SYSTEM_UPDATE
+}
+
+type PartnerRequest {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  message: String!
+  status: PartnerRequestStatuses!
+  user: User!
+}
+
+enum PartnerRequestStatuses {
+  OPEN
+  APPROVED
+  REJECTED
+}
+
+type VideoPlaylist {
+  video: Video!
+}
+
+type Playlist {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  privacy: String!
+  user: User!
+  videos: [VideoPlaylist!]
+}
+
+type Role {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: Roles!
+}
+
+enum Roles {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+type Setting {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  privacy: Privacy!
+  user: User!
+}
+
+enum Privacy {
+  OPEN
+  CLOSED
+}
+
+type SelectedCategory {
+  category: Category!
+}
+
+type User {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String!
+  login: String!
+  name: String!
+  password: String
+  isBanned: Boolean!
+  isPartner: Boolean!
+  role: Role!
+  selectedCategories: [SelectedCategory!]
+  banners: [Banner!]
+  comments: [Comment!]
+  complaints: [Complaint!]
+  likes: [Rating!]
+  dislikes: [Rating!]
+  notifications: [Notification!]
+  partnerRequests: [PartnerRequest!]
+  playlists: [Playlist!]
+  settings: [Setting!]!
+  subscribers: [User!]
+  userAvatar: FileEntity
+  videos: [Video!]
+}
+
+type UserPagination {
+  data: [User!]!
+  count: Int!
+}
+
+type ProfileResponse {
+  id: Int!
+  email: String!
+  role: Roles!
+}
+
+type AuthResponse {
+  accessToken: String!
+}
+
+type EmailResponse {
+  message: String!
+}
+
+type LogoutResponse {
+  success: Boolean!
+}
+
+type CategoryPagination {
+  data: [Category!]!
+  count: Int!
+}
+
+type CommentPagination {
+  data: [Comment!]!
+  count: Int!
+}
+
+type ComplaintPagination {
+  data: [Complaint!]!
+  count: Int!
+}
+
+type NotificationPagination {
+  data: [Notification!]!
+  count: Int!
+}
+
+type PartnerRequestPagination {
+  data: [PartnerRequest!]!
+  count: Int!
+}
+
+type PlaylistPagination {
+  data: [Playlist!]!
+  count: Int!
+}
+
+type Monitoring {
+  viewsCount: Int!
+  likesCount: Int!
+  dislikesCount: Int!
+  commentsCount: Int!
+  subscribersCount: Int!
+}
+
+type VideoPagination {
+  data: [Video!]!
+  count: Int!
+}
+
+type View {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+  video: Video!
+}
+
+type Query {
+  getUsers: [User!]!
+  getUsersWithQuery(query: QuerySearchDto!): UserPagination!
+  getUser(id: Int!): User!
+  getMe: ProfileResponse!
+  sendEmailVerification(email: String!): EmailResponse!
+  verifyEmail(token: String!): EmailResponse!
+  sendEmailForgotPassword(email: String!): EmailResponse!
+  getRoles: [Role!]!
+  getRole(id: Int!): Role!
+  getCategories: [Category!]!
+  getCategoriesWithQuery(query: CategoriesQuerySearchDto!): CategoryPagination!
+  getCategory(id: Int!): Category!
+  getSubCategories: [SubCategory!]!
+  getSubCategory(id: Int!): SubCategory!
+  getTags: [Tag!]!
+  getTag(id: Int!): Tag!
+  getVideos: [Video!]!
+  getVideosWithQuery(query: VideoQuerySearchDto!): VideoPagination!
+  getVideo(id: Int!): Video!
+  getPlaylists: [Playlist!]!
+  getPlaylistsWithQuery(query: PlaylistQuerySearchDto!): PlaylistPagination!
+  getPlaylist(id: Int!): Playlist!
+  getViews: [View!]!
+  getView(id: Int!): View!
+  getComments: [Comment!]!
+  getCommentsWithQuery(query: CommentsQuerySearchDto!): CommentPagination!
+  getComment(id: Int!): Comment!
+  getRatings(type: RatingEnum!): [Rating!]!
+  getRating(id: Int!, type: RatingEnum!): Rating!
+  getBanners: [Banner!]!
+  getBanner(id: Int!): Banner!
+  getNotifications: [Notification!]!
+  getNotificationsWithQuery(query: NotificationQuerySearchDto!): NotificationPagination!
+  getNotification(id: Int!): Notification!
+  getUserNotifications: [Notification!]!
+  getSettings: [Setting!]!
+  getSettingsById(id: Int!): Setting!
+  getUserSettings: Setting!
+  getMonitoring: Monitoring!
+  getComplaints: [Complaint!]!
+  getComplaintsWithQuery(query: ComplaintQuerySearchDto!): ComplaintPagination!
+  getComplaint(id: Int!): Complaint!
+  getPartnerRequests: [PartnerRequest!]!
+  getPartnerRequestsWithQuery(query: PartnerRequestQuerySearchDto!): PartnerRequestPagination!
+  getPartnerRequest(id: Int!): PartnerRequest!
+}
+
+input QuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  email: String
+  login: String
+  name: String
+  isBanned: Boolean
+  isPartner: Boolean
+}
+
+enum OrderEnum {
+  ASC
+  DESC
+}
+
+input CategoriesQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  name: String
+}
+
+input VideoQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  name: String
+  description: String
+  isBanned: Boolean
+}
+
+input PlaylistQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  name: String
+  privacy: Privacy
+}
+
+input CommentsQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  text: String
+}
+
+enum RatingEnum {
+  LIKE
+  DISLIKE
+}
+
+input NotificationQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+}
+
+input ComplaintQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  reason: ComplaintReasons
+  message: String
+}
+
+input PartnerRequestQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+  message: String
+  status: PartnerRequestStatuses
+}
+
+type Mutation {
+  uploadAvatar(file: FileDto!): FileEntity!
+  dropAvatar(id: Int!): FileEntity!
+  removeUser(id: Int!): User!
+  createUser(dto: CreateUserDto!): User!
+  updateUser(dto: UpdateUserDto!): User!
+  register(dto: SignUpDto!): AuthResponse!
+  login(dto: SignInDto!): AuthResponse!
+  logout: LogoutResponse!
+  refreshTokens: AuthResponse!
+  setNewPassord(dto: ResetPasswordDto!): EmailResponse!
+  createRole(dto: CreateRoleDto!): Role!
+  updateRole(dto: UpdateRoleDto!): Role!
+  removeRole(id: Int!): Role!
+  createCategory(dto: CreateCategoryDto!): Category!
+  updateCategory(dto: UpdateCategoryDto!): Category!
+  removeCategory(id: Int!): Category!
+  createSubCategory(dto: CreateSubCategoryDto!): SubCategory!
+  updateSubCategory(dto: UpdateSubCategoryDto!): SubCategory!
+  removeSubCategory(id: Int!): SubCategory!
+  createTag(dto: CreateTagDto!): Tag!
+  updateTag(dto: UpdateTagDto!): Tag!
+  removeTag(id: Int!): Tag!
+  createVideo(dto: CreateVideoDto!): Video!
+  uploadVideo(file: FileDto!): FileEntity!
+  dropVideo(id: Int!): FileEntity!
+  uploadPreview(file: FileDto!): FileEntity!
+  dropPreview(id: Int!): FileEntity!
+  updateVideo(dto: UpdateVideoDto!): Video!
+  removeVideo(id: Int!): Video!
+  createPlaylist(dto: CreatePlaylistDto!): Playlist!
+  updatePlaylist(dto: UpdatePlaylistDto!): Playlist!
+  addVideoToPlaylist(dto: VideoPlaylistDto!): Playlist!
+  removeFromPlaylist(dto: VideoPlaylistDto!): Playlist!
+  removePlaylist(id: Int!): Playlist!
+  createView(dto: CreateViewDto!): View!
+  updateView(dto: UpdateViewDto!): View!
+  removeView(id: Int!): View!
+  createComment(dto: CreateCommentDto!): Comment!
+  updateComment(dto: UpdateCommentDto!): Comment!
+  removeComment(id: Int!): Comment!
+  createRating(dto: CreateRatingDto!): Rating!
+  updateRating(dto: UpdateRatingDto!): Rating!
+  removeRating(id: Int!, type: RatingEnum!): Rating!
+  createBanner(dto: CreateBannerDto!): Banner!
+  uploadBannerVideo(file: FileDto!): FileEntity!
+  dropBannerVideo(id: Int!): FileEntity!
+  uploadBannerImage(file: FileDto!): FileEntity!
+  dropBannerImage(id: Int!): FileEntity!
+  updateBanner(dto: UpdateBannerDto!): Banner!
+  removeBanner(id: Int!): Banner!
+  createNotification(dto: CreateNotificationDto!): Notification!
+  updateNotification(dto: UpdateNotificationDto!): Notification!
+  removeNotification(id: Int!): Notification!
+  createSettings(dto: CreateSettingDto!): Setting!
+  updateSettings(dto: UpdateSettingDto!): Setting!
+  removeSettings(id: Int!): Setting!
+  createComplaint(dto: CreateComplaintDto!): Complaint!
+  updateComplaint(dto: UpdateComplaintDto!): Complaint!
+  removeComplaint(id: Int!): Complaint!
+  createPartnerRequest(dto: CreatePartnerRequestDto!): PartnerRequest!
+  updatePartnerRequest(dto: UpdatePartnerRequestDto!): PartnerRequest!
+  removePartnerRequest(id: Int!): PartnerRequest!
+}
+
+input FileDto {
+  file: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input CreateUserDto {
+  email: String!
+  login: String!
+  name: String!
+  password: String!
+  userAvatarId: Int
+}
+
+input UpdateUserDto {
+  email: String
+  login: String
+  name: String
+  password: String
+  userAvatarId: Int
+  id: Int!
+}
+
+input SignUpDto {
+  name: String!
+  login: String!
+  email: String!
+  password: String!
+}
+
+input SignInDto {
+  credentials: String!
+  password: String!
+}
+
+input ResetPasswordDto {
+  email: String!
+  newPassword: String!
+  token: String!
+}
+
+input CreateRoleDto {
+  name: Roles!
+}
+
+input UpdateRoleDto {
+  name: Roles
+  id: Int!
+}
+
+input CreateCategoryDto {
+  name: String!
+}
+
+input UpdateCategoryDto {
+  name: String
+  id: Int!
+}
+
+input CreateSubCategoryDto {
+  name: String!
+  categoryId: Int!
+}
+
+input UpdateSubCategoryDto {
+  name: String
+  categoryId: Int
+  id: Int!
+}
+
+input CreateTagDto {
+  name: String!
+}
+
+input UpdateTagDto {
+  name: String
+  id: Int!
+}
+
+input CreateVideoDto {
+  name: String!
+  description: String
+  videoFileId: Int!
+  videoPreviewId: Int
+  categoryId: Int
+  subCategoryId: Int
+}
+
+input UpdateVideoDto {
+  name: String
+  description: String
+  videoFileId: Int
+  videoPreviewId: Int
+  categoryId: Int
+  subCategoryId: Int
+  id: Int!
+}
+
+input CreatePlaylistDto {
+  name: String!
+}
+
+input UpdatePlaylistDto {
+  name: String
+  id: Int!
+}
+
+input VideoPlaylistDto {
+  playlistId: Int!
+  videoId: Int!
+}
+
+input CreateViewDto {
+  videoId: Int!
+}
+
+input UpdateViewDto {
+  videoId: Int
+  id: Int!
+  userId: Int!
+}
+
+input CreateCommentDto {
+  text: String!
+  videoId: Int!
+  parentId: Int
+}
+
+input UpdateCommentDto {
+  text: String
+  videoId: Int
+  parentId: Int
+  id: Int!
+}
+
+input CreateRatingDto {
+  videoId: Int
+  commentId: Int
+  type: RatingEnum!
+}
+
+input UpdateRatingDto {
+  videoId: Int
+  commentId: Int
+  type: RatingEnum
+  id: Int!
+}
+
+input CreateBannerDto {
+  publishDate: DateTime
+  unpublishDate: DateTime
+  title: String!
+  description: String
+  type: BannerTypes!
+  bannerImageId: Int!
+  bannerVideoId: Int
+}
+
+input UpdateBannerDto {
+  publishDate: DateTime
+  unpublishDate: DateTime
+  title: String
+  description: String
+  type: BannerTypes
+  bannerImageId: Int
+  bannerVideoId: Int
+  id: Int!
+}
+
+input CreateNotificationDto {
+  userId: Int
+  type: Notifications!
+}
+
+input UpdateNotificationDto {
+  userId: Int
+  type: Notifications
+  id: Int!
+}
+
+input CreateSettingDto {
+  userId: Int!
+}
+
+input UpdateSettingDto {
+  id: Int!
+  userId: Int
+  privacy: Privacy
+}
+
+input CreateComplaintDto {
+  reason: ComplaintReasons!
+  message: String!
+  userId: Int
+  videoId: Int
+}
+
+input UpdateComplaintDto {
+  reason: ComplaintReasons
+  message: String
+  userId: Int
+  videoId: Int
+  id: Int!
+}
+
+input CreatePartnerRequestDto {
+  message: String!
+}
+
+input UpdatePartnerRequestDto {
+  message: String
+  id: Int!
+  status: PartnerRequestStatuses
+}
