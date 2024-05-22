@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-const Home: FC = async () => {
+const Home: FC = () => {
   return <div>Home</div>;
 };
 
