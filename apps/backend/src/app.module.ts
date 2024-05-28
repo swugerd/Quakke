@@ -27,6 +27,7 @@ import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
 import { ViewsModule } from './views/views.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { ViewsModule } from './views/views.module';
     ComplaintModule,
     PartnerRequestModule,
     FileModule,
+    HistoryModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }, FileService],
 })

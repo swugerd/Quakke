@@ -146,6 +146,8 @@ model VideoHistory {
   user   User? @relation(fields: [userId], references: [id])
   userId Int?  @map("user_id")
 
+  time Int
+
   @@map("video_history")
 }
 

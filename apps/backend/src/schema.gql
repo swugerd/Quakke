@@ -290,6 +290,24 @@ type View {
   video: Video!
 }
 
+type History {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  video: Video!
+  user: User!
+  time: Int!
+}
+
+type HistoryPagination {
+  data: [History!]!
+  count: Int!
+}
+
+type CountEntity {
+  count: Int!
+}
+
 type Query {
   getUsers: [User!]!
   getUsersWithQuery(query: QuerySearchDto!): UserPagination!
@@ -336,6 +354,8 @@ type Query {
   getPartnerRequests: [PartnerRequest!]!
   getPartnerRequestsWithQuery(query: PartnerRequestQuerySearchDto!): PartnerRequestPagination!
   getPartnerRequest(id: Int!): PartnerRequest!
+  getHistory: [History!]!
+  getHistoryWithQuery(query: HistoryQuerySearchDto!): HistoryPagination!
 }
 
 input QuerySearchDto {
@@ -420,6 +440,13 @@ input PartnerRequestQuerySearchDto {
   status: PartnerRequestStatuses
 }
 
+input HistoryQuerySearchDto {
+  limit: Int!
+  offset: Int! = 100
+  orderBy: String
+  orderDirection: OrderEnum = ASC
+}
+
 type Mutation {
   uploadAvatar(file: FileDto!): FileEntity!
   dropAvatar(id: Int!): FileEntity!
@@ -483,6 +510,10 @@ type Mutation {
   createPartnerRequest(dto: CreatePartnerRequestDto!): PartnerRequest!
   updatePartnerRequest(dto: UpdatePartnerRequestDto!): PartnerRequest!
   removePartnerRequest(id: Int!): PartnerRequest!
+  createHistory(dto: CreateHistoryDto!): History!
+  updateHistory(dto: UpdateHistoryDto!): History!
+  removeHistory(id: Int!): History!
+  removeAllHistory: CountEntity!
 }
 
 input FileDto {
@@ -699,4 +730,15 @@ input UpdatePartnerRequestDto {
   message: String
   id: Int!
   status: PartnerRequestStatuses
+}
+
+input CreateHistoryDto {
+  videoId: Int!
+  time: Int!
+}
+
+input UpdateHistoryDto {
+  videoId: Int
+  time: Int
+  id: Int!
 }
