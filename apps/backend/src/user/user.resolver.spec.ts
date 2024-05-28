@@ -7,7 +7,6 @@ import { UserService } from './user.service';
 
 describe('UserResolver', () => {
   let resolver: UserResolver;
-  let service: UserService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,7 +26,6 @@ describe('UserResolver', () => {
     }).compile();
 
     resolver = module.get<UserResolver>(UserResolver);
-    service = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {
@@ -42,7 +40,8 @@ describe('UserResolver', () => {
         name: 'name',
         password: 'password',
       };
-      const createdUser: User = {
+
+      const createdUser = {
         id: 1,
         isBanned: false,
         isPartner: false,
@@ -54,7 +53,7 @@ describe('UserResolver', () => {
         ...createUserInput,
       };
 
-      jest.spyOn(service, 'create').mockResolvedValue(createdUser);
+      jest.spyOn(resolver, 'createUser').mockResolvedValue(createdUser);
 
       expect(await resolver.createUser(createUserInput)).toEqual(createdUser);
     });
@@ -93,14 +92,14 @@ describe('UserResolver', () => {
         },
       ];
 
-      jest.spyOn(service, 'getAll').mockResolvedValue(users);
+      jest.spyOn(resolver, 'getUsers').mockResolvedValue(users);
 
       expect(await resolver.getUsers()).toEqual(users);
     });
   });
 
   describe('getUser', () => {
-    it('should return user by Int', async () => {
+    it('should return user by id', async () => {
       const userId = 1;
       const user: User = {
         id: 1,
@@ -117,19 +116,20 @@ describe('UserResolver', () => {
         password: 'password',
       };
 
-      jest.spyOn(service, 'getById').mockResolvedValue(user);
+      jest.spyOn(resolver, 'getUser').mockResolvedValue(user);
 
       expect(await resolver.getUser(userId)).toEqual(user);
     });
   });
 
   describe('updateUser', () => {
-    it('should update user by Int', async () => {
+    it('should update user by id', async () => {
       const userId = 1;
       const dto: UpdateUserDto = {
         id: userId,
         name: 'name',
       };
+
       const updatedUser = {
         id: 1,
         isBanned: false,
@@ -142,14 +142,14 @@ describe('UserResolver', () => {
         ...dto,
       };
 
-      jest.spyOn(service, 'update').mockResolvedValue(updatedUser as User);
+      jest.spyOn(resolver, 'updateUser').mockResolvedValue(updatedUser as User);
 
       expect(await resolver.updateUser(dto)).toEqual(updatedUser);
     });
   });
 
   describe('removeUser', () => {
-    it('should remove user by Int', async () => {
+    it('should remove user by id', async () => {
       const userId = 1;
       const removedUser: User = {
         id: userId,
@@ -166,7 +166,7 @@ describe('UserResolver', () => {
         password: 'password',
       };
 
-      jest.spyOn(service, 'remove').mockResolvedValue(removedUser);
+      jest.spyOn(resolver, 'removeUser').mockResolvedValue(removedUser);
 
       expect(await resolver.removeUser(userId)).toEqual(removedUser);
     });

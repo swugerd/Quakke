@@ -66,7 +66,7 @@ describe('RoleService', () => {
   });
 
   describe('findOne', () => {
-    it('should return a role by Int', async () => {
+    it('should return a role by id', async () => {
       const roleId = 1;
       const role: Role = {
         id: roleId,
@@ -82,7 +82,7 @@ describe('RoleService', () => {
   });
 
   describe('update', () => {
-    it('should update a role by Int', async () => {
+    it('should update a role by id', async () => {
       const roleId = 1;
       const dto: UpdateRoleDto = {
         id: roleId,
@@ -101,7 +101,7 @@ describe('RoleService', () => {
   });
 
   describe('remove', () => {
-    it('should remove a role by Int', async () => {
+    it('should remove a role by id', async () => {
       const roleId = 1;
       const removedRole: Role = {
         id: roleId,

@@ -7,7 +7,6 @@ import { CategoriesQuerySearchDto } from './dto/query-search.dto';
 
 describe('CategoryResolver', () => {
   let resolver: CategoryResolver;
-  let service: CategoryService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,7 +27,6 @@ describe('CategoryResolver', () => {
     }).compile();
 
     resolver = module.get<CategoryResolver>(CategoryResolver);
-    service = module.get<CategoryService>(CategoryService);
   });
 
   it('should be defined', () => {
@@ -48,7 +46,7 @@ describe('CategoryResolver', () => {
         ...dto,
       };
 
-      jest.spyOn(service, 'create').mockResolvedValue(createdCategory);
+      jest.spyOn(resolver, 'createCategory').mockResolvedValue(createdCategory);
 
       expect(await resolver.createCategory(dto)).toEqual(createdCategory);
     });

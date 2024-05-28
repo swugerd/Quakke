@@ -7,7 +7,6 @@ import { RoleService } from './role.service';
 
 describe('RoleResolver', () => {
   let resolver: RoleResolver;
-  let service: RoleService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,7 +26,6 @@ describe('RoleResolver', () => {
     }).compile();
 
     resolver = module.get<RoleResolver>(RoleResolver);
-    service = module.get<RoleService>(RoleService);
   });
 
   it('should be defined', () => {
@@ -44,7 +42,7 @@ describe('RoleResolver', () => {
         ...dto,
       };
 
-      jest.spyOn(service, 'create').mockResolvedValue(createdRole);
+      jest.spyOn(resolver, 'createRole').mockResolvedValue(createdRole);
 
       expect(await resolver.createRole(dto)).toEqual(createdRole);
     });
@@ -57,14 +55,14 @@ describe('RoleResolver', () => {
         { id: 2, name: 'USER', createdAt: new Date(), updatedAt: new Date() },
       ];
 
-      jest.spyOn(service, 'findAll').mockResolvedValue(roles);
+      jest.spyOn(resolver, 'getRoles').mockResolvedValue(roles);
 
       expect(await resolver.getRoles()).toEqual(roles);
     });
   });
 
   describe('getRole', () => {
-    it('should return a role by Int', async () => {
+    it('should return a role by id', async () => {
       const roleId = 1;
       const role: Role = {
         id: roleId,
@@ -73,14 +71,14 @@ describe('RoleResolver', () => {
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'findOne').mockResolvedValue(role);
+      jest.spyOn(resolver, 'getRole').mockResolvedValue(role);
 
       expect(await resolver.getRole(roleId)).toEqual(role);
     });
   });
 
   describe('updateRole', () => {
-    it('should update a role by Int', async () => {
+    it('should update a role by id', async () => {
       const roleId = 1;
       const updateRoleInput: UpdateRoleDto = {
         id: roleId,
@@ -92,14 +90,14 @@ describe('RoleResolver', () => {
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'update').mockResolvedValue(updatedRole as Role);
+      jest.spyOn(resolver, 'updateRole').mockResolvedValue(updatedRole as Role);
 
       expect(await resolver.updateRole(updateRoleInput)).toEqual(updatedRole);
     });
   });
 
   describe('removeRole', () => {
-    it('should remove a role by Int', async () => {
+    it('should remove a role by id', async () => {
       const roleId = 1;
       const removedRole: Role = {
         id: roleId,
@@ -108,7 +106,7 @@ describe('RoleResolver', () => {
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'remove').mockResolvedValue(removedRole);
+      jest.spyOn(resolver, 'removeRole').mockResolvedValue(removedRole);
 
       expect(await resolver.removeRole(roleId)).toEqual(removedRole);
     });

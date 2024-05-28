@@ -102,7 +102,7 @@ describe('UserService', () => {
   });
 
   describe('getById', () => {
-    it('should return user by Int', async () => {
+    it('should return user by id', async () => {
       const userId = 1;
       const user: User = {
         id: 1,
@@ -126,7 +126,7 @@ describe('UserService', () => {
   });
 
   describe('update', () => {
-    it('should update user by Int', async () => {
+    it('should update user by id', async () => {
       const userId = 1;
       const dto: UpdateUserDto = {
         id: userId,
@@ -151,7 +151,7 @@ describe('UserService', () => {
   });
 
   describe('remove', () => {
-    it('should remove user by Int', async () => {
+    it('should remove user by id', async () => {
       const userId = 1;
       const removedUser: User = {
         id: userId,
