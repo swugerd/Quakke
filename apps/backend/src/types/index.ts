@@ -10,3 +10,8 @@ export enum OrderEnum {
   ASC = 'asc',
   DESC = 'desc',
 }
+
+export interface PaginatedData<T> {
+  data: T[];
+  count: number;
+}
