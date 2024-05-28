@@ -9,21 +9,23 @@ describe('TagService', () => {
   let service: TagService;
   let prismaService: PrismaService;
 
+  const mockPrismaService = {
+    tag: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TagService,
         {
           provide: PrismaService,
-          useValue: {
-            category: {
-              create: jest.fn(),
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-            },
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

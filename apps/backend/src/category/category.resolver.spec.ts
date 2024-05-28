@@ -8,20 +8,22 @@ import { CategoriesQuerySearchDto } from './dto/query-search.dto';
 describe('CategoryResolver', () => {
   let resolver: CategoryResolver;
 
+  const mockPrismaService = {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    getAllWithQuery: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CategoryResolver,
         {
           provide: CategoryService,
-          useValue: {
-            create: jest.fn(),
-            findAll: jest.fn(),
-            getAllWithQuery: jest.fn(),
-            findOne: jest.fn(),
-            update: jest.fn(),
-            remove: jest.fn(),
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

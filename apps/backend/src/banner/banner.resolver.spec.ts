@@ -11,19 +11,21 @@ import { UpdateBannerDto } from './dto/update-banner.dto';
 describe('BannerResolver', () => {
   let resolver: BannerResolver;
 
+  const mockPrismaService = {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BannerResolver,
         {
           provide: BannerService,
-          useValue: {
-            create: jest.fn(),
-            findMany: jest.fn(),
-            findUnique: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

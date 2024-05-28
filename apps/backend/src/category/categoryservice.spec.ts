@@ -10,21 +10,23 @@ describe('CategoryService', () => {
   let service: CategoryService;
   let prismaService: PrismaService;
 
+  const mockPrismaService = {
+    category: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CategoryService,
         {
           provide: PrismaService,
-          useValue: {
-            category: {
-              create: jest.fn(),
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-            },
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

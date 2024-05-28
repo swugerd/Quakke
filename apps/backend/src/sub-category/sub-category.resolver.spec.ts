@@ -6,19 +6,21 @@ import { SubCategoryService } from './sub-category.service';
 describe('SubCategoryResolver', () => {
   let resolver: SubCategoryResolver;
 
+  const mockPrismaService = {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SubCategoryResolver,
         {
           provide: SubCategoryService,
-          useValue: {
-            create: jest.fn(),
-            findAll: jest.fn(),
-            findOne: jest.fn(),
-            update: jest.fn(),
-            remove: jest.fn(),
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

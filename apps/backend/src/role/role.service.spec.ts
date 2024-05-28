@@ -9,21 +9,23 @@ describe('RoleService', () => {
   let service: RoleService;
   let prismaService: PrismaService;
 
+  const mockPrismaService = {
+    role: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RoleService,
         {
           provide: PrismaService,
-          useValue: {
-            role: {
-              create: jest.fn(),
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-            },
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

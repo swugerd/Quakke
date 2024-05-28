@@ -8,19 +8,21 @@ import { RoleService } from './role.service';
 describe('RoleResolver', () => {
   let resolver: RoleResolver;
 
+  const mockPrismaService = {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RoleResolver,
         {
           provide: RoleService,
-          useValue: {
-            create: jest.fn(),
-            findAll: jest.fn(),
-            findOne: jest.fn(),
-            update: jest.fn(),
-            remove: jest.fn(),
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
