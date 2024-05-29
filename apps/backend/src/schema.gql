@@ -113,6 +113,15 @@ enum ComplaintReasons {
   RACISM
 }
 
+type History {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  video: Video!
+  user: User!
+  time: Int!
+}
+
 type Notification {
   id: Int!
   createdAt: DateTime!
@@ -214,6 +223,7 @@ type User {
   subscribers: [User!]
   userAvatar: FileEntity
   videos: [Video!]
+  history: [History!]
 }
 
 type UserPagination {
@@ -288,15 +298,6 @@ type View {
   updatedAt: DateTime!
   user: User!
   video: Video!
-}
-
-type History {
-  id: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  video: Video!
-  user: User!
-  time: Int!
 }
 
 type HistoryPagination {

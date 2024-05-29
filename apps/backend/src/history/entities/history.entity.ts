@@ -17,7 +17,7 @@ export class History {
   video: Video;
 
   @Field(() => User)
-  user: User;
+  user: () => User;
 
   @Field(() => Int)
   time: number;

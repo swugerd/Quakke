@@ -3,6 +3,7 @@ import { UserAvatar } from '@prisma/client';
 import { Banner } from 'src/banner/entities/banner.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import { Complaint } from 'src/complaint/entities/complaint.entity';
+import { History } from 'src/history/entities/history.entity';
 import { excludePasswordMiddleware } from 'src/middlewares/exclude-password.middleware';
 import { Notification } from 'src/notification/entities/notification.entity';
 import { PartnerRequest } from 'src/partner-request/entities/partner-request.entity';
@@ -87,4 +88,7 @@ export class User {
 
   @Field(() => [Video], { nullable: true })
   videos?: Video[];
+
+  @Field(() => [History], { nullable: true })
+  history?: History[];
 }
