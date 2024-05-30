@@ -16,7 +16,7 @@ const bannerData = {
 describe('BannerResolver', () => {
   let resolver: BannerResolver;
 
-  const mockPrismaService = {
+  const mockBannerService = {
     create: jest.fn(),
     findAll: jest.fn(),
     findOne: jest.fn(),
@@ -30,7 +30,7 @@ describe('BannerResolver', () => {
         BannerResolver,
         {
           provide: BannerService,
-          useValue: mockPrismaService,
+          useValue: mockBannerService,
         },
       ],
     }).compile();

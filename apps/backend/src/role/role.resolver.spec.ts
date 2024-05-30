@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Role } from '@prisma/client';
+import { Role, Roles } from '@prisma/client';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleResolver } from './role.resolver';
@@ -36,7 +36,7 @@ describe('RoleResolver', () => {
 
   describe('createRole', () => {
     it('should create a new role', async () => {
-      const dto: CreateRoleDto = { name: 'ADMIN' };
+      const dto: CreateRoleDto = { name: Roles.ADMIN };
       const createdRole = {
         id: 1,
         createdAt: new Date(),
@@ -53,8 +53,18 @@ describe('RoleResolver', () => {
   describe('getRoles', () => {
     it('should return an array of roles', async () => {
       const roles: Role[] = [
-        { id: 1, name: 'ADMIN', createdAt: new Date(), updatedAt: new Date() },
-        { id: 2, name: 'USER', createdAt: new Date(), updatedAt: new Date() },
+        {
+          id: 1,
+          name: Roles.ADMIN,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 2,
+          name: Roles.USER,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
 
       jest.spyOn(resolver, 'getRoles').mockResolvedValue(roles);
@@ -68,7 +78,7 @@ describe('RoleResolver', () => {
       const roleId = 1;
       const role: Role = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -84,7 +94,7 @@ describe('RoleResolver', () => {
       const roleId = 1;
       const updateRoleInput: UpdateRoleDto = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
       };
       const updatedRole = {
         ...updateRoleInput,
@@ -103,7 +113,7 @@ describe('RoleResolver', () => {
       const roleId = 1;
       const removedRole: Role = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

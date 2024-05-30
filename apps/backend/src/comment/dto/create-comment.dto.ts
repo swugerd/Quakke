@@ -16,5 +16,5 @@ export class CreateCommentDto {
     nullable: true,
     description: 'Unique id of parent comment',
   })
-  parentId: number;
+  parentId?: number;
 }
