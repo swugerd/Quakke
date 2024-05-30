@@ -3,14 +3,12 @@ import { IsNumber, Max, Min } from 'class-validator';
 
 @InputType()
 export class PaginationDto {
-  @Field(() => Int)
-  @IsNumber()
+  @Field(() => Int, { description: 'Limit of records to show' })
   @Min(0)
   limit: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Number of records to skip from 0' })
   @IsNumber()
-  @Min(0)
   @Max(100)
   offset: number = 100;
 }

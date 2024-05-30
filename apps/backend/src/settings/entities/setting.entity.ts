@@ -6,23 +6,28 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { Privacy } from '@prisma/client';
+import fieldsDescriptions from 'src/constants/fields.descriptions';
 import { User } from 'src/user/entities/user.entity';
 
 @ObjectType()
 export class Setting {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.updatedAt,
+  })
   updatedAt: Date;
 
-  @Field(() => Privacy)
+  @Field(() => Privacy, { description: fieldsDescriptions.settings.privacy })
   privacy: Privacy;
 
-  @Field(() => User)
+  @Field(() => User, { description: fieldsDescriptions.settings.user })
   user: () => User;
 }
 

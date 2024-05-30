@@ -2,6 +2,6 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class EmailResponse {
-  @Field(() => String)
+  @Field(() => String, { description: 'Response message' })
   message: string;
 }

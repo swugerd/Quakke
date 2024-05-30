@@ -3,6 +3,6 @@ import { FileUpload, GraphQLUpload } from 'graphql-upload';
 
 @InputType()
 export class FileDto {
-  @Field(() => GraphQLUpload)
+  @Field(() => GraphQLUpload, { description: 'File to upload' })
   file?: Promise<FileUpload>;
 }

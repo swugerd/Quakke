@@ -6,30 +6,43 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { ComplaintReasons } from '@prisma/client';
+import fieldsDescriptions from 'src/constants/fields.descriptions';
 import { User } from 'src/user/entities/user.entity';
 import { Video } from 'src/video/entities/video.entity';
 
 @ObjectType()
 export class Complaint {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.updatedAt,
+  })
   updatedAt: Date;
 
-  @Field(() => ComplaintReasons)
+  @Field(() => ComplaintReasons, {
+    description: fieldsDescriptions.complaint.reason,
+  })
   reason: ComplaintReasons;
 
-  @Field(() => String)
+  @Field(() => String, { description: fieldsDescriptions.complaint.message })
   message: string;
 
-  @Field(() => User, { nullable: true })
+  @Field(() => User, {
+    nullable: true,
+    description: fieldsDescriptions.complaint.user,
+  })
   user?: () => User;
 
-  @Field(() => Video, { nullable: true })
+  @Field(() => Video, {
+    nullable: true,
+    description: fieldsDescriptions.complaint.video,
+  })
   video?: Video;
 }
 

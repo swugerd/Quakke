@@ -1,24 +1,29 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import fieldsDescriptions from 'src/constants/fields.descriptions';
 import { Video } from 'src/video/entities/video.entity';
 import { User } from './../../user/entities/user.entity';
 
 @ObjectType()
 export class History {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.updatedAt,
+  })
   updatedAt: Date;
 
-  @Field(() => Video)
+  @Field(() => Video, { description: fieldsDescriptions.history.video })
   video: Video;
 
-  @Field(() => User)
+  @Field(() => User, { description: fieldsDescriptions.history.user })
   user: () => User;
 
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.history.time })
   time: number;
 }

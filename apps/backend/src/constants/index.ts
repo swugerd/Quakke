@@ -9,3 +9,9 @@ export const allowedFileTypes = {
 };
 
 export const mailMinutesToExpire = 15;
+
+export const maxCharLengthList = {
+  default: 256,
+  longText: 1500,
+  passwordResetToken: 6,
+};

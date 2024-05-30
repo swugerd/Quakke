@@ -1,14 +1,19 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import fieldsDescriptions from 'src/constants/fields.descriptions';
 
 @ObjectType()
 export class SubCategory {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.updatedAt,
+  })
   updatedAt: Date;
 
   @Field(() => String)

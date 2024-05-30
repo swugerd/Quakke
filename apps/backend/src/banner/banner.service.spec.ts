@@ -1,12 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Banner, BannerTypes, Roles } from '@prisma/client';
+import { BannerTypes, Roles } from '@prisma/client';
 import { JwtPayload } from 'src/auth/interfaces';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BannerService } from './banner.service';
 import { CreateBannerDto } from './dto/create-banner.dto';
-import { UpdateBannerDto } from './dto/update-banner.dto';
 
 // need to write file tests
+
+const bannerData = {
+  bannerImage: null,
+  user: null,
+  bannerVideo: null,
+};
 
 describe('BannerService', () => {
   let service: BannerService;
@@ -53,16 +58,17 @@ describe('BannerService', () => {
         role: Roles.ADMIN,
       };
 
-      const createdBanner: Banner = {
+      const createdBanner = {
         id: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
         bannerVideoId: null,
         description: null,
-        publishDate: null,
-        unpublishDate: null,
+        publishDate: new Date(),
+        unpublishDate: new Date(),
         userId: 1,
         ...dto,
+        ...bannerData,
       };
 
       jest.spyOn(service, 'create').mockResolvedValue(createdBanner);
@@ -73,32 +79,20 @@ describe('BannerService', () => {
 
   describe('findAll', () => {
     it('should return an array of banners', async () => {
-      const banners: Banner[] = [
+      const banners = [
         {
           id: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          bannerVideoId: null,
+          description: null,
+          publishDate: new Date(),
+          unpublishDate: new Date(),
+          userId: 1,
           title: 'test banner',
           bannerImageId: 1,
           type: BannerTypes.IMAGE,
-          bannerVideoId: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          description: null,
-          publishDate: null,
-          unpublishDate: null,
-          userId: 1,
-        },
-        {
-          id: 2,
-          title: 'test banner',
-          bannerImageId: 1,
-          type: BannerTypes.IMAGE,
-          bannerVideoId: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          description: null,
-          publishDate: null,
-          unpublishDate: null,
-          userId: 1,
+          ...bannerData,
         },
       ];
 
@@ -112,7 +106,7 @@ describe('BannerService', () => {
     it('should return a banner by id', async () => {
       const bannerId = 1;
 
-      const banner: Banner = {
+      const banner = {
         id: bannerId,
         title: 'test banner',
         bannerImageId: 1,
@@ -121,9 +115,10 @@ describe('BannerService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         description: null,
-        publishDate: null,
-        unpublishDate: null,
+        publishDate: new Date(),
+        unpublishDate: new Date(),
         userId: 1,
+        ...bannerData,
       };
 
       jest.spyOn(service, 'findOne').mockResolvedValue(banner);
@@ -136,7 +131,7 @@ describe('BannerService', () => {
     it('should update a banner by id', async () => {
       const bannerId = 1;
 
-      const dto: UpdateBannerDto = {
+      const dto = {
         id: bannerId,
         title: 'test banner',
       };
@@ -149,9 +144,10 @@ describe('BannerService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         description: null,
-        publishDate: null,
-        unpublishDate: null,
+        publishDate: new Date(),
+        unpublishDate: new Date(),
         userId: 1,
+        ...bannerData,
       };
 
       jest.spyOn(service, 'update').mockResolvedValue(updatedBanner);
@@ -164,7 +160,7 @@ describe('BannerService', () => {
     it('should remove a banner by id', async () => {
       const bannerId = 1;
 
-      const removedBanner: Banner = {
+      const removedBanner = {
         id: bannerId,
         title: 'test banner',
         bannerImageId: 1,
@@ -173,9 +169,10 @@ describe('BannerService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         description: null,
-        publishDate: null,
-        unpublishDate: null,
+        publishDate: new Date(),
+        unpublishDate: new Date(),
         userId: 1,
+        ...bannerData,
       };
 
       jest.spyOn(service, 'remove').mockResolvedValue(removedBanner);

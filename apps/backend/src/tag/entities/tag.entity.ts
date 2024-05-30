@@ -1,16 +1,21 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import fieldsDescriptions from 'src/constants/fields.descriptions';
 
 @ObjectType()
 export class Tag {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.updatedAt,
+  })
   updatedAt: Date;
 
-  @Field(() => String)
+  @Field(() => String, { description: fieldsDescriptions.tag.name })
   name: string;
 }

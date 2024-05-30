@@ -1,5 +1,6 @@
 import { Field, InputType, IntersectionType } from '@nestjs/graphql';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { MaxLength } from 'class-validator';
+import { maxCharLengthList } from 'src/constants';
 import { OrderDto } from 'src/utils/dto/order.input';
 import { PaginationDto } from 'src/utils/dto/pagination.dto';
 
@@ -9,8 +10,6 @@ export class CategoriesQuerySearchDto extends IntersectionType(
   OrderDto,
 ) {
   @Field(() => String, { nullable: true })
-  @IsString()
-  @MaxLength(256)
-  @IsOptional()
+  @MaxLength(maxCharLengthList.default)
   name?: string;
 }

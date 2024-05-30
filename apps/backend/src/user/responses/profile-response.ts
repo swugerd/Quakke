@@ -1,14 +1,15 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Roles } from '@prisma/client';
+import fieldsDescriptions from 'src/constants/fields.descriptions';
 
 @ObjectType()
 export class ProfileResponse {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => String)
+  @Field(() => String, { description: fieldsDescriptions.user.email })
   email: string;
 
-  @Field(() => Roles)
+  @Field(() => Roles, { description: fieldsDescriptions.role.name })
   role: Roles;
 }

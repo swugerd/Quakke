@@ -1,37 +1,47 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
+import { MaxLength } from 'class-validator';
+import { maxCharLengthList } from 'src/constants';
+import fieldsDescriptions from 'src/constants/fields.descriptions';
 import { Rating } from 'src/rating/entities/rating.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Video } from 'src/video/entities/video.entity';
 
 @ObjectType()
 export class Comment {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
+  @MaxLength(maxCharLengthList.default)
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
+  @MaxLength(maxCharLengthList.default)
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
+  @MaxLength(maxCharLengthList.default)
   updatedAt: Date;
 
-  @Field(() => String)
+  @Field(() => String, { description: fieldsDescriptions.comment.text })
   text: string;
 
-  @Field(() => User)
+  @Field(() => User, { description: 'Comment author' })
   user: () => User;
 
-  @Field(() => Video)
+  @Field(() => Video, { description: 'Video for which a comment was left' })
   video: () => Video;
 
-  @Field(() => Comment, { nullable: true })
+  @Field(() => Comment, { nullable: true, description: 'Parent comment' })
   parent?: Comment;
 
-  @Field(() => [Comment], { nullable: true })
+  @Field(() => [Comment], { nullable: true, description: 'Comment replies' })
   replies?: Comment[];
 
-  @Field(() => [Rating], { nullable: true })
+  @Field(() => [Rating], { nullable: true, description: 'Comment likes' })
   likes?: Rating[];
 
-  @Field(() => [Rating], { nullable: true })
+  @Field(() => [Rating], { nullable: true, description: 'Comment dislikes' })
   dislikes?: Rating[];
 }

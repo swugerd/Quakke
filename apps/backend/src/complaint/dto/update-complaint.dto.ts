@@ -1,8 +1,9 @@
 import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
+import fieldsDescriptions from 'src/constants/fields.descriptions';
 import { CreateComplaintDto } from './create-complaint.dto';
 
 @InputType()
 export class UpdateComplaintDto extends PartialType(CreateComplaintDto) {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 }
