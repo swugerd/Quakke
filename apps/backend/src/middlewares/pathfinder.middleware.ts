@@ -1,5 +1,5 @@
 import { FieldMiddleware, MiddlewareContext, NextFn } from '@nestjs/graphql';
-import { allowedFileTypes, folders } from 'src/constants';
+import { allowedFileTypes, folders } from '../constants';
 
 export const pathFinderMiddleware: FieldMiddleware = async (
   ctx: MiddlewareContext,

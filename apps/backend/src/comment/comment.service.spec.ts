@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Roles } from '@prisma/client';
-import { JwtPayload } from 'src/auth/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { JwtPayload } from '../auth/interfaces';
 
 const commentData = {
   id: 1,
@@ -23,7 +23,7 @@ describe('CommentService', () => {
   let service: CommentService;
 
   const mockPrismaService = {
-    banner: {
+    comment: {
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),

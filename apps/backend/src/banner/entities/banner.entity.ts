@@ -6,9 +6,9 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { BannerImage, BannerTypes, BannerVideo } from '@prisma/client';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { User } from 'src/user/entities/user.entity';
-import { FileEntity } from 'src/utils/entities/file.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { User } from '../../user/entities/user.entity';
+import { FileEntity } from '../../utils/entities/file.entity';
 
 @ObjectType()
 export class Banner {

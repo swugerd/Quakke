@@ -1,6 +1,6 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser } from 'src/auth/decorators';
-import { JwtPayload } from 'src/auth/interfaces';
+import { CurrentUser } from '../auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsQuerySearchDto } from './dto/query-search.dto';

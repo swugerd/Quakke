@@ -1,6 +1,6 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser } from 'src/auth/decorators';
-import { JwtPayload } from 'src/auth/interfaces';
+import { CurrentUser } from '../auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
 import { CreatePartnerRequestDto } from './dto/create-partner-request.dto';
 import { PartnerRequestQuerySearchDto } from './dto/query-search.dto';
 import { UpdatePartnerRequestDto } from './dto/update-partner-request.dto';

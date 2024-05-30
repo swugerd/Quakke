@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
+import fieldsDescriptions from '../../constants/fields.descriptions';
 
 @InputType()
 export class CreateHistoryDto {

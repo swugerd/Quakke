@@ -1,6 +1,6 @@
 import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
 import { PartnerRequestStatuses } from '@prisma/client';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
+import fieldsDescriptions from '../../constants/fields.descriptions';
 import { CreatePartnerRequestDto } from './create-partner-request.dto';
 
 @InputType()

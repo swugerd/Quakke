@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { JwtPayload } from 'src/auth/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtPayload } from '../auth/interfaces';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateHistoryDto } from './dto/create-history.dto';
 import { HistoryQuerySearchDto } from './dto/query-search.dto';
 import { UpdateHistoryDto } from './dto/update-history.dto';

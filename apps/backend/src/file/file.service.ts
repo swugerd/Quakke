@@ -6,12 +6,12 @@ import {
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { join } from 'path';
-import { allowedFileTypes, folders } from 'src/constants';
-import config from 'src/constants/config';
-import { FilesType } from 'src/types';
-import { FileDto } from 'src/utils/dto/file.dto';
-import { uploadFile } from 'src/utils/upload';
 import * as uuid from 'uuid';
+import { FileDto } from '../utils/dto/file.dto';
+import { FilesType } from '../types';
+import { allowedFileTypes, folders } from '../constants';
+import config from '../constants/config';
+import { uploadFile } from '../utils/upload';
 
 @Injectable()
 export class FileService {

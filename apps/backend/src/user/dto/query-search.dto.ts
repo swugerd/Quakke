@@ -1,9 +1,9 @@
 import { Field, InputType, IntersectionType } from '@nestjs/graphql';
 import { MaxLength } from 'class-validator';
-import { maxCharLengthList } from 'src/constants';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { OrderDto } from 'src/utils/dto/order.input';
-import { PaginationDto } from 'src/utils/dto/pagination.dto';
+import { maxCharLengthList } from '../../constants';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { OrderDto } from '../../utils/dto/order.input';
+import { PaginationDto } from '../../utils/dto/pagination.dto';
 
 @InputType()
 export class QuerySearchDto extends IntersectionType(PaginationDto, OrderDto) {

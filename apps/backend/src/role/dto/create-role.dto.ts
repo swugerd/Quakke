@@ -1,8 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Roles } from '@prisma/client';
 import { MaxLength } from 'class-validator';
-import { maxCharLengthList } from 'src/constants';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
+import { maxCharLengthList } from '../../constants';
+import fieldsDescriptions from '../../constants/fields.descriptions';
 
 @InputType()
 export class CreateRoleDto {

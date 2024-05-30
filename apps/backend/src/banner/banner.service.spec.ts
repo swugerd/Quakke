@@ -1,7 +1,9 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BannerTypes, Roles } from '@prisma/client';
-import { JwtPayload } from 'src/auth/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtPayload } from '../auth/interfaces';
+import { FileService } from '../file/file.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { BannerService } from './banner.service';
 import { CreateBannerDto } from './dto/create-banner.dto';
 
@@ -34,6 +36,8 @@ describe('BannerService', () => {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
+        FileService,
+        ConfigService,
       ],
     }).compile();
 

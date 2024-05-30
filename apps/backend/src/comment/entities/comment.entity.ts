@@ -1,10 +1,10 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import { MaxLength } from 'class-validator';
-import { maxCharLengthList } from 'src/constants';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { Rating } from 'src/rating/entities/rating.entity';
-import { User } from 'src/user/entities/user.entity';
-import { Video } from 'src/video/entities/video.entity';
+import { maxCharLengthList } from '../../constants';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { Rating } from '../../rating/entities/rating.entity';
+import { User } from '../../user/entities/user.entity';
+import { Video } from '../../video/entities/video.entity';
 
 @ObjectType()
 export class Comment {

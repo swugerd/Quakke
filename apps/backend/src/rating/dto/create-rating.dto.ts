@@ -1,7 +1,7 @@
 import { Field, InputType, Int, registerEnumType } from '@nestjs/graphql';
 import { MaxLength } from 'class-validator';
-import { maxCharLengthList } from 'src/constants';
-import { LikesType, RatingEnum } from 'src/types';
+import { maxCharLengthList } from '../../constants';
+import { LikesType, RatingEnum } from '../../types';
 
 @InputType()
 export class CreateRatingDto {

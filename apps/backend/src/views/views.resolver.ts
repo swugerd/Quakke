@@ -1,10 +1,10 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser } from 'src/auth/decorators';
-import { JwtPayload } from 'src/auth/interfaces';
 import { CreateViewDto } from './dto/create-view.dto';
 import { UpdateViewDto } from './dto/update-view.dto';
 import { View } from './entities/view.entity';
 import { ViewsService } from './views.service';
+import { CurrentUser } from '../auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
 
 @Resolver(() => View)
 export class ViewsResolver {

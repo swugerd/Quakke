@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { JwtPayload } from 'src/auth/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { NotificationQuerySearchDto } from './dto/query-search.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { JwtPayload } from '../auth/interfaces';
 
 const includeObject = {
   user: true,

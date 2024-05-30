@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePartnerRequestDto } from './dto/create-partner-request.dto';
 import { PartnerRequestQuerySearchDto } from './dto/query-search.dto';
 import { UpdatePartnerRequestDto } from './dto/update-partner-request.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 const includeObject = {
   user: true,

@@ -579,15 +579,15 @@ type View {
   video: Video!
 }
 
-type HistoryPagination {
-  """List of records"""
-  data: [History!]!
-
+type CountEntity {
   """Total count of records"""
   count: Int!
 }
 
-type CountEntity {
+type HistoryPagination {
+  """List of records"""
+  data: [History!]!
+
   """Total count of records"""
   count: Int!
 }

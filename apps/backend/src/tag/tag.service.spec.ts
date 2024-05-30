@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Tag } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { TagService } from './tag.service';

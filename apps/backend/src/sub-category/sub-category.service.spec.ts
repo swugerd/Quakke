@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
 import { SubCategoryService } from './sub-category.service';
 

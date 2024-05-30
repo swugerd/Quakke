@@ -1,8 +1,8 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { JwtPayload } from 'src/auth/interfaces';
-import { FileDto } from 'src/utils/dto/file.dto';
-import { FileEntity } from 'src/utils/entities/file.entity';
 import { CurrentUser } from '../../src/auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
+import { FileDto } from '../utils/dto/file.dto';
+import { FileEntity } from '../utils/entities/file.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QuerySearchDto } from './dto/query-search.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

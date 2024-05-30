@@ -1,6 +1,6 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser } from 'src/auth/decorators';
-import { JwtPayload } from 'src/auth/interfaces';
+import { CurrentUser } from '../auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { PlaylistQuerySearchDto } from './dto/query-search.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';

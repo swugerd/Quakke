@@ -1,6 +1,6 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { SubCategory } from 'src/sub-category/entities/sub-category.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { SubCategory } from '../../sub-category/entities/sub-category.entity';
 
 @ObjectType()
 export class Category {

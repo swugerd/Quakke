@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Roles } from '@prisma/client';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
+import fieldsDescriptions from '../../constants/fields.descriptions';
 
 @ObjectType()
 export class ProfileResponse {

@@ -1,6 +1,8 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Roles } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { FileService } from '../file/file.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 
@@ -45,6 +47,8 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        FileService,
+        ConfigService,
         {
           provide: PrismaService,
           useValue: mockPrismaService,

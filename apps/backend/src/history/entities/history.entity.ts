@@ -1,6 +1,6 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { Video } from 'src/video/entities/video.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { Video } from '../../video/entities/video.entity';
 import { User } from './../../user/entities/user.entity';
 
 @ObjectType()

@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Video } from 'src/video/entities/video.entity';
+import { Video } from '../../video/entities/video.entity';
 
 @ObjectType()
 export class VideoPlaylist {

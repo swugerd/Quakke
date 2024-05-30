@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { JwtPayload } from 'src/auth/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateViewDto } from './dto/create-view.dto';
 import { UpdateViewDto } from './dto/update-view.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { JwtPayload } from '../auth/interfaces';
 
 const includeObject = {
   user: true,

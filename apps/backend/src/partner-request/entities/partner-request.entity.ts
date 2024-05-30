@@ -6,8 +6,8 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { PartnerRequestStatuses } from '@prisma/client';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { User } from 'src/user/entities/user.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { User } from '../../user/entities/user.entity';
 
 @ObjectType()
 export class PartnerRequest {

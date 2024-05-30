@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { JwtPayload } from 'src/auth/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { JwtPayload } from '../auth/interfaces';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsQuerySearchDto } from './dto/query-search.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';

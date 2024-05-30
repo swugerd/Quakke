@@ -1,6 +1,6 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser } from 'src/auth/decorators';
-import { JwtPayload } from 'src/auth/interfaces';
+import { CurrentUser } from '../auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { NotificationQuerySearchDto } from './dto/query-search.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';

@@ -1,6 +1,6 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { pathFinderMiddleware } from 'src/middlewares/pathfinder.middleware';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { pathFinderMiddleware } from '../../middlewares/pathfinder.middleware';
 
 @ObjectType()
 export class FileEntity {

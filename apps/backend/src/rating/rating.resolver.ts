@@ -1,7 +1,7 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser } from 'src/auth/decorators';
-import { JwtPayload } from 'src/auth/interfaces';
-import { LikesType, RatingEnum } from 'src/types';
+import { CurrentUser } from '../auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
+import { LikesType, RatingEnum } from '../types';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { UpdateRatingDto } from './dto/update-rating.dto';
 import { Rating } from './entities/rating.entity';

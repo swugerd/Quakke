@@ -1,5 +1,5 @@
 import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
+import fieldsDescriptions from '../../constants/fields.descriptions';
 import { CreateComplaintDto } from './create-complaint.dto';
 
 @InputType()

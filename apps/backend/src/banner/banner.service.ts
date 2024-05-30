@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { JwtPayload } from 'src/auth/interfaces';
-import { folders } from 'src/constants';
-import config from 'src/constants/config';
-import { FileService } from 'src/file/file.service';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { FilesType } from 'src/types';
-import { FileDto } from 'src/utils/dto/file.dto';
+import { JwtPayload } from '../auth/interfaces';
+import { folders } from '../constants';
+import config from '../constants/config';
+import { FileService } from '../file/file.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { FilesType } from '../types';
+import { FileDto } from '../utils/dto/file.dto';
 import { CreateBannerDto } from './dto/create-banner.dto';
 import { UpdateBannerDto } from './dto/update-banner.dto';
 

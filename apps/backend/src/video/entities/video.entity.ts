@@ -1,12 +1,12 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import { VideoFile, VideoPreview } from '@prisma/client';
-import { Category } from 'src/category/entities/category.entity';
-import { Comment } from 'src/comment/entities/comment.entity';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { Rating } from 'src/rating/entities/rating.entity';
-import { SubCategory } from 'src/sub-category/entities/sub-category.entity';
-import { Tag } from 'src/tag/entities/tag.entity';
-import { FileEntity } from 'src/utils/entities/file.entity';
+import { Category } from '../../category/entities/category.entity';
+import { Comment } from '../../comment/entities/comment.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { Rating } from '../../rating/entities/rating.entity';
+import { SubCategory } from '../../sub-category/entities/sub-category.entity';
+import { Tag } from '../../tag/entities/tag.entity';
+import { FileEntity } from '../../utils/entities/file.entity';
 import { User } from './../../user/entities/user.entity';
 
 @ObjectType()

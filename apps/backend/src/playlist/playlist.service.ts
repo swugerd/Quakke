@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { JwtPayload } from 'src/auth/interfaces';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { PlaylistQuerySearchDto } from './dto/query-search.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { VideoPlaylistDto } from './dto/video-playlist.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { JwtPayload } from '../auth/interfaces';
 
 const includeObject = {
   user: true,

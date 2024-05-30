@@ -1,7 +1,7 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import { Privacy } from '@prisma/client';
-import fieldsDescriptions from 'src/constants/fields.descriptions';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../..//user/entities/user.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
 import { VideoPlaylist } from './video-field.entity';
 
 @ObjectType()

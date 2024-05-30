@@ -1,13 +1,13 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser } from 'src/auth/decorators';
-import { JwtPayload } from 'src/auth/interfaces';
+import { CurrentUser } from '../auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
+import { CountEntity } from '../utils/entities/count.entity';
 import { CreateHistoryDto } from './dto/create-history.dto';
 import { HistoryQuerySearchDto } from './dto/query-search.dto';
 import { UpdateHistoryDto } from './dto/update-history.dto';
 import { HistoryPagination } from './entities/history-pagination.entity';
 import { History } from './entities/history.entity';
 import { HistoryService } from './history.service';
-import { CountEntity } from 'src/utils/entities/count.entity';
 
 @Resolver(() => History)
 export class HistoryResolver {
