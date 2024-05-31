@@ -7,10 +7,10 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { join } from 'path';
 import * as uuid from 'uuid';
-import { FileDto } from '../utils/dto/file.dto';
-import { FilesType } from '../types';
 import { allowedFileTypes, folders } from '../constants';
 import config from '../constants/config';
+import { FilesType } from '../types';
+import { FileDto } from '../utils/dto/file.dto';
 import { uploadFile } from '../utils/upload';
 
 @Injectable()
