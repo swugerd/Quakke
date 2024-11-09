@@ -24,7 +24,7 @@ export class MailService {
 
       const msg = await this.mailerService.sendMail({
         to: email,
-        subject: 'Wave account confirmation',
+        subject: 'Quakke account confirmation',
         template: './confirmation',
         context: {
           name: email,
@@ -50,7 +50,7 @@ export class MailService {
     try {
       const msg = await this.mailerService.sendMail({
         to: email,
-        subject: 'Wave account password reset',
+        subject: 'Quakke account password reset',
         template: './forgot-password',
         context: {
           name: email,
