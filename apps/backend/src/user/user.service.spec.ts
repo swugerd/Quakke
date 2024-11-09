@@ -1,29 +1,57 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from '@prisma/client';
-import { PrismaService } from '../../src/prisma/prisma.service';
+import { Roles } from '@prisma/client';
+import { FileService } from '../file/file.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
+
+const userData = {
+  banners: [],
+  comments: [],
+  complaints: [],
+  dislikes: [],
+  history: [],
+  likes: [],
+  notifications: [],
+  partnerRequests: [],
+  playlists: [],
+  role: {
+    id: 2,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    name: Roles.USER,
+  },
+  selectedCategories: [],
+  settings: [],
+  subscribers: [],
+  userAvatar: null,
+  videos: [],
+};
 
 describe('UserService', () => {
   let service: UserService;
   let prismaService: PrismaService;
 
+  const mockPrismaService = {
+    user: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        FileService,
+        ConfigService,
         {
           provide: PrismaService,
-          useValue: {
-            user: {
-              create: jest.fn(),
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-            },
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
@@ -44,7 +72,8 @@ describe('UserService', () => {
         name: 'name',
         password: 'password',
       };
-      const createdUser: User = {
+
+      const createdUser = {
         id: 1,
         isBanned: false,
         isPartner: false,
@@ -53,6 +82,7 @@ describe('UserService', () => {
         userId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
+        ...userData,
         ...dto,
       };
 
@@ -64,23 +94,13 @@ describe('UserService', () => {
 
   describe('getAll', () => {
     it('should return an array of users', async () => {
-      const users: User[] = [
+      const users = [
         {
           id: 1,
-          isBanned: false,
-          isPartner: false,
-          roleId: 2,
-          userAvatarId: null,
-          userId: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
           email: 'email@mail.ru',
           login: 'login',
           name: 'name',
           password: 'password',
-        },
-        {
-          id: 2,
           isBanned: false,
           isPartner: false,
           roleId: 2,
@@ -88,10 +108,7 @@ describe('UserService', () => {
           userId: null,
           createdAt: new Date(),
           updatedAt: new Date(),
-          email: 'email1@mail.ru',
-          login: 'login1',
-          name: 'name',
-          password: 'password',
+          ...userData,
         },
       ];
 
@@ -102,10 +119,15 @@ describe('UserService', () => {
   });
 
   describe('getById', () => {
-    it('should return user by Int', async () => {
+    it('should return user by id', async () => {
       const userId = 1;
-      const user: User = {
-        id: 1,
+
+      const user = {
+        id: userId,
+        email: 'email@mail.ru',
+        login: 'login',
+        name: 'name',
+        password: 'password',
         isBanned: false,
         isPartner: false,
         roleId: 2,
@@ -113,10 +135,7 @@ describe('UserService', () => {
         userId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        email: 'email@mail.ru',
-        login: 'login',
-        name: 'name',
-        password: 'password',
+        ...userData,
       };
 
       jest.spyOn(service, 'getById').mockResolvedValue(user);
@@ -126,14 +145,16 @@ describe('UserService', () => {
   });
 
   describe('update', () => {
-    it('should update user by Int', async () => {
-      const userId = 1;
-      const dto: UpdateUserDto = {
-        id: userId,
-        name: 'name',
-      };
-      const updatedUser = {
+    it('should update user by id', async () => {
+      const dto = {
         id: 1,
+        email: 'email@mail.ru',
+        login: 'login',
+        name: 'name',
+        password: 'password',
+      };
+
+      const updatedUser = {
         isBanned: false,
         isPartner: false,
         roleId: 2,
@@ -141,31 +162,34 @@ describe('UserService', () => {
         userId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
+        ...userData,
         ...dto,
       };
 
-      jest.spyOn(service, 'update').mockResolvedValue(updatedUser as User);
+      jest.spyOn(service, 'update').mockResolvedValue(updatedUser);
 
-      expect(await service.update(updateUserInput)).toEqual(updatedUser);
+      expect(await service.update(dto)).toEqual(updatedUser);
     });
   });
 
   describe('remove', () => {
-    it('should remove user by Int', async () => {
+    it('should remove user by id', async () => {
       const userId = 1;
-      const removedUser: User = {
+
+      const removedUser = {
         id: userId,
-        isBanned: false,
-        isPartner: false,
-        roleId: 2,
-        userAvatarId: null,
-        userId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
         email: 'email@mail.ru',
         login: 'login',
         name: 'name',
         password: 'password',
+        isBanned: false,
+        isPartner: false,
+        roleId: 2,
+        userAvatarId: null,
+        userId: null,
+        ...userData,
       };
 
       jest.spyOn(service, 'remove').mockResolvedValue(removedUser);

@@ -3,11 +3,22 @@
 # ------------------------------------------------------
 
 type FileEntity {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """Url to static path"""
   url: String!
+
+  """File size in bytes"""
   size: Int!
+
+  """File extenstion"""
   extension: String!
 }
 
@@ -17,16 +28,37 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Banner {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """Date of publishing banner to the main page (default now)"""
   publishDate: DateTime!
+
+  """Date of unpublishing banner from the main page (default end of day)"""
   unpublishDate: DateTime!
+
+  """Title of banner"""
   title: String!
+
+  """Description of banner"""
   description: String
+
+  """Description of banner"""
   type: BannerTypes!
+
+  """Banner image"""
   bannerImage: FileEntity!
+
+  """Banner video"""
   bannerVideo: FileEntity
+
+  """User that created banner"""
   user: User!
 }
 
@@ -37,73 +69,161 @@ enum BannerTypes {
 }
 
 type Rating {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """User that created rating"""
   user: User!
 }
 
 type SubCategory {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
-  updatedAt: DateTime
+
+  """Update record date with time zone"""
+  updatedAt: DateTime!
   name: String!
 }
 
 type Category {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime
+
+  """Category name"""
   name: String!
+
+  """Sub categories"""
   subCategories: [SubCategory!]!
 }
 
 type Tag {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """Tag name"""
   name: String!
 }
 
 type Video {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """Video name"""
   name: String!
+
+  """Video description"""
   description: String
+
+  """Video description"""
   isBanned: Boolean!
-  userId: Int!
+
+  """Video author"""
   author: User!
+
+  """Video file"""
   videoFile: FileEntity!
+
+  """Video preview"""
   videoPreview: FileEntity
+
+  """Video category"""
   category: Category
+
+  """Video sub category"""
   subCategory: SubCategory
+
+  """Video tags"""
   tags: [Tag!]
+
+  """Video comments"""
   comments: [Comment!]
+
+  """Video likes"""
   likes: [Rating!]
+
+  """Video dislikes"""
   dislikes: [Rating!]
 }
 
 type Comment {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Creation record date with time zone"""
   updatedAt: DateTime!
+
+  """Comment text"""
   text: String!
+
+  """Comment author"""
   user: User!
+
+  """Video for which a comment was left"""
   video: Video!
+
+  """Parent comment"""
   parent: Comment
+
+  """Comment replies"""
   replies: [Comment!]
+
+  """Comment likes"""
   likes: [Rating!]
+
+  """Comment dislikes"""
   dislikes: [Rating!]
 }
 
 type Complaint {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """Complaint reason (NEGATIVE | INCONSISTENCY | RACISM)"""
   reason: ComplaintReasons!
+
+  """Complaint message"""
   message: String!
+
+  """User for which a complaint was left"""
   user: User
+
+  """Video for which a complaint was left"""
   video: Video
 }
 
@@ -113,11 +233,42 @@ enum ComplaintReasons {
   RACISM
 }
 
-type Notification {
+type History {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """Video for which a history was left"""
+  video: Video!
+
+  """User that created history"""
+  user: User!
+
+  """Video timestamp"""
+  time: Int!
+}
+
+type Notification {
+  """Unique id"""
+  id: Int!
+
+  """Creation record date with time zone"""
+  createdAt: DateTime!
+
+  """Update record date with time zone"""
+  updatedAt: DateTime!
+
+  """
+  Notification type (NEW_SUBSCRIBER | NEW_LIKE | NEW_DISLIKE | NEW_COMMENT | VIDEO_BLOCK | VIDEO_UNBLOCK | SYSTEM_UPDATE)
+  """
   type: Notifications!
+
+  """User for which a notification was left"""
   user: User
 }
 
@@ -132,11 +283,22 @@ enum Notifications {
 }
 
 type PartnerRequest {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """Partner request message"""
   message: String!
+
+  """Partner request status (OPEN | APPROVED | REJECTED)"""
   status: PartnerRequestStatuses!
+
+  """User that created partner request"""
   user: User!
 }
 
@@ -151,19 +313,39 @@ type VideoPlaylist {
 }
 
 type Playlist {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """Playlist name"""
   name: String!
+
+  """Playlist privacy (OPEN | CLOSED)"""
   privacy: String!
+
+  """Playlist author"""
   user: User!
+
+  """Playlist videos"""
   videos: [VideoPlaylist!]
 }
 
 type Role {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime
+
+  """Role name (USER | MODERATOR | ADMIN)"""
   name: Roles!
 }
 
@@ -174,10 +356,19 @@ enum Roles {
 }
 
 type Setting {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """User profile privacy (OPEN | CLOSED)"""
   privacy: Privacy!
+
+  """User settings"""
   user: User!
 }
 
@@ -191,103 +382,214 @@ type SelectedCategory {
 }
 
 type User {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """User email"""
   email: String!
+
+  """User login"""
   login: String!
+
+  """User name"""
   name: String!
+
+  """User password"""
   password: String
+
+  """Is user banned or not"""
   isBanned: Boolean!
+
+  """Is user partner or not"""
   isPartner: Boolean!
+
+  """Role name (USER | MODERATOR | ADMIN)"""
   role: Role!
+
+  """Selected user categoires"""
   selectedCategories: [SelectedCategory!]
+
+  """Created user banners"""
   banners: [Banner!]
+
+  """User comments"""
   comments: [Comment!]
+
+  """User complaints"""
   complaints: [Complaint!]
+
+  """User likes"""
   likes: [Rating!]
+
+  """User dislikes"""
   dislikes: [Rating!]
+
+  """User notifications"""
   notifications: [Notification!]
+
+  """User partner requests"""
   partnerRequests: [PartnerRequest!]
+
+  """User playlists"""
   playlists: [Playlist!]
+
+  """User settings"""
   settings: [Setting!]!
+
+  """User subscribers"""
   subscribers: [User!]
+
+  """User avatar"""
   userAvatar: FileEntity
+
+  """User videos"""
   videos: [Video!]
+
+  """User video history"""
+  history: [History!]
 }
 
 type UserPagination {
+  """List of records"""
   data: [User!]!
+
+  """Total count of records"""
   count: Int!
 }
 
 type ProfileResponse {
+  """Unique id"""
   id: Int!
+
+  """User email"""
   email: String!
+
+  """Role name (USER | MODERATOR | ADMIN)"""
   role: Roles!
 }
 
 type AuthResponse {
+  """Token for user authentication"""
   accessToken: String!
 }
 
 type EmailResponse {
+  """Response message"""
   message: String!
 }
 
 type LogoutResponse {
+  """Operation status"""
   success: Boolean!
 }
 
 type CategoryPagination {
+  """List of records"""
   data: [Category!]!
+
+  """Total count of records"""
   count: Int!
 }
 
 type CommentPagination {
+  """List of records"""
   data: [Comment!]!
+
+  """Total count of records"""
   count: Int!
 }
 
 type ComplaintPagination {
+  """List of records"""
   data: [Complaint!]!
+
+  """Total count of records"""
   count: Int!
 }
 
 type NotificationPagination {
+  """List of records"""
   data: [Notification!]!
+
+  """Total count of records"""
   count: Int!
 }
 
 type PartnerRequestPagination {
+  """List of records"""
   data: [PartnerRequest!]!
+
+  """Total count of records"""
   count: Int!
 }
 
 type PlaylistPagination {
+  """List of records"""
   data: [Playlist!]!
+
+  """Total count of records"""
   count: Int!
 }
 
 type Monitoring {
+  """Channel views count"""
   viewsCount: Int!
+
+  """Channel likes count"""
   likesCount: Int!
+
+  """Channel dislikes count"""
   dislikesCount: Int!
+
+  """Channel comments count"""
   commentsCount: Int!
+
+  """Channel subscribers count"""
   subscribersCount: Int!
 }
 
 type VideoPagination {
+  """List of records"""
   data: [Video!]!
+
+  """Total count of records"""
   count: Int!
 }
 
 type View {
+  """Unique id"""
   id: Int!
+
+  """Creation record date with time zone"""
   createdAt: DateTime!
+
+  """Update record date with time zone"""
   updatedAt: DateTime!
+
+  """User that created view"""
   user: User!
+
+  """Video that belongs to view"""
   video: Video!
+}
+
+type CountEntity {
+  """Total count of records"""
+  count: Int!
+}
+
+type HistoryPagination {
+  """List of records"""
+  data: [History!]!
+
+  """Total count of records"""
+  count: Int!
 }
 
 type Query {
@@ -336,17 +638,36 @@ type Query {
   getPartnerRequests: [PartnerRequest!]!
   getPartnerRequestsWithQuery(query: PartnerRequestQuerySearchDto!): PartnerRequestPagination!
   getPartnerRequest(id: Int!): PartnerRequest!
+  getHistory: [History!]!
+  getHistoryWithQuery(query: HistoryQuerySearchDto!): HistoryPagination!
 }
 
 input QuerySearchDto {
+  """Limit of records to show"""
   limit: Int!
+
+  """Number of records to skip from 0"""
   offset: Int! = 100
+
+  """Sort field"""
   orderBy: String
+
+  """Sort direction (asc | desc)"""
   orderDirection: OrderEnum = ASC
+
+  """User email"""
   email: String
+
+  """User login"""
   login: String
+
+  """User name"""
   name: String
+
+  """Is user banned or not"""
   isBanned: Boolean
+
+  """Is user partner or not"""
   isPartner: Boolean
 }
 
@@ -356,37 +677,77 @@ enum OrderEnum {
 }
 
 input CategoriesQuerySearchDto {
+  """Limit of records to show"""
   limit: Int!
+
+  """Number of records to skip from 0"""
   offset: Int! = 100
+
+  """Sort field"""
   orderBy: String
+
+  """Sort direction (asc | desc)"""
   orderDirection: OrderEnum = ASC
   name: String
 }
 
 input VideoQuerySearchDto {
+  """Limit of records to show"""
   limit: Int!
+
+  """Number of records to skip from 0"""
   offset: Int! = 100
+
+  """Sort field"""
   orderBy: String
+
+  """Sort direction (asc | desc)"""
   orderDirection: OrderEnum = ASC
+
+  """Video name"""
   name: String
+
+  """Video description"""
   description: String
+
+  """Is video blocked"""
   isBanned: Boolean
 }
 
 input PlaylistQuerySearchDto {
+  """Limit of records to show"""
   limit: Int!
+
+  """Number of records to skip from 0"""
   offset: Int! = 100
+
+  """Sort field"""
   orderBy: String
+
+  """Sort direction (asc | desc)"""
   orderDirection: OrderEnum = ASC
+
+  """Playlist name"""
   name: String
+
+  """Playlist privacy (OPEN | CLOSED)"""
   privacy: Privacy
 }
 
 input CommentsQuerySearchDto {
+  """Limit of records to show"""
   limit: Int!
+
+  """Number of records to skip from 0"""
   offset: Int! = 100
+
+  """Sort field"""
   orderBy: String
+
+  """Sort direction (asc | desc)"""
   orderDirection: OrderEnum = ASC
+
+  """Comment text"""
   text: String
 }
 
@@ -396,28 +757,71 @@ enum RatingEnum {
 }
 
 input NotificationQuerySearchDto {
+  """Limit of records to show"""
   limit: Int!
+
+  """Number of records to skip from 0"""
   offset: Int! = 100
+
+  """Sort field"""
   orderBy: String
+
+  """Sort direction (asc | desc)"""
   orderDirection: OrderEnum = ASC
 }
 
 input ComplaintQuerySearchDto {
+  """Limit of records to show"""
   limit: Int!
+
+  """Number of records to skip from 0"""
   offset: Int! = 100
+
+  """Sort field"""
   orderBy: String
+
+  """Sort direction (asc | desc)"""
   orderDirection: OrderEnum = ASC
+
+  """Complaint reason (NEGATIVE | INCONSISTENCY | RACISM)"""
   reason: ComplaintReasons
+
+  """Complaint message"""
   message: String
 }
 
 input PartnerRequestQuerySearchDto {
+  """Limit of records to show"""
   limit: Int!
+
+  """Number of records to skip from 0"""
   offset: Int! = 100
+
+  """Sort field"""
   orderBy: String
+
+  """Sort direction (asc | desc)"""
   orderDirection: OrderEnum = ASC
+
+  """Partner request message"""
   message: String
+
+  """Partner request status (OPEN | APPROVED | REJECTED)"""
   status: PartnerRequestStatuses
+}
+
+input HistoryQuerySearchDto {
+  """Limit of records to show"""
+  limit: Int!
+
+  """Number of records to skip from 0"""
+  offset: Int! = 100
+
+  """Sort field"""
+  orderBy: String
+
+  """Sort direction (asc | desc)"""
+  orderDirection: OrderEnum = ASC
 }
 
 type Mutation {
@@ -483,9 +887,14 @@ type Mutation {
   createPartnerRequest(dto: CreatePartnerRequestDto!): PartnerRequest!
   updatePartnerRequest(dto: UpdatePartnerRequestDto!): PartnerRequest!
   removePartnerRequest(id: Int!): PartnerRequest!
+  createHistory(dto: CreateHistoryDto!): History!
+  updateHistory(dto: UpdateHistoryDto!): History!
+  removeHistory(id: Int!): History!
+  removeAllHistory: CountEntity!
 }
 
 input FileDto {
+  """File to upload"""
   file: Upload!
 }
 
@@ -493,210 +902,413 @@ input FileDto {
 scalar Upload
 
 input CreateUserDto {
+  """User email"""
   email: String!
+
+  """User login"""
   login: String!
+
+  """User name"""
   name: String!
+
+  """User password"""
   password: String!
+
+  """User avatar"""
   userAvatarId: Int
 }
 
 input UpdateUserDto {
+  """User email"""
   email: String
+
+  """User login"""
   login: String
+
+  """User name"""
   name: String
+
+  """User password"""
   password: String
+
+  """User avatar"""
   userAvatarId: Int
+
+  """Unique id"""
   id: Int!
 }
 
 input SignUpDto {
+  """User name"""
   name: String!
+
+  """User login"""
   login: String!
+
+  """User email"""
   email: String!
+
+  """User password"""
   password: String!
 }
 
 input SignInDto {
+  """Credentials for login (login or email)"""
   credentials: String!
+
+  """Password for login"""
   password: String!
 }
 
 input ResetPasswordDto {
+  """Email to change user password"""
   email: String!
+
+  """New user password"""
   newPassword: String!
+
+  """Confirmation code"""
   token: String!
 }
 
 input CreateRoleDto {
+  """Role name (USER | MODERATOR | ADMIN)"""
   name: Roles!
 }
 
 input UpdateRoleDto {
+  """Role name (USER | MODERATOR | ADMIN)"""
   name: Roles
+
+  """Unique id"""
   id: Int!
 }
 
 input CreateCategoryDto {
+  """Category name"""
   name: String!
 }
 
 input UpdateCategoryDto {
+  """Category name"""
   name: String
+
+  """Unique id"""
   id: Int!
 }
 
 input CreateSubCategoryDto {
+  """Sub category name"""
   name: String!
+
+  """Parent category"""
   categoryId: Int!
 }
 
 input UpdateSubCategoryDto {
+  """Sub category name"""
   name: String
+
+  """Parent category"""
   categoryId: Int
+
+  """Unique id"""
   id: Int!
 }
 
 input CreateTagDto {
+  """Tag name"""
   name: String!
 }
 
 input UpdateTagDto {
+  """Tag name"""
   name: String
+
+  """Unique id"""
   id: Int!
 }
 
 input CreateVideoDto {
+  """Video name"""
   name: String!
+
+  """Video description"""
   description: String
+
+  """Unique video id that already uploaded"""
   videoFileId: Int!
+
+  """Video preview"""
   videoPreviewId: Int
+
+  """Video category"""
   categoryId: Int
+
+  """Video sub category"""
   subCategoryId: Int
 }
 
 input UpdateVideoDto {
+  """Video name"""
   name: String
+
+  """Video description"""
   description: String
+
+  """Unique video id that already uploaded"""
   videoFileId: Int
+
+  """Video preview"""
   videoPreviewId: Int
+
+  """Video category"""
   categoryId: Int
+
+  """Video sub category"""
   subCategoryId: Int
+
+  """Unique id"""
   id: Int!
 }
 
 input CreatePlaylistDto {
+  """Playlist name"""
   name: String!
 }
 
 input UpdatePlaylistDto {
+  """Playlist name"""
   name: String
+
+  """Unique id"""
   id: Int!
 }
 
 input VideoPlaylistDto {
+  """Unique playlist id to add video"""
   playlistId: Int!
+
+  """Unique video id to add in playlist"""
   videoId: Int!
 }
 
 input CreateViewDto {
+  """Video that belongs to view"""
   videoId: Int!
 }
 
 input UpdateViewDto {
+  """Video that belongs to view"""
   videoId: Int
+
+  """Unique id"""
   id: Int!
+
+  """User that created view"""
   userId: Int!
 }
 
 input CreateCommentDto {
+  """Comment text"""
   text: String!
+
+  """Unique video id that already uploaded"""
   videoId: Int!
+
+  """Unique id of parent comment"""
   parentId: Int
 }
 
 input UpdateCommentDto {
+  """Comment text"""
   text: String
+
+  """Unique video id that already uploaded"""
   videoId: Int
+
+  """Unique id of parent comment"""
   parentId: Int
+
+  """Unique id"""
   id: Int!
 }
 
 input CreateRatingDto {
+  """Video for which a rating was left"""
   videoId: Int
+
+  """Comment for which a rating was left"""
   commentId: Int
+
+  """Rating type (LIKE | DISLIKE)"""
   type: RatingEnum!
 }
 
 input UpdateRatingDto {
+  """Video for which a rating was left"""
   videoId: Int
+
+  """Comment for which a rating was left"""
   commentId: Int
+
+  """Rating type (LIKE | DISLIKE)"""
   type: RatingEnum
+
+  """Unique id"""
   id: Int!
 }
 
 input CreateBannerDto {
+  """Date of publishing banner to the main page (default now)"""
   publishDate: DateTime
+
+  """Date of unpublishing banner from the main page (default end of day)"""
   unpublishDate: DateTime
+
+  """Title of banner"""
   title: String!
+
+  """Description of banner"""
   description: String
+
+  """Banner type (VIDEO | STREAM | IMAGE)"""
   type: BannerTypes!
+
+  """Unique image id that already uploaded"""
   bannerImageId: Int!
+
+  """Unique video id that already uploaded"""
   bannerVideoId: Int
 }
 
 input UpdateBannerDto {
+  """Date of publishing banner to the main page (default now)"""
   publishDate: DateTime
+
+  """Date of unpublishing banner from the main page (default end of day)"""
   unpublishDate: DateTime
+
+  """Title of banner"""
   title: String
+
+  """Description of banner"""
   description: String
+
+  """Banner type (VIDEO | STREAM | IMAGE)"""
   type: BannerTypes
+
+  """Unique image id that already uploaded"""
   bannerImageId: Int
+
+  """Unique video id that already uploaded"""
   bannerVideoId: Int
+
+  """Unique id"""
   id: Int!
 }
 
 input CreateNotificationDto {
+  """User for which a notification was left"""
   userId: Int
+
+  """
+  Notification type (NEW_SUBSCRIBER | NEW_LIKE | NEW_DISLIKE | NEW_COMMENT | VIDEO_BLOCK | VIDEO_UNBLOCK | SYSTEM_UPDATE)
+  """
   type: Notifications!
 }
 
 input UpdateNotificationDto {
+  """User for which a notification was left"""
   userId: Int
+
+  """
+  Notification type (NEW_SUBSCRIBER | NEW_LIKE | NEW_DISLIKE | NEW_COMMENT | VIDEO_BLOCK | VIDEO_UNBLOCK | SYSTEM_UPDATE)
+  """
   type: Notifications
+
+  """Unique id"""
   id: Int!
 }
 
 input CreateSettingDto {
+  """User settings"""
   userId: Int!
 }
 
 input UpdateSettingDto {
+  """Unique id"""
   id: Int!
+
+  """User settings"""
   userId: Int
+
+  """User profile privacy (OPEN | CLOSED)"""
   privacy: Privacy
 }
 
 input CreateComplaintDto {
+  """Complaint reason (NEGATIVE | INCONSISTENCY | RACISM)"""
   reason: ComplaintReasons!
+
+  """Complaint message"""
   message: String!
+
+  """User for which a complaint was left"""
   userId: Int
+
+  """Video for which a complaint was left"""
   videoId: Int
 }
 
 input UpdateComplaintDto {
+  """Complaint reason (NEGATIVE | INCONSISTENCY | RACISM)"""
   reason: ComplaintReasons
+
+  """Complaint message"""
   message: String
+
+  """User for which a complaint was left"""
   userId: Int
+
+  """Video for which a complaint was left"""
   videoId: Int
+
+  """Unique id"""
   id: Int!
 }
 
 input CreatePartnerRequestDto {
+  """Partner request message"""
   message: String!
 }
 
 input UpdatePartnerRequestDto {
+  """Partner request message"""
   message: String
+
+  """Unique id"""
   id: Int!
+
+  """Partner request status (OPEN | APPROVED | REJECTED)"""
   status: PartnerRequestStatuses
+}
+
+input CreateHistoryDto {
+  """Video for which a history was left"""
+  videoId: Int!
+
+  """Video timestamp"""
+  time: Int!
+}
+
+input UpdateHistoryDto {
+  """Video for which a history was left"""
+  videoId: Int
+
+  """Video timestamp"""
+  time: Int
+
+  """Unique id"""
+  id: Int!
 }

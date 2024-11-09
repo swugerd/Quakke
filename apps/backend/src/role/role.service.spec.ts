@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Role } from '@prisma/client';
+import { Role, Roles } from '@prisma/client';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -9,21 +9,23 @@ describe('RoleService', () => {
   let service: RoleService;
   let prismaService: PrismaService;
 
+  const mockPrismaService = {
+    role: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RoleService,
         {
           provide: PrismaService,
-          useValue: {
-            role: {
-              create: jest.fn(),
-              findMany: jest.fn(),
-              findUnique: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-            },
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
@@ -38,7 +40,7 @@ describe('RoleService', () => {
 
   describe('create', () => {
     it('should create a new role', async () => {
-      const dto: CreateRoleDto = { name: 'ADMIN' };
+      const dto: CreateRoleDto = { name: Roles.ADMIN };
       const createdRole = {
         id: 1,
         createdAt: new Date(),
@@ -55,8 +57,18 @@ describe('RoleService', () => {
   describe('findAll', () => {
     it('should return an array of roles', async () => {
       const roles: Role[] = [
-        { id: 1, name: 'ADMIN', createdAt: new Date(), updatedAt: new Date() },
-        { id: 2, name: 'USER', createdAt: new Date(), updatedAt: new Date() },
+        {
+          id: 1,
+          name: Roles.ADMIN,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 2,
+          name: Roles.USER,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
 
       jest.spyOn(service, 'findAll').mockResolvedValue(roles);
@@ -66,11 +78,11 @@ describe('RoleService', () => {
   });
 
   describe('findOne', () => {
-    it('should return a role by Int', async () => {
+    it('should return a role by id', async () => {
       const roleId = 1;
       const role: Role = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -82,11 +94,11 @@ describe('RoleService', () => {
   });
 
   describe('update', () => {
-    it('should update a role by Int', async () => {
+    it('should update a role by id', async () => {
       const roleId = 1;
       const dto: UpdateRoleDto = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
       };
       const updatedRole = {
         ...dto,
@@ -101,11 +113,11 @@ describe('RoleService', () => {
   });
 
   describe('remove', () => {
-    it('should remove a role by Int', async () => {
+    it('should remove a role by id', async () => {
       const roleId = 1;
       const removedRole: Role = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

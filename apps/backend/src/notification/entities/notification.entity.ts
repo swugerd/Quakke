@@ -6,23 +6,33 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { Notifications } from '@prisma/client';
-import { User } from 'src/user/entities/user.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { User } from '../../user/entities/user.entity';
 
 @ObjectType()
 export class Notification {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.updatedAt,
+  })
   updatedAt: Date;
 
-  @Field(() => Notifications)
+  @Field(() => Notifications, {
+    description: fieldsDescriptions.notification.type,
+  })
   type: Notifications;
 
-  @Field(() => User, { nullable: true })
+  @Field(() => User, {
+    nullable: true,
+    description: fieldsDescriptions.notification.user,
+  })
   user?: () => User;
 }
 

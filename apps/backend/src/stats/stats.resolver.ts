@@ -1,8 +1,8 @@
 import { Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser } from 'src/auth/decorators';
-import { JwtPayload } from 'src/auth/interfaces';
 import { Monitoring } from './entities/monitoring.entity';
 import { StatsService } from './stats.service';
+import { CurrentUser } from '../auth/decorators';
+import { JwtPayload } from '../auth/interfaces';
 
 @Resolver(() => Monitoring)
 export class StatsResolver {

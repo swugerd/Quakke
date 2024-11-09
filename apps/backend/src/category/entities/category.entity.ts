@@ -1,20 +1,26 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
-import { SubCategory } from 'src/sub-category/entities/sub-category.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { SubCategory } from '../../sub-category/entities/sub-category.entity';
 
 @ObjectType()
 export class Category {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Field(() => GraphQLISODateTime, {
+    nullable: true,
+    description: fieldsDescriptions.updatedAt,
+  })
   updatedAt: Date;
 
-  @Field(() => String)
+  @Field(() => String, { description: fieldsDescriptions.category.name })
   name: string;
 
-  @Field(() => [SubCategory])
+  @Field(() => [SubCategory], { description: 'Sub categories' })
   subCategories: SubCategory[];
 }

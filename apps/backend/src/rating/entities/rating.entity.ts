@@ -1,17 +1,22 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
-import { User } from 'src/user/entities/user.entity';
+import fieldsDescriptions from '../../constants/fields.descriptions';
+import { User } from '../../user/entities/user.entity';
 
 @ObjectType()
 export class Rating {
-  @Field(() => Int)
+  @Field(() => Int, { description: fieldsDescriptions.id })
   id: number;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.createdAt,
+  })
   createdAt: Date;
 
-  @Field(() => GraphQLISODateTime)
+  @Field(() => GraphQLISODateTime, {
+    description: fieldsDescriptions.updatedAt,
+  })
   updatedAt: Date;
 
-  @Field(() => User)
+  @Field(() => User, { description: 'User that created rating' })
   user: () => User;
 }

@@ -68,7 +68,7 @@ export class AuthResolver {
     @Context('res') res: Response,
   ) {
     if (!refreshToken) {
-      throw new BadRequestException('User is not auth');
+      throw new BadRequestException('User is not authenticated');
     }
 
     await this.authService.deleteRefreshToken(refreshToken);

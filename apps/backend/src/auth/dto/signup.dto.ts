@@ -1,25 +1,25 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { maxCharLengthList } from 'src/constants';
 
 @InputType()
 export class SignUpDto {
   @IsNotEmpty()
   @IsString()
-  @Field()
+  @Field(() => String, { description: 'User name' })
+  @MaxLength(maxCharLengthList.default)
   name: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @Field()
+  @Field(() => String, { description: 'User login' })
+  @MaxLength(maxCharLengthList.default)
   login: string;
 
-  @IsNotEmpty()
+  @Field(() => String, { description: 'User email' })
   @IsEmail()
-  @Field()
+  @MaxLength(maxCharLengthList.default)
   email: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @Field()
+  @Field(() => String, { description: 'User password' })
+  @MaxLength(maxCharLengthList.default)
   password: string;
 }

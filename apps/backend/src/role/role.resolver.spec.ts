@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Role } from '@prisma/client';
+import { Role, Roles } from '@prisma/client';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleResolver } from './role.resolver';
@@ -7,7 +7,14 @@ import { RoleService } from './role.service';
 
 describe('RoleResolver', () => {
   let resolver: RoleResolver;
-  let service: RoleService;
+
+  const mockPrismaService = {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,19 +22,12 @@ describe('RoleResolver', () => {
         RoleResolver,
         {
           provide: RoleService,
-          useValue: {
-            create: jest.fn(),
-            findAll: jest.fn(),
-            findOne: jest.fn(),
-            update: jest.fn(),
-            remove: jest.fn(),
-          },
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
 
     resolver = module.get<RoleResolver>(RoleResolver);
-    service = module.get<RoleService>(RoleService);
   });
 
   it('should be defined', () => {
@@ -36,7 +36,7 @@ describe('RoleResolver', () => {
 
   describe('createRole', () => {
     it('should create a new role', async () => {
-      const dto: CreateRoleDto = { name: 'ADMIN' };
+      const dto: CreateRoleDto = { name: Roles.ADMIN };
       const createdRole = {
         id: 1,
         createdAt: new Date(),
@@ -44,7 +44,7 @@ describe('RoleResolver', () => {
         ...dto,
       };
 
-      jest.spyOn(service, 'create').mockResolvedValue(createdRole);
+      jest.spyOn(resolver, 'createRole').mockResolvedValue(createdRole);
 
       expect(await resolver.createRole(dto)).toEqual(createdRole);
     });
@@ -53,38 +53,48 @@ describe('RoleResolver', () => {
   describe('getRoles', () => {
     it('should return an array of roles', async () => {
       const roles: Role[] = [
-        { id: 1, name: 'ADMIN', createdAt: new Date(), updatedAt: new Date() },
-        { id: 2, name: 'USER', createdAt: new Date(), updatedAt: new Date() },
+        {
+          id: 1,
+          name: Roles.ADMIN,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 2,
+          name: Roles.USER,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
 
-      jest.spyOn(service, 'findAll').mockResolvedValue(roles);
+      jest.spyOn(resolver, 'getRoles').mockResolvedValue(roles);
 
       expect(await resolver.getRoles()).toEqual(roles);
     });
   });
 
   describe('getRole', () => {
-    it('should return a role by Int', async () => {
+    it('should return a role by id', async () => {
       const roleId = 1;
       const role: Role = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'findOne').mockResolvedValue(role);
+      jest.spyOn(resolver, 'getRole').mockResolvedValue(role);
 
       expect(await resolver.getRole(roleId)).toEqual(role);
     });
   });
 
   describe('updateRole', () => {
-    it('should update a role by Int', async () => {
+    it('should update a role by id', async () => {
       const roleId = 1;
       const updateRoleInput: UpdateRoleDto = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
       };
       const updatedRole = {
         ...updateRoleInput,
@@ -92,23 +102,23 @@ describe('RoleResolver', () => {
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'update').mockResolvedValue(updatedRole as Role);
+      jest.spyOn(resolver, 'updateRole').mockResolvedValue(updatedRole as Role);
 
       expect(await resolver.updateRole(updateRoleInput)).toEqual(updatedRole);
     });
   });
 
   describe('removeRole', () => {
-    it('should remove a role by Int', async () => {
+    it('should remove a role by id', async () => {
       const roleId = 1;
       const removedRole: Role = {
         id: roleId,
-        name: 'ADMIN',
+        name: Roles.ADMIN,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'remove').mockResolvedValue(removedRole);
+      jest.spyOn(resolver, 'removeRole').mockResolvedValue(removedRole);
 
       expect(await resolver.removeRole(roleId)).toEqual(removedRole);
     });

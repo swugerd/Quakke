@@ -7,19 +7,36 @@
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint --fix",
-    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx,json,css,md}'"
+    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx,json,css,md}'",
+    "generate": "graphql-codegen"
   },
   "dependencies": {
+    "@apollo/client": "^3.10.4",
+    "@apollo/experimental-nextjs-app-support": "^0.10.1",
+    "axios": "^1.7.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
+    "graphql": "^16.8.1",
+    "i18next": "^23.11.5",
+    "js-cookie": "^3.0.5",
+    "next": "14.1.4",
+    "next-intl": "^3.14.0",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.1.4"
+    "react-hook-form": "^7.51.5",
+    "sass": "^1.77.2"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/client-preset": "^4.2.6",
+    "@parcel/watcher": "^2.4.1",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.1.4"
+    "eslint-config-next": "14.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
   }
 }

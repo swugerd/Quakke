@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Roles, User } from '@prisma/client';
 import { compareSync } from 'bcrypt';
 import { add } from 'date-fns';
-import { mailMinutesToExpire } from 'src/constants';
+import { mailMinutesToExpire, maxCharLengthList } from 'src/constants';
 import config from 'src/constants/config';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -201,18 +201,28 @@ export class AuthService {
       );
     }
 
+    const tokenNumLength = Number(
+      1 + '0'.repeat(maxCharLengthList.passwordResetToken - 1),
+    );
+
     await this.prismaService.forgottenPassword.upsert({
       where: {
         email,
       },
       create: {
         email: email,
-        token: (Math.floor(Math.random() * 900000) + 100000).toString(),
+        token: (
+          Math.floor(Math.random() * (9 * tokenNumLength)) +
+          1 * tokenNumLength
+        ).toString(),
         timestamp: new Date(),
       },
       update: {
         email: email,
-        token: (Math.floor(Math.random() * 900000) + 100000).toString(),
+        token: (
+          Math.floor(Math.random() * (9 * tokenNumLength)) +
+          1 * tokenNumLength
+        ).toString(),
         timestamp: new Date(),
       },
     });

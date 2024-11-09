@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateComplaintDto } from './dto/create-complaint.dto';
 import { ComplaintQuerySearchDto } from './dto/query-search.dto';
 import { UpdateComplaintDto } from './dto/update-complaint.dto';
